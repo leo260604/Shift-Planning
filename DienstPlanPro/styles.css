@@ -2086,3 +2086,37 @@ body.dark-mode .wp-box.office .wp-ic{color:#7fb2ea}
   .contact-role-chips{display:none!important}
   .role-dd{display:inline-flex}
 }
+/* ================= Eigener Farbwähler (ziehen + speichern) ================= */
+.cp-layer{position:fixed;inset:0;z-index:6000;background:transparent}
+.cp-pop{position:fixed;width:300px;box-sizing:border-box;padding:14px;border-radius:16px;background:var(--surface);border:1px solid var(--line);box-shadow:0 24px 60px -16px rgba(0,0,0,.35),0 2px 8px rgba(0,0,0,.08);display:flex;flex-direction:column;gap:12px;animation:cpIn .14s ease-out}
+@keyframes cpIn{from{opacity:0;transform:translateY(4px) scale(.98)}to{opacity:1;transform:none}}
+.cp-head{display:flex;align-items:baseline;justify-content:space-between;gap:8px}
+.cp-head b{font-size:14px;color:var(--ink)}
+.cp-head small{font-size:11.5px;color:var(--muted)}
+.cp-sv{position:relative;height:170px;border-radius:12px;cursor:crosshair;touch-action:none;outline:0;
+ background:linear-gradient(to top,#000,transparent),linear-gradient(to right,#fff,transparent),var(--hue,red)}
+.cp-sv:focus-visible{box-shadow:0 0 0 3px var(--accent-ring)}
+.cp-knob{position:absolute;width:20px;height:20px;margin:-10px 0 0 -10px;border-radius:50%;border:3px solid #fff;box-shadow:0 0 0 1px rgba(0,0,0,.25),0 2px 6px rgba(0,0,0,.35);pointer-events:none}
+.cp-hue{position:relative;height:16px;border-radius:999px;cursor:pointer;touch-action:none;outline:0;
+ background:linear-gradient(to right,#f00 0%,#ff0 17%,#0f0 33%,#0ff 50%,#00f 67%,#f0f 83%,#f00 100%)}
+.cp-hue:focus-visible{box-shadow:0 0 0 3px var(--accent-ring)}
+.cp-hue-knob{position:absolute;top:50%;width:22px;height:22px;margin:-11px 0 0 -11px;border-radius:50%;border:3px solid #fff;box-shadow:0 0 0 1px rgba(0,0,0,.25),0 2px 6px rgba(0,0,0,.35);pointer-events:none}
+.cp-row{display:flex;align-items:flex-end;gap:6px}
+.cp-prev{display:flex;flex-direction:column;width:34px;height:40px;border-radius:9px;overflow:hidden;flex:none;box-shadow:0 0 0 1px var(--line)}
+.cp-prev i{flex:1}
+.cp-field{display:flex!important;flex-direction:column!important;gap:3px!important;margin:0!important;min-width:0;flex:1}
+.cp-field small{font-size:10.5px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.04em}
+.cp-hexf{flex:2.1}
+.cp-field input{width:100%;box-sizing:border-box;height:32px;padding:0 6px;border:1.5px solid var(--line);border-radius:8px;background:var(--surface);color:var(--ink);font:inherit;font-size:12.5px;font-weight:650;text-align:center;font-variant-numeric:tabular-nums}
+.cp-field input:focus{outline:0;border-color:var(--accent-color);box-shadow:0 0 0 3px var(--accent-ring)}
+.cp-recent small{display:block;font-size:11px;color:var(--muted);margin-bottom:6px;font-weight:600}
+.cp-recent div{display:flex;flex-wrap:wrap;gap:6px}
+.cp-sw{width:24px;height:24px;border-radius:50%;border:2px solid var(--surface);box-shadow:0 0 0 1px var(--line);background:var(--c);cursor:pointer;padding:0}
+.cp-sw:hover{transform:scale(1.1)}
+.cp-actions{display:flex;justify-content:flex-end;gap:8px}
+.cp-actions .btn{min-height:36px}
+.cp-pop.sheet{left:8px!important;right:8px;bottom:8px;top:auto!important;width:auto;border-radius:18px;padding:16px}
+.cp-pop.sheet .cp-sv{height:200px}
+@media (max-width:560px){.cp-layer{background:rgba(0,0,0,.25)}}
+/* Farbfeld „Eigene“ zeigt die aktuelle Farbe als Kreis */
+.te-custom input[type=color],.color-swatch.custom input{cursor:pointer}

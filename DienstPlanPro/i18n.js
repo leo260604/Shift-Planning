@@ -402,3 +402,4 @@ Object.assign(EN,{'Dienste auswählen …':'Choose shifts …','Alle Dienste':'A
 EN_RX.unshift([/^Alle Dienste \((\d+)\)$/,'All shifts ($1)'],[/^Alle meine Teams \((\d+)\)$/,'All my teams ($1)']);
 Object.assign(EN,{'Neues Team anlegen':'Create new team','z. B. Team Ost':'e.g. Team East','Der Name erscheint im Dienstplan, in der Bereitschaft und in den Filtern.':'The name appears in the duty roster, on-call view and filters.','Keine Abteilung':'No department','Danach legst du Mitglieder, Teamleitung und Deputy fest.':'Next you set members, team lead and deputy.','Neues Team':'New team','0 Mitglieder':'0 members'});
 EN_RX.push([/^(\d+) von (\d+) Teams$/,'$1 of $2 teams']);
+Object.assign(EN,{'Farbe wählen':'Choose colour','Ziehen, bis die Farbe passt':'Drag until the colour fits','Zuletzt verwendet':'Recently used','Vorher / Nachher':'Before / after','Sättigung und Helligkeit':'Saturation and brightness','Farbton':'Hue','Eigene Farbe':'Custom colour'});

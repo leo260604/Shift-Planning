@@ -2117,6 +2117,65 @@ function fancySelect(sel,{kind='plain',meta,search='Suchen …',placeholder='Bit
  new MutationObserver(sync).observe(sel,{childList:true,subtree:true,attributes:true,attributeFilter:['disabled']});
  sync();bindPersonPicker(pp.parentNode);
 }
+/* ------------------------------------------------------------------
+   Eigener Farbwähler für alle <input type="color">: Farbe in der Fläche und am Farbton-Regler
+   ziehen, Hex/RGB eintippen, dann „Speichern“. Während des Ziehens wird die Vorschau live
+   aktualisiert (input-Event); gespeichert wird erst mit „Speichern“ (change-Event). */
+(function(){
+ const clamp=(x,a,b)=>Math.max(a,Math.min(b,x));
+ const hex2rgb=h=>{h=String(h||'').replace('#','');if(h.length===3)h=h.split('').map(c=>c+c).join('');return /^[0-9a-f]{6}$/i.test(h)?[0,2,4].map(i=>parseInt(h.substr(i,2),16)):null};
+ const rgb2hex=(r,g,b)=>'#'+[r,g,b].map(x=>clamp(Math.round(x),0,255).toString(16).padStart(2,'0')).join('');
+ const rgb2hsv=(r,g,b)=>{r/=255;g/=255;b/=255;const mx=Math.max(r,g,b),mn=Math.min(r,g,b),d=mx-mn;let h=0;if(d){h=mx===r?((g-b)/d)%6:mx===g?(b-r)/d+2:(r-g)/d+4;h*=60;if(h<0)h+=360}return [h,mx?d/mx:0,mx]};
+ const hsv2rgb=(h,s,v)=>{const f=n=>{const k=(n+h/60)%6;return (v-v*s*Math.max(0,Math.min(k,4-k,1)))*255};return [f(5),f(3),f(1)]};
+ const RECENT_KEY='dienstplanRecentColors';
+ const recent=()=>{try{return (JSON.parse(localStorage.getItem(RECENT_KEY))||[]).filter(c=>hex2rgb(c)).slice(0,8)}catch(e){return []}};
+ const remember=c=>{try{localStorage.setItem(RECENT_KEY,JSON.stringify([c,...recent().filter(x=>x!==c)].slice(0,8)))}catch(e){}};
+ let cur=null;
+ function openPicker(input){
+  if(cur)cur.cancel();
+  const orig=hex2rgb(input.value)?input.value.toLowerCase():'#14a1a9';let [h,s,v]=rgb2hsv(...hex2rgb(orig));
+  const layer=document.createElement('div');layer.className='cp-layer';
+  layer.innerHTML=`<div class="cp-pop" role="dialog" aria-modal="true" aria-label="Farbe wählen">
+   <div class="cp-head"><b>Farbe wählen</b><small>Ziehen, bis die Farbe passt</small></div>
+   <div class="cp-sv" tabindex="0" aria-label="Sättigung und Helligkeit"><div class="cp-knob"></div></div>
+   <div class="cp-hue" tabindex="0" aria-label="Farbton"><div class="cp-hue-knob"></div></div>
+   <div class="cp-row"><span class="cp-prev" title="Vorher / Nachher"><i class="cp-old" style="background:${orig}"></i><i class="cp-new"></i></span>
+    <label class="cp-field cp-hexf"><small>Hex</small><input class="cp-hex" maxlength="7" spellcheck="false" autocomplete="off"></label>
+    ${['R','G','B'].map((k,i)=>`<label class="cp-field"><small>${k}</small><input class="cp-rgb" data-i="${i}" inputmode="numeric" maxlength="3"></label>`).join('')}</div>
+   ${recent().length?`<div class="cp-recent"><small>Zuletzt verwendet</small><div>${recent().map(c=>`<button type="button" class="cp-sw" data-c="${c}" style="--c:${c}" aria-label="${c}"></button>`).join('')}</div></div>`:''}
+   <div class="cp-actions"><button type="button" class="btn" data-cp="cancel">Abbrechen</button><button type="button" class="btn primary" data-cp="ok">${icon('check')}Speichern</button></div></div>`;
+  document.body.appendChild(layer);
+  const pop=layer.querySelector('.cp-pop'),sv=pop.querySelector('.cp-sv'),knob=pop.querySelector('.cp-knob'),hue=pop.querySelector('.cp-hue'),hk=pop.querySelector('.cp-hue-knob'),nw=pop.querySelector('.cp-new'),hx=pop.querySelector('.cp-hex'),rgbI=[...pop.querySelectorAll('.cp-rgb')];
+  const hexNow=()=>rgb2hex(...hsv2rgb(h,s,v));
+  const paint=(skip)=>{const c=hexNow(),rgb=hex2rgb(c);sv.style.setProperty('--hue',`hsl(${h} 100% 50%)`);knob.style.left=s*100+'%';knob.style.top=(1-v)*100+'%';knob.style.background=c;hk.style.left=h/360*100+'%';hk.style.background=`hsl(${h} 100% 50%)`;nw.style.background=c;
+   if(skip!=='hex')hx.value=c.toUpperCase();if(skip!=='rgb')rgbI.forEach((x,i)=>x.value=rgb[i]);
+   if(input.value.toLowerCase()!==c){input.value=c;input.dispatchEvent(new Event('input',{bubbles:true}))}};
+  const drag=(el,fn)=>{el.addEventListener('pointerdown',e=>{e.preventDefault();el.focus({preventScroll:true});el.setPointerCapture(e.pointerId);fn(e);const mv=ev=>fn(ev),up=()=>{el.removeEventListener('pointermove',mv);el.removeEventListener('pointerup',up);el.removeEventListener('pointercancel',up)};el.addEventListener('pointermove',mv);el.addEventListener('pointerup',up);el.addEventListener('pointercancel',up)})};
+  drag(sv,e=>{const r=sv.getBoundingClientRect();s=clamp((e.clientX-r.left)/r.width,0,1);v=1-clamp((e.clientY-r.top)/r.height,0,1);paint()});
+  drag(hue,e=>{const r=hue.getBoundingClientRect();h=clamp((e.clientX-r.left)/r.width,0,1)*359.9;paint()});
+  sv.addEventListener('keydown',e=>{const d=e.shiftKey?.1:.02;if(e.key==='ArrowLeft')s=clamp(s-d,0,1);else if(e.key==='ArrowRight')s=clamp(s+d,0,1);else if(e.key==='ArrowUp')v=clamp(v+d,0,1);else if(e.key==='ArrowDown')v=clamp(v-d,0,1);else return;e.preventDefault();paint()});
+  hue.addEventListener('keydown',e=>{const d=e.shiftKey?15:3;if(e.key==='ArrowLeft'||e.key==='ArrowDown')h=(h-d+360)%360;else if(e.key==='ArrowRight'||e.key==='ArrowUp')h=(h+d)%360;else return;e.preventDefault();paint()});
+  hx.addEventListener('input',()=>{const rgb=hex2rgb(hx.value);if(rgb){[h,s,v]=rgb2hsv(...rgb);paint('hex')}});
+  rgbI.forEach(x=>x.addEventListener('input',()=>{const vals=rgbI.map(y=>+y.value);if(rgbI.every(y=>y.value!==''&&/^\d{1,3}$/.test(y.value))){[h,s,v]=rgb2hsv(...vals.map(n=>clamp(n,0,255)));paint('rgb')}}));
+  pop.querySelectorAll('.cp-sw').forEach(b=>b.onclick=()=>{[h,s,v]=rgb2hsv(...hex2rgb(b.dataset.c));paint()});
+  const place=()=>{if(window.innerWidth<=560){pop.classList.add('sheet');pop.style.left=pop.style.top='';return}
+   const r=input.getBoundingClientRect(),pw=pop.offsetWidth,ph=pop.offsetHeight,vw=window.innerWidth,vh=window.innerHeight;
+   let left=clamp(r.left+r.width/2-pw/2,8,vw-pw-8),top=r.bottom+8;if(top+ph>vh-8)top=r.top-ph-8;if(top<8)top=clamp((vh-ph)/2,8,vh-ph-8);pop.style.left=left+'px';pop.style.top=top+'px'};
+  const close=()=>{layer.remove();window.removeEventListener('keydown',key,true);window.removeEventListener('resize',place);cur=null;input.focus?.({preventScroll:true})};
+  const cancel=()=>{if(input.value.toLowerCase()!==orig){input.value=orig;input.dispatchEvent(new Event('input',{bubbles:true}))}close()};
+  const ok=()=>{const c=hexNow();input.value=c;remember(c);close();input.dispatchEvent(new Event('input',{bubbles:true}));input.dispatchEvent(new Event('change',{bubbles:true}))};
+  const key=e=>{if(e.key==='Escape'){e.preventDefault();e.stopImmediatePropagation();cancel()}else if(e.key==='Enter'&&pop.contains(document.activeElement)&&!document.activeElement.matches('button')){e.preventDefault();e.stopImmediatePropagation();ok()}};
+  window.addEventListener('keydown',key,true);window.addEventListener('resize',place);
+  layer.addEventListener('pointerdown',e=>{if(e.target===layer){e.preventDefault();cancel()}});
+  layer.addEventListener('click',e=>{e.stopPropagation()});
+  pop.querySelector('[data-cp="cancel"]').onclick=cancel;pop.querySelector('[data-cp="ok"]').onclick=ok;
+  cur={cancel};paint();place();
+  if(!window.matchMedia('(pointer: coarse)').matches)setTimeout(()=>sv.focus({preventScroll:true}),20);
+ }
+ window.openColorPicker=openPicker;
+ document.addEventListener('click',e=>{const inp=e.target.closest&&e.target.closest('input[type=color]');if(!inp||inp.disabled||inp.readOnly)return;e.preventDefault();e.stopPropagation();openPicker(inp)},true);
+ document.addEventListener('keydown',e=>{if((e.key==='Enter'||e.key===' ')&&e.target.matches&&e.target.matches('input[type=color]')&&!e.target.disabled){e.preventDefault();openPicker(e.target)}},true);
+})();
 function setPersonPicker(pp,val){if(typeof pp==='string')pp=document.querySelector(`[data-pp="${pp}"]`);if(!pp)return;
  if(pp.classList.contains('fs')){const sel=pp.querySelector('select');if(sel.value!==val){sel.value=val;sel.dispatchEvent(new Event('change',{bubbles:true}))}return}
  const o=[...pp.querySelectorAll('.pp-opt')].find(x=>x.dataset.ppVal===val);if(!o)return;const hidden=pp.querySelector('input[type=hidden]');
@@ -2533,7 +2592,7 @@ function openDeptEditor(id){
   <div class="te-head"><span class="ta-mark">${icon('build')}</span><div><h2 id="dp-title">${ex?escapeHtml(d.name||'Abteilung'):'Abteilung anlegen'}</h2><p class="small muted">${d.teamIds.length} ${d.teamIds.length===1?'Team':'Teams'} · Leitung: ${escapeHtml(nameOf(d.headId)||'—')}</p></div><button class="icon-btn" type="button" data-dp-close aria-label="Schließen">×</button></div>
   <div class="te-body"><div class="te-sec">
    <label class="wp-field"><span class="wp-label">Name der Abteilung</span><input id="dp-name" value="${escapeHtml(d.name)}" maxlength="60" placeholder="z. B. Technik"></label>
-   <div class="wp-field"><span class="wp-label">Farbe</span><div class="te-colors">${TEAM_COLORS.map(c=>`<button type="button" class="te-swatch ${c.toLowerCase()===d.color.toLowerCase()?'on':''}" style="--c:${c}" data-color="${c}" aria-label="Farbe ${c}">${icon('check')}</button>`).join('')}</div></div>
+   <div class="wp-field"><span class="wp-label">Farbe</span><div class="te-colors">${TEAM_COLORS.map(c=>`<button type="button" class="te-swatch ${c.toLowerCase()===d.color.toLowerCase()?'on':''}" style="--c:${c}" data-color="${c}" aria-label="Farbe ${c}">${icon('check')}</button>`).join('')}<label class="te-custom" title="Eigene Farbe"><input type="color" id="dp-color" value="${/^#[0-9a-f]{6}$/i.test(d.color)?d.color:'#0068a8'}"><span>Eigene</span></label></div></div>
    <div class="wp-field"><span class="wp-label">Abteilungsleitung</span>${personPicker({id:'dp-head',people,value:nameOf(d.headId),noneLabel:'Nicht besetzt',placeholder:'Nicht besetzt',empty:'Keine Abteilungsleiter gefunden'})}
     ${people.length?`<small class="muted">Zur Auswahl stehen alle Personen mit der Rolle „Abteilungsleiter“.</small>`:`<small class="dept-note">${icon('alert')}Es gibt noch keine Person mit der Rolle „Abteilungsleiter“. Die Rolle vergibst du unter „Kontakte“.</small>`}</div>
    <div class="wp-field"><span class="wp-label">Teams dieser Abteilung <span class="pill teal" id="dp-count">${d.teamIds.length} ausgewählt</span></span>
@@ -2546,7 +2605,7 @@ function openDeptEditor(id){
  const bind=()=>{
   layer.querySelectorAll('[data-dp-close]').forEach(b=>b.onclick=()=>close());
   const nm=layer.querySelector('#dp-name');nm.oninput=()=>{d.name=nm.value};
-  layer.querySelectorAll('[data-color]').forEach(b=>b.onclick=()=>{d.color=b.dataset.color;draw()});
+  layer.querySelectorAll('[data-color]').forEach(b=>b.onclick=()=>{d.color=b.dataset.color;draw()});const dpc=layer.querySelector('#dp-color');if(dpc)dpc.onchange=()=>{d.color=dpc.value;draw()};
   bindPersonPicker(layer);
   layer.querySelector('#dp-head').addEventListener('change',e=>{d.headId=staff.find(p=>p[0]===e.target.value)?.[8]||'';draw()});
   layer.querySelectorAll('[data-dt]').forEach(c=>c.onchange=()=>{d.teamIds=c.checked?[...new Set([...d.teamIds,c.dataset.dt])]:d.teamIds.filter(x=>x!==c.dataset.dt);layer.querySelector('#dp-count').textContent=`${d.teamIds.length} ausgewählt`});
