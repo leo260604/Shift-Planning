@@ -5,7 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#14A1A9">
   <title>DienstPlan Pro – Dienst- & Bereitschaftsmanagement</title>
-  <style>/* =====================================================================
+  <style>
+/* =====================================================================
    DienstPlan Pro – Stylesheet (überarbeitet 11/2026)
    Ein Satz Design-Variablen steuert Hell/Dunkel und die Akzentfarbe.
    ===================================================================== */
@@ -2200,6 +2201,16 @@ input[data-color-input]:disabled{cursor:default;opacity:.6}
   .report-table-wrap .report-table td.rt-date{display:none!important}
   .report-table-wrap .report-table tbody td{background:transparent!important}
 }
+/* Berechtigungen: Legende als klare Chips, Lesen-Feld auch im Dunkelmodus sichtbar */
+.perm-legend{gap:8px!important}
+.perm-legend .perm-leg{display:inline-flex;align-items:center;gap:8px;height:30px;padding:0 12px 0 4px;border:1px solid var(--line);border-radius:999px;background:var(--surface);color:var(--ink-2);font-size:12.5px;font-weight:600;line-height:1}
+.perm-legend .perm.static{display:inline-grid!important;place-items:center;gap:0!important;width:24px;height:24px;border-radius:999px;flex:none;padding:0}
+.perm-legend .perm.static .ic{width:13px;height:13px}
+.perm.r{box-shadow:inset 0 0 0 1px var(--line)}
+.perm.n.static{color:var(--muted);box-shadow:inset 0 0 0 1px var(--line);font-weight:700}
+body.dark-mode .perm.r{background:color-mix(in srgb,var(--ink) 12%,var(--surface));color:var(--ink)}
+body.dark-mode .perm.e{background:color-mix(in srgb,var(--accent-color) 30%,var(--surface));color:color-mix(in srgb,var(--accent-color) 45%,#fff)}
+
 </style>
 </head>
 <body>
@@ -2332,7 +2343,8 @@ input[data-color-input]:disabled{cursor:default;opacity:.6}
     </div>
   </div>
   <div class="toast" id="toast" role="status"></div>
-  <script>'use strict';
+  <script>
+'use strict';
 /* =====================================================================
    Sprache: Deutsch (Standard) / Englisch
    Die Oberfläche wird auf Deutsch erzeugt und bei „English“ automatisch
@@ -2737,8 +2749,10 @@ EN_RX.unshift([/^Alle Dienste \((\d+)\)$/,'All shifts ($1)'],[/^Alle meine Teams
 Object.assign(EN,{'Neues Team anlegen':'Create new team','z. B. Team Ost':'e.g. Team East','Der Name erscheint im Dienstplan, in der Bereitschaft und in den Filtern.':'The name appears in the duty roster, on-call view and filters.','Keine Abteilung':'No department','Danach legst du Mitglieder, Teamleitung und Deputy fest.':'Next you set members, team lead and deputy.','Neues Team':'New team','0 Mitglieder':'0 members'});
 EN_RX.push([/^(\d+) von (\d+) Teams$/,'$1 of $2 teams']);
 Object.assign(EN,{'Farbe wählen':'Choose colour','Ziehen, bis die Farbe passt':'Drag until the colour fits','Zuletzt verwendet':'Recently used','Vorher / Nachher':'Before / after','Sättigung und Helligkeit':'Saturation and brightness','Farbton':'Hue','Eigene Farbe':'Custom colour'});
+
 </script>
-  <script>'use strict';
+  <script>
+'use strict';
 const content=document.getElementById('content');
 
 /* ------------------------------------------------------------------
@@ -5617,7 +5631,7 @@ function rolesPage(){
    ${roles.map((r,i)=>`<div class="role-item ${r===roleSel?'active':''}" data-role-sel="${escapeHtml(r)}" role="button" tabindex="0"><span class="role-ic">${icon('shield')}</span><span class="role-txt"><b>${escapeHtml(r)}</b><small>${staff.filter(s=>(s[10]||'Mitarbeiter')===r).length} Personen</small></span>${r==='Admin'?`<span class="muted" title="Geschützt">${icon('lock')}</span>`:editable?`<span class="role-actions"><button type="button" class="icon-btn" data-edit-role="${i}" title="Umbenennen" aria-label="Umbenennen">${icon('edit')}</button><button type="button" class="icon-btn danger" data-delete-role="${i}" title="Löschen" aria-label="Löschen">${icon('trash')}</button></span>`:''}</div>`).join('')}
   </section>
   <section class="panel flush perm-card">
-   <div class="panel-toolbar"><div><b class="title">Berechtigungsmatrix</b><small class="muted block">Klick auf ein Feld wechselt: — → Lesen → Bearbeiten</small></div><div class="perm-legend push-right"><span class="perm e static">${icon('edit')}</span>Bearbeiten<span class="perm r static">${icon('eye')}</span>Lesen</div>${changes?`<span class="pill warn-pill">${icon('alert')}${changes} ungespeicherte ${changes===1?'Änderung':'Änderungen'}</span><button class="btn small" id="perm-reset">Verwerfen</button>`:''}${editable?`<button class="btn primary small" id="perm-save" ${changes?'':'disabled'}>Speichern</button>`:''}</div>
+   <div class="panel-toolbar"><div><b class="title">Berechtigungsmatrix</b><small class="muted block">Klick auf ein Feld wechselt: — → Lesen → Bearbeiten</small></div><div class="perm-legend push-right" aria-label="Legende"><span class="perm-leg"><span class="perm e static">${icon('edit')}</span>Bearbeiten</span><span class="perm-leg"><span class="perm r static">${icon('eye')}</span>Lesen</span><span class="perm-leg"><span class="perm n static">—</span>Kein Zugriff</span></div>${changes?`<span class="pill warn-pill">${icon('alert')}${changes} ungespeicherte ${changes===1?'Änderung':'Änderungen'}</span><button class="btn small" id="perm-reset">Verwerfen</button>`:''}${editable?`<button class="btn primary small" id="perm-save" ${changes?'':'disabled'}>Speichern</button>`:''}</div>
    <div class="table-wrap borderless perm-table"><table><thead><tr><th>Bereich</th>${roles.map(r=>`<th class="${r===roleSel?'sel':''}" title="${escapeHtml(r)}">${escapeHtml(PERM_SHORT[r]||r)}</th>`).join('')}</tr></thead><tbody>${PERM_AREAS.map(a=>`<tr><td><b>${escapeHtml(a)}</b></td>${roles.map(r=>`<td class="${r===roleSel?'sel':''}">${cell(r,a)}</td>`).join('')}</tr>`).join('')}</tbody></table></div>
    <div class="perm-note">${icon('alert')}<span>Datenumfang: <b>Teamleiter &amp; Deputy</b> bearbeiten nur <u>eigene Teams</u> · <b>Mitarbeiter</b> sehen nur eigene Einträge auf dem Dashboard · <b>Admin</b> ist geschützt und hat immer vollen Zugriff.</span></div>
   </section>
@@ -5797,6 +5811,7 @@ function limitDateInputs(){document.querySelectorAll('input[type=date]').forEach
 {let ld=0;new MutationObserver(()=>{clearTimeout(ld);ld=setTimeout(limitDateInputs,0)}).observe(document.body,{childList:true,subtree:true});limitDateInputs();}
 /* Tabellen nach jedem Neuzeichnen für das Handy beschriften */
 {let lt=0;new MutationObserver(()=>{clearTimeout(lt);lt=setTimeout(labelTables,0)}).observe(content,{childList:true,subtree:true});labelTables();}
+
 </script>
 </body>
 </html>
