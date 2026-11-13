@@ -212,7 +212,7 @@ let expandedMonthView=localStorage.getItem('dienstplanExpandedMonthView')==='1';
 let dutyDays=[5,6,7].includes(Number(localStorage.getItem('dienstplanDutyDays')))?Number(localStorage.getItem('dienstplanDutyDays')):6;
 let roles=(()=>{const saved=load('dienstplanRoles',null);if(Array.isArray(saved)&&saved.every(x=>typeof x==='string'))return saved;return ['Mitarbeiter','Teamleiter','Abteilungsleiter','Deputy','Admin','Lohnverrechnung','Bereitschaftsadmin']})();
 const safePhoto=v=>typeof v==='string'&&/^data:image\/(png|jpe?g|gif|webp);base64,[A-Za-z0-9+/=\s]+$/.test(v)?v:'';
-let staff=(()=>{try{const v=JSON.parse(localStorage.getItem('dienstplanStaff')||'null');if(Array.isArray(v))return v.filter(s=>Array.isArray(s)&&typeof s[0]==='string').map(s=>[s[0],s[1]||initials(s[0]),s[2]||'Noch nicht eingeteilt',s[3]||'—',s[4]||'blue',s[5]||'Team Nord',s[6]||'',s[7]||'',s[8]||'',safePhoto(s[9]),s[10]||'Mitarbeiter']);}catch(e){console.warn('Alte Mitarbeiterdaten werden ignoriert.',e)}return [
+let staff=(()=>{try{const v=JSON.parse(localStorage.getItem('dienstplanStaff')||'null');if(Array.isArray(v))return v.filter(s=>Array.isArray(s)&&typeof s[0]==='string').map(s=>[s[0],s[1]||initials(s[0]),s[2]||'Noch nicht eingeteilt',s[3]||'—',s[4]||'blue',s[5]||'Team Nord',s[6]||'',s[7]||'',s[8]||'',safePhoto(s[9]),s[10]||'Mitarbeiter',s[11]||'']);}catch(e){console.warn('Alte Mitarbeiterdaten werden ignoriert.',e)}return [
  ['Max Mustermann','MM','Frühdienst','06:00–14:00','blue','Team Nord','max@example.at','0664 100 1001'],
  ['Anna Beispiel','AB','Spätdienst','14:00–22:00','green','Team Nord','anna@example.at','0664 100 1002'],
  ['Thomas Berger','TB','Tagdienst','08:00–16:00','blue','Team Süd','thomas@example.at','0664 100 1003'],
@@ -306,6 +306,8 @@ function permsFor(role){const p=permissions[role]||DEFAULT_PERMS[role]||BASE_PER
 function perm(area,role=currentRole){return permsFor(role)[area]||'N'}
 const canView=area=>perm(area)!=='N';
 const canEdit=area=>perm(area)==='E';
+/* Sichtbare Rolle: Admin sehen nur Teamleiter, Abteilungsleiter & Admin; Deputy sieht nur der Admin – sonst „Mitarbeiter“ */
+function visibleRole(role){const r=role||'Mitarbeiter';if(r==='Admin'&&!['Teamleiter','Abteilungsleiter','Admin'].includes(currentRole))return 'Mitarbeiter';if(r==='Deputy'&&currentRole!=='Admin')return 'Mitarbeiter';return r}
 function persistPermissions(){save('dienstplanPermissions',permissions)}
 // Kompatibilität: Liste der sichtbaren Seiten je Rolle (früher fest hinterlegt)
 const roleNavigation=new Proxy({},{get:(_,role)=>typeof role==='string'?PERM_AREAS.filter(a=>perm(a,role)!=='N'):undefined});
@@ -459,6 +461,7 @@ function renderAccountPanel(){
    <p class="acc-sub">Deine Kontaktdaten – sichtbar für dein Team unter „Kontakte“.</p>
    <label class="field">E-Mail<input type="email" id="account-email" value="${escapeHtml(me[6]||'')}" autocomplete="email"></label>
    <label class="field">Bereitschaftsnummer<input type="text" inputmode="tel" id="account-phone" value="${escapeHtml(me[7]||'')}" autocomplete="tel"></label>
+   <label class="field">Teams-Telefonnummer<input type="text" inputmode="tel" id="account-teams-phone" value="${escapeHtml(me[11]||'')}" autocomplete="off" placeholder="+43 …"></label>
    <button class="btn primary acc-save" id="account-save">Kontaktdaten speichern</button>`:`
    <p class="acc-sub">Welche Meldungen du über die Glocke oben rechts erhältst.</p>
    <div class="setting-row"><div><b>Neue Einteilungen für mich</b><small>Dienste und Bereitschaften, die für dich angelegt werden</small></div>${tog('notify-own',np.own)}</div>
@@ -472,7 +475,7 @@ function renderAccountPanel(){
  document.getElementById('acc-settings').onclick=()=>{closeAccount();go('Einstellungen')};
  const inp=document.getElementById('acc-photo-input');inp.onchange=async()=>{const f=inp.files[0];if(!f)return;if(!f.type.startsWith('image/')){toast('Bitte eine Bilddatei wählen.');return}try{me[9]=await resizeImage(f);persistStaff();audit('Geändert','Kontakte',me[0],{title:'Profilbild geändert',object:me[0]});updateSignedInUser();render();renderAccountPanel();toast('Profilbild gespeichert.')}catch(e){toast('Das Bild konnte nicht gelesen werden.')}};
  const rm=document.getElementById('acc-photo-remove');if(rm)rm.onclick=()=>{me[9]='';persistStaff();audit('Gelöscht','Kontakte',me[0],{title:'Profilbild entfernt',object:me[0]});updateSignedInUser();render();renderAccountPanel();toast('Profilbild entfernt.')};
- const as=document.getElementById('account-save');if(as)as.onclick=()=>{const before=`${me[6]||'—'} · ${me[7]||'—'}`;me[6]=document.getElementById('account-email').value.trim();me[7]=document.getElementById('account-phone').value.trim();persistStaff();audit('Geändert','Kontakte',me[0],{title:'Kontaktdaten geändert',object:me[0],before,after:`${me[6]||'—'} · ${me[7]||'—'}`});if(currentPage==='Kontakte')render();toast('Kontaktdaten gespeichert.')};
+ const as=document.getElementById('account-save');if(as)as.onclick=()=>{const before=`${me[6]||'—'} · ${me[7]||'—'} · Teams ${me[11]||'—'}`;me[6]=document.getElementById('account-email').value.trim();me[7]=document.getElementById('account-phone').value.trim();me[11]=document.getElementById('account-teams-phone').value.trim();persistStaff();audit('Geändert','Kontakte',me[0],{title:'Kontaktdaten geändert',object:me[0],before,after:`${me[6]||'—'} · ${me[7]||'—'} · Teams ${me[11]||'—'}`});if(currentPage==='Kontakte')render();toast('Kontaktdaten gespeichert.')};
  ['own','team','absence'].forEach(k=>{const el=document.getElementById('notify-'+k);if(el)el.onclick=()=>{const on=!el.classList.contains('on');el.classList.toggle('on',on);el.setAttribute('aria-checked',on);np[k]=on;notifyPrefs[currentUserId]=np;save('dienstplanNotifyPrefs',notifyPrefs);toast('Einstellungen gespeichert.')}});
 }
 function openAccount(tab){if(tab)accountTab=tab;renderAccountPanel();accountPanel.hidden=false;accountBtn.setAttribute('aria-expanded','true');notificationPanel.hidden=true;document.body.classList.add('account-open')}
@@ -612,7 +615,7 @@ function openGlobalSearch(){
  const build=()=>{const q=input.value.trim().toLowerCase();const out=[];
   allowedPages().forEach(p=>{if(!q||p.toLowerCase().includes(q))out.push({group:'Seiten',label:p,sub:'Seite öffnen',ic:'grid',run:()=>go(p)})});
   if(q){
-   staff.filter(p=>p[0].toLowerCase().includes(q)||(p[6]||'').toLowerCase().includes(q)).slice(0,8).forEach(p=>{const t=teams.find(t=>t.memberIds.includes(p[8]));out.push({group:'Mitarbeiter',label:p[0],sub:`${p[10]||'Mitarbeiter'} · ${t?.name||'Ohne Team'}${p[7]?' · '+p[7]:''}`,ic:'users',run:()=>{if(allowedPages().includes('Dienstplan')){calendarTeams=t?[t.name]:[];calendarMemberFilter=p[0];go('Dienstplan')}else go('Kontakte')}})});
+   staff.filter(p=>p[0].toLowerCase().includes(q)||(p[6]||'').toLowerCase().includes(q)).slice(0,8).forEach(p=>{const t=teams.find(t=>t.memberIds.includes(p[8]));out.push({group:'Mitarbeiter',label:p[0],sub:`${visibleRole(p[10])} · ${t?.name||'Ohne Team'}${p[7]?' · '+p[7]:''}`,ic:'users',run:()=>{if(allowedPages().includes('Dienstplan')){calendarTeams=t?[t.name]:[];calendarMemberFilter=p[0];go('Dienstplan')}else go('Kontakte')}})});
    teams.filter(t=>t.name.toLowerCase().includes(q)).forEach(t=>out.push({group:'Teams',label:t.name,sub:`${t.memberIds.length} Mitarbeiter · im Dienstplan anzeigen`,ic:'build',run:()=>{calendarTeams=[t.name];calendarMemberFilter='Alle Mitarbeiter';go(allowedPages().includes('Dienstplan')?'Dienstplan':'Kontakte')}}));
    shiftTypes.filter(x=>x.name.toLowerCase().includes(q)).slice(0,6).forEach(x=>out.push({group:'Dienstzeiten',label:`${x.name} (${x.start}–${x.end})`,sub:x.team,ic:'clock',run:()=>go(allowedPages().includes('Dienstzeiten')?'Dienstzeiten':'Dienstplan')}));
   }
@@ -1097,7 +1100,7 @@ function bindTeamDropdown(ctx=calTeamCtx){
   dd.querySelectorAll('.team-dd-opt[data-q]').forEach(o=>{const hit=!v||o.dataset.q.includes(v);o.hidden=!hit;if(hit)n++});
   dd.querySelector('.team-dd-opt.all').hidden=!!v;dd.querySelector('.team-dd-empty').hidden=n>0};
  const place=()=>{panel.style.left='';panel.style.right='';const r=panel.getBoundingClientRect();if(r.right>window.innerWidth-8){panel.style.left='auto';panel.style.right='0'}if(panel.getBoundingClientRect().left<8){panel.style.right='auto';panel.style.left=(8-dd.getBoundingClientRect().left)+'px'}};
- const open=(focus=true)=>{teamDd.open=true;dd.classList.add('open');panel.hidden=false;btn.setAttribute('aria-expanded','true');filter();place();if(focus)q.focus({preventScroll:true})};
+ const open=(focus=true)=>{teamDd.open=true;dd.classList.add('open');panel.hidden=false;btn.setAttribute('aria-expanded','true');filter();place();if(focus&&!isTouchDevice())q.focus({preventScroll:true})};
  const close=()=>{teamDd.open=false;teamDd.q='';dd.classList.remove('open');panel.hidden=true;btn.setAttribute('aria-expanded','false')};
  btn.onclick=e=>{e.stopPropagation();if(teamDd.open)close();else{q.value='';open()}};
  q.oninput=filter;
@@ -1116,10 +1119,12 @@ function bindTeamDropdown(ctx=calTeamCtx){
   document.addEventListener('pointerdown',e=>{if(!teamDd.open)return;const d=document.getElementById('team-dd');if(d&&d.contains(e.target))return;teamDd.open=false;teamDd.q='';if(d){d.classList.remove('open');d.querySelector('#team-dd-panel').hidden=true;d.querySelector('#team-dd-btn').setAttribute('aria-expanded','false')}});
   document.addEventListener('keydown',e=>{if(e.key==='Escape'&&teamDd.open){const d=document.getElementById('team-dd');teamDd.open=false;teamDd.q='';if(d){d.classList.remove('open');d.querySelector('#team-dd-panel').hidden=true}}})}
 }
+// Touch-Geräte (Handy/Tablet): Suchfeld nicht automatisch fokussieren, sonst öffnet sich die Bildschirmtastatur
+const isTouchDevice=()=>window.matchMedia('(pointer: coarse)').matches||('ontouchstart' in window&&window.matchMedia('(max-width: 1024px)').matches);
 function bindTeamDropdownOpen(nd,listScroll,focusName){
  const q=nd.querySelector('#team-dd-q');q.value=teamDd.q;q.dispatchEvent(new Event('input'));
  const l=nd.querySelector('.team-dd-list');l.scrollTop=listScroll;
- const o=[...nd.querySelectorAll('[data-team-opt]')].find(x=>x.dataset.teamOpt===focusName&&x.classList.contains('team-dd-opt'));(o||q).focus({preventScroll:true});
+ const o=[...nd.querySelectorAll('[data-team-opt]')].find(x=>x.dataset.teamOpt===focusName&&x.classList.contains('team-dd-opt'));const wasTyping=document.activeElement===q;if(isTouchDevice()&&!wasTyping){o&&o.focus({preventScroll:true})}else (o||q).focus({preventScroll:true});
 }
 function bindCalendarExtras(){
  bindTeamDropdown();
@@ -1386,9 +1391,8 @@ function dashLayoutGrid(root,pos,{animate=false,skip=null}={}){
  els.forEach(el=>{el.style.gridColumn=`span ${dashW(el.dataset.size,cols)}`;el.style.gridRow='auto'});
  const items=els.map(el=>{const p=pos[el.dataset.widget]||{x:0,k:1e6};return {el,id:el.dataset.widget,size:el.dataset.size,w:dashW(el.dataset.size,cols),x:p.x,k:p.k,h:Math.max(1,Math.ceil((el.firstElementChild.offsetHeight+gap)/DASH_ROW))}});
  dashPack(items,cols);
- // Kacheln in derselben Zeile gleich hoch machen, dann noch einmal fallen lassen
- const rows={};items.filter(i=>i.size==='tile').forEach(i=>{(rows[i.y]=rows[i.y]||[]).push(i)});
- Object.values(rows).forEach(r=>{const h=Math.max(...r.map(i=>i.h));r.forEach(i=>i.h=h)});
+ // Alle kleinen Kacheln gleich groß machen (gleiche Höhe wie die höchste, z. B. „Mein Porsche Cockpit“), dann noch einmal fallen lassen
+ const tiles=items.filter(i=>i.size==='tile');if(tiles.length){const h=Math.max(...tiles.map(i=>i.h));tiles.forEach(i=>i.h=h)}
  items.forEach(i=>i.k=i.y+(i.x/100));dashPack(items,cols);
  items.forEach(i=>{i.el.style.gridColumn=`${i.x+1} / span ${i.w}`;i.el.style.gridRow=`${i.y+1} / span ${i.h}`});
  root.classList.add('dash-sized');root.style.minHeight='';if(Math.abs(window.scrollY-keepY)>1)window.scrollTo(window.scrollX,keepY);
@@ -1751,19 +1755,89 @@ function bindShiftTimes(){
 ------------------------------------------------------------------ */
 let contactRoleFilter='Alle';
 function contactsPage(){
- const counts=roles.map(r=>[r,staff.filter(s=>(s[10]||'Mitarbeiter')===r).length]).filter(x=>x[1]);
- return `${heading('Mitarbeiter &amp; Kontakte',`${staff.length} Personen in ${teams.length} Teams`,`<button class="btn" id="export-contacts">CSV exportieren</button>${canEdit('Kontakte')?'<button class="btn primary" id="new-employee">＋ Mitarbeiter hinzufügen</button>':''}`)}
- <section class="panel"><div class="table-toolbar"><input class="input" id="employee-search" type="search" placeholder="Name, Team, Telefon oder E-Mail …"><div class="chip-row">${[['Alle',staff.length],...counts].map(([r,c])=>`<button type="button" class="chip ${contactRoleFilter===r?'active':''}" data-role-filter="${escapeHtml(r)}">${escapeHtml(r)} · ${c}</button>`).join('')}</div></div>
- <div class="table-wrap employee-directory-table-wrap"><table><thead><tr><th>Mitarbeiter</th><th>Rolle</th><th>Teams</th><th>Telefon</th><th>E-Mail</th><th>Aktion</th></tr></thead><tbody id="employee-rows"></tbody></table></div></section>
- <div class="modal-backdrop" id="employee-modal" hidden><div class="modal"><div class="panel-head"><h2 id="employee-modal-title">Mitarbeiter hinzufügen</h2><button class="icon-btn" id="close-employee" type="button" aria-label="Schließen">×</button></div><form id="employee-form"><input type="hidden" id="employee-index"><label>Vor- und Nachname<input id="employee-name" required placeholder="Max Mustermann"></label><label>Benutzerrolle<select id="employee-role" required>${roles.map(r=>`<option value="${escapeHtml(r)}">${escapeHtml(r)}</option>`).join('')}</select></label><div class="photo-row"><div class="employee-photo-preview" id="employee-photo-preview"><span>Foto</span></div><label class="btn" for="employee-photo">Profilbild wählen</label><input id="employee-photo" type="file" accept="image/*" hidden></div><fieldset class="team-checks"><legend>Teams zuordnen</legend><div id="employee-team" class="check-grid"></div></fieldset><label>E-Mail<input type="email" id="employee-email" placeholder="name@example.at"></label><label>Telefon<input id="employee-phone" placeholder="+43 660 …"></label><div class="btn-row modal-actions"><button type="button" class="btn" id="cancel-employee">Abbrechen</button><button type="submit" class="btn primary">Speichern</button></div></form></div></div>`;
+ if(contactRoleFilter!=='Alle'&&!staff.some(s=>visibleRole(s[10])===contactRoleFilter))contactRoleFilter='Alle';
+ const counts=roles.map(r=>[r,staff.filter(s=>visibleRole(s[10])===r).length]).filter(x=>x[1]);
+ return `${heading('Kontakte',`${staff.length} Personen in ${teams.length} Teams`,`<button class="btn" id="export-contacts">CSV exportieren</button>${canEdit('Kontakte')?'<button class="btn primary" id="new-employee">＋ Mitarbeiter hinzufügen</button>':''}`)}
+ <section class="panel contact-search-panel"><div class="table-toolbar"><input class="input" id="employee-search" type="search" placeholder="Name, Team, Telefon oder E-Mail …"><div class="chip-row">${[['Alle',staff.length],...counts].map(([r,c])=>`<button type="button" class="chip ${contactRoleFilter===r?'active':''}" data-role-filter="${escapeHtml(r)}">${escapeHtml(r)} · ${c}</button>`).join('')}</div></div></section>
+ <section class="panel contact-fav-panel"><div class="panel-head"><h2>${icon('star','fav-head-ic')} Meine Favoriten</h2></div><div id="contact-favorites"></div></section>
+ <section class="panel contact-results-panel" id="contact-results-panel" hidden><div class="panel-head"><h2>${icon('search','res-head-ic')} Suchergebnisse</h2><span class="contact-count" id="contact-count"></span></div><div id="employee-rows" class="contact-results"></div></section>
+ <div class="modal-backdrop" id="contact-detail-modal" hidden><div class="modal contact-detail-modal" role="dialog" aria-modal="true" aria-label="Kontakt"><div class="panel-head"><h2>Kontakt</h2><button class="icon-btn" id="close-contact-detail" type="button" aria-label="Schließen">×</button></div><div class="contact-detail-body"></div></div></div>
+ <div class="modal-backdrop" id="employee-modal" hidden><div class="modal"><div class="panel-head"><h2 id="employee-modal-title">Mitarbeiter hinzufügen</h2><button class="icon-btn" id="close-employee" type="button" aria-label="Schließen">×</button></div><form id="employee-form"><input type="hidden" id="employee-index"><label>Vor- und Nachname<input id="employee-name" required placeholder="Max Mustermann"></label><label>Benutzerrolle<select id="employee-role" required>${roles.map(r=>`<option value="${escapeHtml(r)}">${escapeHtml(r)}</option>`).join('')}</select></label><div class="photo-row"><div class="employee-photo-preview" id="employee-photo-preview"><span>Foto</span></div><label class="btn" for="employee-photo">Profilbild wählen</label><input id="employee-photo" type="file" accept="image/*" hidden></div><fieldset class="team-checks"><legend>Teams zuordnen</legend><div id="employee-team" class="check-grid"></div></fieldset><label>E-Mail<input type="email" id="employee-email" placeholder="name@example.at"></label><label>Bereitschaftsnummer<input id="employee-phone" placeholder="+43 660 …"></label><label>Teams-Telefonnummer<input id="employee-teams-phone" placeholder="+43 …"></label><div class="btn-row modal-actions"><button type="button" class="btn" id="cancel-employee">Abbrechen</button><button type="submit" class="btn primary">Speichern</button></div></form></div></div>`;
 }
+const loadFavMap=()=>{const m=load('dienstplanFavorites',{});return m&&typeof m==='object'&&!Array.isArray(m)?m:{}};
+function contactFavorites(){const ids=loadFavMap()[currentUserId];return Array.isArray(ids)?ids.filter(id=>staff.some(s=>s[8]===id)):[]}
+function toggleContactFavorite(id){const m=loadFavMap(),list=contactFavorites(),on=list.includes(id);m[currentUserId]=on?list.filter(x=>x!==id):[...list,id];save('dienstplanFavorites',m);return !on}
+function contactTile(s,i,favs){
+ const teamsText=teams.filter(t=>t.memberIds.includes(s[8])).map(t=>t.name).join(', ')||s[5]||'';
+ const color=teamColor(teams.find(t=>t.memberIds.includes(s[8]))),fav=favs.includes(s[8]);
+ const tnum=s[11]||'',teamsCall=n=>`https://teams.microsoft.com/l/call/0/0?users=4:${encodeURIComponent(n.replace(/[^\d+]/g,''))}`;
+ const tel=tnum?`<a class="contact-link" href="${teamsCall(tnum)}" target="_blank" rel="noopener" title="Anruf in Microsoft Teams starten">${icon('phone')}<span>${escapeHtml(tnum)} <em class="contact-hint">(Teams Anruf)</em></span></a>`:`<span class="contact-none">${icon('phone')}<span>— <em class="contact-hint">(Teams Anruf)</em></span></span>`;
+ const mail=s[6]?`<a class="contact-link" href="mailto:${escapeHtml(s[6])}">${icon('mail')}<span>${escapeHtml(s[6])}</span></a>`:`<span class="contact-none">${icon('mail')}<span>—</span></span>`;
+ const chatBtn=s[6]?`<a class="btn small teams-btn" href="https://teams.microsoft.com/l/chat/0/0?users=${encodeURIComponent(s[6])}" target="_blank" rel="noopener" title="Chat in Microsoft Teams starten">${icon('chat')}<span>Chat</span></a>`:`<span class="btn small teams-btn is-off" aria-disabled="true" title="Keine E-Mail hinterlegt">${icon('chat')}<span>Chat</span></span>`;
+ const standbyBtn=s[7]?`<a class="btn small teams-btn" href="${teamsCall(s[7])}" target="_blank" rel="noopener" title="Bereitschaftsnummer ${escapeHtml(s[7])} in Microsoft Teams anrufen">${icon('moon')}<span>Bereitschaft</span></a>`:`<span class="btn small teams-btn is-off" aria-disabled="true" title="Keine Bereitschaftsnummer hinterlegt">${icon('moon')}<span>Bereitschaft</span></span>`;
+ const teamsBtns=`<div class="contact-teams">${chatBtn}${standbyBtn}</div>`;
+ return `<article class="contact-tile${fav?' is-fav':''}" tabindex="0" data-contact="${i}"><button type="button" class="contact-fav${fav?' on':''}" data-fav-employee="${escapeHtml(s[8])}" aria-pressed="${fav}" title="${fav?'Aus Favoriten entfernen':'Zu Favoriten hinzufügen'}" aria-label="${fav?'Aus Favoriten entfernen':'Zu Favoriten hinzufügen'}">${icon('star')}</button>
+  <div class="contact-tile-head">${avatarHtml(s[0],color,48)}<div class="contact-tile-name"><b>${escapeHtml(s[0])}</b><span class="role-pill">${escapeHtml(visibleRole(s[10]))}</span></div></div>
+  <div class="contact-tile-teams">${icon('users')}<span>${escapeHtml(teamsText||'—')}</span></div>
+  <div class="contact-tile-links">${tel}${mail}${teamsBtns}</div>
+  ${canEdit('Kontakte')?`<div class="contact-tile-actions"><button class="btn small" data-edit-employee="${i}">Bearbeiten</button><button class="btn small danger" data-remove-employee="${i}">Löschen</button></div>`:''}</article>`;
+}
+const contactCompact=()=>window.matchMedia('(max-width: 1360px)').matches;
+let contactDetailIndex=null;
+function closeContactDetail(){const m=document.getElementById('contact-detail-modal');if(m)m.hidden=true;contactDetailIndex=null}
+function openContactDetail(i){
+ const m=document.getElementById('contact-detail-modal'),s=staff[i];if(!m||!s)return;
+ contactDetailIndex=i;
+ m.querySelector('.contact-detail-body').innerHTML=contactTile(s,i,contactFavorites()).replace('class="contact-tile','class="contact-tile contact-tile-full').replace(' tabindex="0"','');
+ bindContactTiles(m);m.hidden=false;m.querySelector('#close-contact-detail').focus({preventScroll:true});
+}
+function bindContactTiles(root){
+ root.querySelectorAll('.contact-grid .contact-tile').forEach(t=>{
+  t.onclick=e=>{if(e.target.closest('button,a')||!contactCompact())return;openContactDetail(+t.dataset.contact)};
+  t.onkeydown=e=>{if((e.key==='Enter'||e.key===' ')&&e.target===t){e.preventDefault();t.click()}};
+ });
+ root.querySelectorAll('[data-fav-employee]').forEach(b=>b.onclick=()=>{const p=staff.find(s=>s[8]===b.dataset.favEmployee);const on=toggleContactFavorite(b.dataset.favEmployee);toast(on?`${p?p[0]:'Kontakt'} zu Favoriten hinzugefügt.`:`${p?p[0]:'Kontakt'} aus Favoriten entfernt.`);renderEmployees()});
+ root.querySelectorAll('[data-edit-employee]').forEach(b=>b.onclick=()=>{closeContactDetail();openEmployee(+b.dataset.editEmployee)});
+ root.querySelectorAll('[data-remove-employee]').forEach(b=>b.onclick=async()=>{closeContactDetail();const i=+b.dataset.removeEmployee;const removed=staff[i];if(!removed)return;if(removed[8]===currentUserId){toast('Du kannst dich nicht selbst löschen.');return}if(await ask(`Mitarbeiter „${removed[0]}“ wirklich löschen?`)){staff.splice(i,1);teams.forEach(t=>{t.memberIds=t.memberIds.filter(id=>id!==removed[8]);if(t.leaderId===removed[8])t.leaderId='';if(t.deputyId===removed[8])t.deputyId='';});persistStaff();persistTeams();audit('Gelöscht','Kontakte',removed[0]);renderEmployees();toast('Mitarbeiter gelöscht.')}});
+}
+let contactFavPage=0,contactFavLayoutKey='';
+function contactFavLayout(){const w=q=>window.matchMedia(q).matches;if(w('(max-width: 520px)'))return{cols:1,rows:2};if(w('(max-width: 860px)'))return{cols:2,rows:2};if(w('(max-width: 1360px)'))return{cols:3,rows:2};return{cols:4,rows:1}}
+function renderContactFavorites(favs=contactFavorites()){
+ const fb=document.getElementById('contact-favorites');if(!fb)return;
+ const list=favs.map(id=>staff.findIndex(s=>s[8]===id)).filter(i=>i>=0);
+ if(!list.length){fb.innerHTML=`<div class="contact-empty">${icon('star')}<span>Noch keine Favoriten. Tippe bei einem Kontakt auf den Stern, um ihn hier anzuzeigen.</span></div>`;return}
+ const {cols,rows}=contactFavLayout(),per=cols*rows,pages=Math.max(1,Math.ceil(list.length/per));
+ contactFavLayoutKey=cols+'x'+rows;contactFavPage=Math.min(Math.max(0,contactFavPage),pages-1);
+ const slice=list.slice(contactFavPage*per,contactFavPage*per+per);
+ const nav=pages>1;
+ fb.innerHTML=`<div class="fav-carousel${nav?' has-nav':''}">
+  ${nav?`<button type="button" class="fav-arrow prev" id="fav-prev" aria-label="Vorherige Favoriten" ${contactFavPage===0?'disabled':''}>${icon('chev')}</button>`:''}
+  <div class="contact-grid contact-fav-grid" style="grid-template-columns:repeat(${cols},minmax(0,1fr));grid-template-rows:repeat(${rows},auto)">${slice.map(i=>contactTile(staff[i],i,favs)).join('')}</div>
+  ${nav?`<button type="button" class="fav-arrow next" id="fav-next" aria-label="Weitere Favoriten" ${contactFavPage>=pages-1?'disabled':''}>${icon('chev')}</button>`:''}
+ </div>${nav?`<div class="fav-dots" aria-label="Seite ${contactFavPage+1} von ${pages}">${Array.from({length:pages},(_,k)=>`<button type="button" class="fav-dot${k===contactFavPage?' on':''}" data-fav-page="${k}" aria-label="Seite ${k+1}"></button>`).join('')}</div>`:''}`;
+ const goPage=k=>{contactFavPage=k;renderContactFavorites()};
+ const pv=document.getElementById('fav-prev'),nx=document.getElementById('fav-next');
+ if(pv)pv.onclick=()=>goPage(contactFavPage-1);if(nx)nx.onclick=()=>goPage(contactFavPage+1);
+ fb.querySelectorAll('[data-fav-page]').forEach(b=>b.onclick=()=>goPage(+b.dataset.favPage));
+ if(nav){const g=fb.querySelector('.fav-carousel');let x0=null;g.ontouchstart=e=>{x0=e.touches[0].clientX};g.ontouchend=e=>{if(x0===null)return;const dx=e.changedTouches[0].clientX-x0;x0=null;if(Math.abs(dx)>50){if(dx<0&&contactFavPage<pages-1)goPage(contactFavPage+1);else if(dx>0&&contactFavPage>0)goPage(contactFavPage-1)}}}
+ bindContactTiles(fb);
+}
+window.addEventListener('resize',()=>{if(currentPage!=='Kontakte')return;const l=contactFavLayout();if(l.cols+'x'+l.rows!==contactFavLayoutKey)renderContactFavorites()});
 function renderEmployees(){
  const body=document.getElementById('employee-rows');if(!body)return;
- const q=(document.getElementById('employee-search').value||'').toLowerCase();
- const rows=staff.map((s,i)=>({s,i,teamsText:teams.filter(t=>t.memberIds.includes(s[8])).map(t=>t.name).join(', ')||s[5]||''})).filter(x=>(contactRoleFilter==='Alle'||(x.s[10]||'Mitarbeiter')===contactRoleFilter)&&[x.s[0],x.teamsText,x.s[6],x.s[7]].join(' ').toLowerCase().includes(q));
- body.innerHTML=rows.map(({s,i,teamsText})=>{const color=teamColor(teams.find(t=>t.memberIds.includes(s[8])));return `<tr><td><div class="person">${avatarHtml(s[0],color,36)}<b>${escapeHtml(s[0])}</b></div></td><td><span class="role-pill">${escapeHtml(s[10]||'Mitarbeiter')}</span></td><td>${escapeHtml(teamsText||'—')}</td><td>${s[7]?`<a class="contact-link" href="tel:${escapeHtml(s[7].replace(/\s+/g,''))}">${escapeHtml(s[7])}</a>`:'—'}</td><td>${s[6]?`<a class="contact-link" href="mailto:${escapeHtml(s[6])}">${escapeHtml(s[6])}</a>`:'—'}</td><td class="nowrap">${canEdit('Kontakte')?`<button class="btn small" data-edit-employee="${i}">Bearbeiten</button> <button class="btn small danger" data-remove-employee="${i}">Löschen</button>`:'—'}</td></tr>`}).join('')||'<tr><td colspan="6" class="empty-note">Keine Mitarbeiter gefunden.</td></tr>';
- body.querySelectorAll('[data-edit-employee]').forEach(b=>b.onclick=()=>openEmployee(+b.dataset.editEmployee));
- body.querySelectorAll('[data-remove-employee]').forEach(b=>b.onclick=async()=>{const i=+b.dataset.removeEmployee;const removed=staff[i];if(!removed)return;if(removed[8]===currentUserId){toast('Du kannst dich nicht selbst löschen.');return}if(await ask(`Mitarbeiter „${removed[0]}“ wirklich löschen?`)){staff.splice(i,1);teams.forEach(t=>{t.memberIds=t.memberIds.filter(id=>id!==removed[8]);if(t.leaderId===removed[8])t.leaderId='';if(t.deputyId===removed[8])t.deputyId='';});persistStaff();persistTeams();audit('Gelöscht','Kontakte',removed[0]);renderEmployees();toast('Mitarbeiter gelöscht.')}});
+ const q=(document.getElementById('employee-search').value||'').trim().toLowerCase();
+ const favs=contactFavorites();
+ const panel=document.getElementById('contact-results-panel'),cnt=document.getElementById('contact-count');
+ const favPanel=document.querySelector('.contact-fav-panel');if(favPanel)favPanel.hidden=!!(q||contactRoleFilter!=='Alle');
+ if(!q&&contactRoleFilter==='Alle'){body.innerHTML='';if(panel)panel.hidden=true}
+ else{
+  const rows=staff.map((s,i)=>({s,i,teamsText:teams.filter(t=>t.memberIds.includes(s[8])).map(t=>t.name).join(', ')||s[5]||''})).filter(x=>(contactRoleFilter==='Alle'||visibleRole(x.s[10])===contactRoleFilter)&&[x.s[0],x.teamsText,x.s[6],x.s[7],x.s[11]].join(' ').toLowerCase().includes(q));
+  if(panel)panel.hidden=false;if(cnt)cnt.textContent=`${rows.length} Treffer`;
+  body.innerHTML=rows.length?`<div class="contact-grid">${rows.map(({s,i})=>contactTile(s,i,favs)).join('')}</div>`:'<div class="contact-empty">Keine Mitarbeiter gefunden.</div>';
+ }
+ renderContactFavorites(favs);
+ bindContactTiles(body);
+ const dm=document.getElementById('contact-detail-modal');if(dm&&!dm.hidden&&contactDetailIndex!==null&&staff[contactDetailIndex])openContactDetail(contactDetailIndex);
 }
 let employeePhotoData='';
 function openEmployee(i){
@@ -1775,15 +1849,16 @@ function openEmployee(i){
  const memberships=s?teams.filter(t=>t.memberIds.includes(s[8])).map(t=>t.name):[];
  document.getElementById('employee-team').innerHTML=teamNames().map(t=>`<label class="check"><input type="checkbox" value="${escapeHtml(t)}" ${memberships.includes(t)?'checked':''}><span>${escapeHtml(t)}</span></label>`).join('');
  document.getElementById('employee-email').value=s?(s[6]||''):'';
- document.getElementById('employee-phone').value=s?(s[7]||''):'';
+ document.getElementById('employee-phone').value=s?(s[7]||''):'';document.getElementById('employee-teams-phone').value=s?(s[11]||''):'';
  employeePhotoData=s?(s[9]||''):'';document.getElementById('employee-photo-preview').innerHTML=employeePhotoData?`<img src="${escapeHtml(employeePhotoData)}" alt="Profilbild-Vorschau">`:'<span>Foto</span>';document.getElementById('employee-photo').value='';
  document.getElementById('employee-modal').hidden=false;
 }
 function bindContacts(){
  const search=document.getElementById('employee-search');if(!search)return;
  renderEmployees();search.oninput=renderEmployees;
+ const cdm=document.getElementById('contact-detail-modal');document.getElementById('close-contact-detail').onclick=closeContactDetail;cdm.onclick=e=>{if(e.target===cdm)closeContactDetail()};cdm.onkeydown=e=>{if(e.key==='Escape')closeContactDetail()};
  content.querySelectorAll('[data-role-filter]').forEach(b=>b.onclick=()=>{contactRoleFilter=b.dataset.roleFilter;content.querySelectorAll('[data-role-filter]').forEach(x=>x.classList.toggle('active',x===b));renderEmployees()});
- document.getElementById('export-contacts').onclick=()=>{const rows=[['Name','Rolle','Teams','Telefon','E-Mail'],...staff.map(s=>[s[0],s[10]||'Mitarbeiter',teams.filter(t=>t.memberIds.includes(s[8])).map(t=>t.name).join(', '),s[7],s[6]])];downloadCsv(rows,'kontakte.csv');logExport('Kontakte','CSV',staff.length,'Erfolgreich');toast('Kontakte exportiert.')};
+ document.getElementById('export-contacts').onclick=()=>{const rows=[['Name','Rolle','Teams','Teams-Telefonnummer','Bereitschaftsnummer','E-Mail'],...staff.map(s=>[s[0],visibleRole(s[10]),teams.filter(t=>t.memberIds.includes(s[8])).map(t=>t.name).join(', '),s[11]||'',s[7],s[6]])];downloadCsv(rows,'kontakte.csv');logExport('Kontakte','CSV',staff.length,'Erfolgreich');toast('Kontakte exportiert.')};
  if(!canEdit('Kontakte'))return;
  const add=document.getElementById('new-employee'),form=document.getElementById('employee-form'),modal=document.getElementById('employee-modal');
  const photoInput=document.getElementById('employee-photo');photoInput.onchange=()=>{const file=photoInput.files&&photoInput.files[0];if(!file)return;if(!/^image\/(png|jpe?g|gif|webp)$/.test(file.type)){toast('Bitte ein Bild im Format JPG, PNG, GIF oder WebP auswählen.');photoInput.value='';return}const reader=new FileReader();reader.onload=()=>{employeePhotoData=safePhoto(String(reader.result||''));document.getElementById('employee-photo-preview').innerHTML=`<img src="${escapeHtml(employeePhotoData)}" alt="Profilbild-Vorschau">`};reader.readAsDataURL(file)};
@@ -1797,7 +1872,7 @@ function bindContacts(){
   if(staff.some((s,i)=>s[0].toLowerCase()===name.toLowerCase()&&String(i)!==index)){toast('Ein Mitarbeiter mit diesem Namen existiert bereits.');return}
   const selectedTeams=[...document.querySelectorAll('#employee-team input:checked')].map(o=>o.value);
   const old=index!==''?staff[Number(index)]:null;
-  const item=[name,initials(name),old?.[2]||'Noch nicht eingeteilt',old?.[3]||'—',old?.[4]||'blue',selectedTeams[0]||'',document.getElementById('employee-email').value.trim(),document.getElementById('employee-phone').value.trim(),old?.[8]||makeId(),employeePhotoData,document.getElementById('employee-role').value];
+  const item=[name,initials(name),old?.[2]||'Noch nicht eingeteilt',old?.[3]||'—',old?.[4]||'blue',selectedTeams[0]||'',document.getElementById('employee-email').value.trim(),document.getElementById('employee-phone').value.trim(),old?.[8]||makeId(),employeePhotoData,document.getElementById('employee-role').value,document.getElementById('employee-teams-phone').value.trim()];
   if(old&&old[0]!==name){assignments.forEach(a=>{if(a.employee===old[0])a.employee=name});persistAssignments();}
   if(old)staff[Number(index)]=item;else staff.push(item);
   teams.forEach(t=>{t.memberIds=t.memberIds.filter(id=>id!==item[8]);if(selectedTeams.includes(t.name))t.memberIds.push(item[8]);if(!t.memberIds.includes(t.leaderId))t.leaderId='';if(!t.memberIds.includes(t.deputyId))t.deputyId='';});
@@ -2465,8 +2540,8 @@ function openTeamEditor(id,startTab){
  const nameOf=id=>staff.find(p=>p[8]===id)?.[0]||'';
  const general=()=>`<div class="te-sec"><label class="wp-field"><span class="wp-label">Teamname</span><input id="te-name" value="${escapeHtml(d.name)}" maxlength="60" ${ro(caps.structure)}></label>
    <div class="wp-field"><span class="wp-label">Teamfarbe</span><div class="te-colors">${TEAM_COLORS.map(c=>`<button type="button" class="te-swatch ${c.toLowerCase()===d.color.toLowerCase()?'on':''}" style="--c:${c}" data-color="${c}" aria-label="Farbe ${c}" ${ro(caps.color)}>${icon('check')}</button>`).join('')}<label class="te-custom" title="Eigene Farbe"><input type="color" id="te-color" value="${/^#[0-9a-f]{6}$/i.test(d.color)?d.color:'#14a1a9'}" ${ro(caps.color)}><span>Eigene</span></label></div></div>
-   <div class="te-two"><div class="wp-field"><span class="wp-label">Teamleitung</span>${caps.structure?personPicker({id:'te-lead',people:mem().map(p=>({name:p[0],sub:p[10]||'Mitarbeiter'})),value:nameOf(d.leaderId),noneLabel:'Nicht besetzt',placeholder:'Nicht besetzt'}):`<div class="wp-me">${d.leaderId?avatarHtml(nameOf(d.leaderId),'var(--accent-color)',30):''}<div><b>${escapeHtml(nameOf(d.leaderId)||'Nicht besetzt')}</b></div></div>`}</div>
-   <div class="wp-field"><span class="wp-label">Deputy</span>${caps.structure?personPicker({id:'te-dep',people:mem().map(p=>({name:p[0],sub:p[10]||'Mitarbeiter'})),value:nameOf(d.deputyId),noneLabel:'Nicht besetzt',placeholder:'Nicht besetzt'}):`<div class="wp-me">${d.deputyId?avatarHtml(nameOf(d.deputyId),'var(--accent-color)',30):''}<div><b>${escapeHtml(nameOf(d.deputyId)||'Nicht besetzt')}</b></div></div>`}</div></div>
+   <div class="te-two"><div class="wp-field"><span class="wp-label">Teamleitung</span>${caps.structure?personPicker({id:'te-lead',people:mem().map(p=>({name:p[0],sub:visibleRole(p[10])})),value:nameOf(d.leaderId),noneLabel:'Nicht besetzt',placeholder:'Nicht besetzt'}):`<div class="wp-me">${d.leaderId?avatarHtml(nameOf(d.leaderId),'var(--accent-color)',30):''}<div><b>${escapeHtml(nameOf(d.leaderId)||'Nicht besetzt')}</b></div></div>`}</div>
+   <div class="wp-field"><span class="wp-label">Deputy</span>${caps.structure?personPicker({id:'te-dep',people:mem().map(p=>({name:p[0],sub:visibleRole(p[10])})),value:nameOf(d.deputyId),noneLabel:'Nicht besetzt',placeholder:'Nicht besetzt'}):`<div class="wp-me">${d.deputyId?avatarHtml(nameOf(d.deputyId),'var(--accent-color)',30):''}<div><b>${escapeHtml(nameOf(d.deputyId)||'Nicht besetzt')}</b></div></div>`}</div></div>
    ${caps.structure?'<small class="muted">Teamleitung und Deputy werden aus den Mitgliedern gewählt. Ein Deputy kann nur einem Team zugeordnet sein.</small>':'<small class="muted">Name, Verantwortliche und Mitglieder ändert die Administration.</small>'}</div>`;
  const members=()=>{if(!caps.structure){const m=mem();return `<div class="te-sec"><div class="te-mhead"><label class="team-dd-search">${icon('search')}<input type="search" id="te-mq" placeholder="Mitarbeiter suchen …"></label><span class="pill teal" id="te-mcount">${m.length} im Team</span></div>
    <div class="ts-list te-mlist te-ro">${m.map(p=>{const role=d.leaderId===p[8]?'Teamleitung':d.deputyId===p[8]?'Deputy':'';return `<div class="ts-person" data-q="${escapeHtml(p[0].toLowerCase())}">${avatarHtml(p[0],d.color,28)}<span class="pp-txt"><b>${escapeHtml(p[0])}</b><small>${escapeHtml(p[10]||'Mitarbeiter')}</small></span>${role?`<span class="pill ${role==='Deputy'?'blue':'teal'}">${role}</span>`:''}</div>`}).join('')||'<div class="empty-note">Noch keine Mitglieder.</div>'}</div>

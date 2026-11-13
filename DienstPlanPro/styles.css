@@ -1972,3 +1972,92 @@ body.dark-mode .wp-box.office .wp-ic{color:#7fb2ea}
 .dlg-team-dd .team-dd-panel .check.q-miss{display:none}
 .dlg-shift-dd .team-dd-panel .check small{max-width:none}
 .dlg-team-dd>summary .pp-team{--c:var(--accent-color)}
+/* Kontakte: Favoriten & Suchergebnisse als Kacheln (4 pro Reihe) */
+.contact-fav-panel .panel-head h2{display:flex;align-items:center;gap:8px}
+.contact-fav-panel .fav-head-ic{width:18px;height:18px;fill:#f5b301;stroke:#f5b301}
+.contact-search-panel .table-toolbar{margin-bottom:4px}
+.contact-results{margin-top:12px}
+.contact-count{font-size:12px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;margin:0 0 10px}
+.contact-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}
+.contact-tile{position:relative;display:flex;flex-direction:column;gap:12px;padding:16px;border:1px solid var(--line);border-radius:14px;background:var(--surface,#fff);min-width:0;transition:box-shadow .15s,border-color .15s}
+.contact-tile:hover{box-shadow:0 6px 18px rgba(16,24,40,.08)}
+.contact-tile.is-fav{border-color:color-mix(in srgb,#f5b301 45%,var(--line))}
+.contact-tile-head{display:flex;align-items:center;gap:12px;padding-right:30px;min-width:0}
+.contact-tile-head .av{flex:none}
+.contact-tile-name{display:flex;flex-direction:column;align-items:flex-start;gap:5px;min-width:0}
+.contact-tile-name b{font-size:15px;line-height:1.25;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:100%}
+.contact-tile-teams,.contact-tile-links>*{display:flex;align-items:center;gap:8px;font-size:13px;min-width:0}
+.contact-tile-teams{color:var(--muted)}
+.contact-tile-teams span,.contact-tile-links span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.contact-tile .ic{width:15px;height:15px;flex:none}
+.contact-tile-links{display:flex;flex-direction:column;gap:7px;padding-top:10px;border-top:1px solid var(--line)}
+.contact-none{color:var(--muted)}
+.contact-tile-actions{display:flex;gap:8px;margin-top:auto}
+.contact-tile-actions .btn{flex:1}
+.contact-fav{position:absolute;top:10px;right:10px;width:32px;height:32px;display:grid;place-items:center;border:0;border-radius:50%;background:transparent;color:var(--muted);cursor:pointer}
+.contact-fav:hover{background:var(--surface-3)}
+.contact-fav .ic{width:19px;height:19px;fill:none;stroke:currentColor}
+.contact-fav.on{color:#f5b301}
+.contact-fav.on .ic{fill:#f5b301;stroke:#f5b301}
+.contact-empty{display:flex;align-items:center;justify-content:center;gap:10px;padding:28px 16px;color:var(--muted);font-size:14px;text-align:center;border:1px dashed var(--line);border-radius:12px}
+.contact-empty .ic{width:18px;height:18px;flex:none}
+@media (max-width:1360px){.contact-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media (max-width:860px){.contact-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:520px){.contact-grid{grid-template-columns:1fr}}
+/* Kontakte: unter 4 Kacheln pro Reihe nur Name, Rolle & Team – Details im Pop-up */
+@media (max-width:1360px){
+  .contact-grid{align-items:start}
+  .contact-grid .contact-tile{cursor:pointer;gap:10px}
+  .contact-grid .contact-tile .contact-tile-links,.contact-grid .contact-tile .contact-tile-actions{display:none}
+  .contact-grid .contact-tile:hover{border-color:var(--accent-color)}
+  .contact-grid .contact-tile:focus-visible{outline:2px solid var(--accent-color);outline-offset:2px}
+}
+.contact-detail-modal{width:min(420px,100%)}
+.contact-detail-modal .panel-head{margin-bottom:12px}
+.contact-tile-full{border:0;padding:0;box-shadow:none!important;background:transparent}
+.contact-tile-full .contact-tile-name b{white-space:normal}
+.contact-tile-full .contact-tile-links span{white-space:normal;overflow-wrap:anywhere}
+.contact-tile-full .contact-fav{top:0;right:0}
+/* Teams-Buttons unter der E-Mail */
+.contact-teams::before{content:'Microsoft Teams';grid-column:1/-1;font-size:11px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--muted)}
+.contact-tile-links .contact-teams{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:2px}
+.contact-teams .teams-btn{padding-left:8px;padding-right:8px;display:inline-flex;align-items:center;justify-content:center;gap:6px;text-decoration:none;color:#4b53bc;border-color:color-mix(in srgb,#4b53bc 35%,var(--line));background:color-mix(in srgb,#4b53bc 7%,var(--surface));min-width:0}
+.contact-teams .teams-btn:hover{background:color-mix(in srgb,#4b53bc 14%,var(--surface))}
+.contact-teams .teams-btn span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.contact-teams .teams-btn .ic{width:14px;height:14px}
+/* Kontakte: Suche oben, Favoriten, darunter Suchergebnisse */
+.contact-search-panel{padding-top:14px;padding-bottom:14px}
+.contact-search-panel .table-toolbar{margin:0}
+.contact-results-panel .panel-head{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.contact-results-panel .panel-head h2{display:flex;align-items:center;gap:8px}
+.contact-results-panel .res-head-ic{width:17px;height:17px}
+.contact-results-panel .contact-count{margin:0}
+.contact-results{margin-top:0}
+.contact-results-panel[hidden]{display:none!important}
+.contact-hint{font-style:normal;color:var(--muted);font-size:12px}
+.contact-teams .teams-btn.is-off{opacity:.45;cursor:not-allowed;pointer-events:none}
+/* Kontakte: Favoriten-Blättern (PC 1 Reihe à 4, sonst 2 Reihen) */
+.contact-fav-grid{grid-auto-flow:row;align-items:stretch!important}
+@media (max-width:1360px){.contact-fav-grid{align-items:start!important}}
+.fav-carousel{position:relative}
+.fav-carousel.has-nav{padding:0 26px}
+.fav-arrow{position:absolute;top:50%;transform:translateY(-50%);z-index:2;width:36px;height:36px;border-radius:50%;border:1px solid var(--line);background:var(--surface);color:var(--ink);display:grid;place-items:center;cursor:pointer;box-shadow:0 4px 12px rgba(16,24,40,.12)}
+.fav-arrow.prev{left:-6px}.fav-arrow.next{right:-6px}
+.fav-arrow.next .ic{transform:rotate(180deg)}
+.fav-arrow .ic{width:18px;height:18px}
+.fav-arrow:hover:not(:disabled){border-color:var(--accent-color);color:var(--accent-color)}
+.fav-arrow:disabled{opacity:.35;cursor:default;box-shadow:none}
+.fav-dots{display:flex;justify-content:center;gap:6px;margin-top:12px}
+.fav-dot{width:8px;height:8px;border-radius:50%;border:0;padding:0;background:var(--line);cursor:pointer}
+.fav-dot.on{background:var(--accent-color);width:20px;border-radius:4px}
+.contact-teams{gap:6px!important}
+.contact-teams .teams-btn{padding-left:6px!important;padding-right:6px!important;gap:5px!important;font-size:12.5px}
+.contact-teams .teams-btn .ic{width:13px;height:13px}
+.contact-fav-panel[hidden]{display:none!important}
+.fav-carousel.has-nav{padding:0 50px}
+.fav-arrow.prev{left:0}.fav-arrow.next{right:0}
+@media (max-width:520px){.fav-carousel.has-nav{padding:0 44px}}
+.contact-tile{container-type:inline-size}
+@container (max-width:250px){.contact-teams .teams-btn .ic{display:none}.contact-teams .teams-btn{font-size:12px}}
+@container (max-width:215px){.contact-tile-links .contact-teams{grid-template-columns:1fr}.contact-teams .teams-btn .ic{display:inline-block}}
+.contact-tile-name b{white-space:normal;overflow-wrap:break-word}
