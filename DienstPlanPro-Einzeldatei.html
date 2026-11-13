@@ -2209,6 +2209,7 @@ EN_RX.push(
  [/^(\d+) Mitglieder · (.+)$/,'$1 members · $2']
 );
 Object.assign(EN,{'Zur Auswahl stehen alle Personen mit der Rolle „Abteilungsleiter“.':'All people with the role “Department head” are available.','Es gibt noch keine Person mit der Rolle „Abteilungsleiter“. Die Rolle vergibst du unter „Kontakte“.':'There is no person with the role “Department head” yet. Assign the role under “Contacts”.','Keine Abteilungsleiter gefunden':'No department heads found','Als Abteilungsleitung sind nur Personen mit der Rolle „Abteilungsleiter“ möglich.':'Only people with the role “Department head” can lead a department.'});
+Object.assign(EN,{'Anfragen & Verlauf ansehen':'View requests & history'});
 </script>
   <script>'use strict';
 const content=document.getElementById('content');
@@ -2969,8 +2970,7 @@ function calendar(){
  }
  const managerWorkplace=['Admin','Teamleiter','Abteilungsleiter'].includes(currentRole);
  const canAdd=entryTeams().length>0,canManageAny=manageableTeams().length>0;
- const swapIn=swapsIncoming().length,swapOut=swapsOutgoing().length;
-  const actions=isDuty?`${canRequestSwap()?`<button class="btn" id="swap-new-btn">${icon('refresh')}Diensttausch</button>`:''}${swapIn||swapOut||!canRequestSwap()&&swaps.some(x=>x.to===currentUserName()||x.from===currentUserName())?`<button class="btn" id="swap-center" title="Offene Tauschanfragen">${canRequestSwap()?'':icon('refresh')}Anfragen${swapIn?`<span class="btn-badge">${swapIn}</span>`:swapOut?`<span class="btn-badge muted">${swapOut}</span>`:''}</button>`:''}<button class="btn" id="add-workplace">${icon('home')}Arbeitsort</button>${absenceTeams().length?`<button class="btn" id="add-absence">${icon('plane')}Abwesenheit</button>`:''}${canManageAny&&manageableTeams('Dienstplan').some(t=>shiftTypes.some(s=>s.team===t.name))?`<button class="btn" id="duty-rotation">${icon('spark')}Rotation automatisch planen</button>`:''}${canAdd?`<button class="btn primary" id="add">${icon('plus')}Eintrag erstellen</button>`:''}`:`${canManageAny&&standbyTimes.length?`<button class="btn" id="auto-rotation">${icon('spark')}Rotation automatisch planen</button>`:''}${canAdd?`<button class="btn primary" id="add">${icon('plus')}Bereitschaft einteilen</button>`:''}`;
+  const actions=isDuty?`${canRequestSwap()?`<button class="btn" id="swap-new-btn">${icon('refresh')}Diensttausch</button>`:''}<button class="btn" id="add-workplace">${icon('home')}Arbeitsort</button>${absenceTeams().length?`<button class="btn" id="add-absence">${icon('plane')}Abwesenheit</button>`:''}${canManageAny&&manageableTeams('Dienstplan').some(t=>shiftTypes.some(s=>s.team===t.name))?`<button class="btn" id="duty-rotation">${icon('spark')}Rotation automatisch planen</button>`:''}${canAdd?`<button class="btn primary" id="add">${icon('plus')}Eintrag erstellen</button>`:''}`:`${canManageAny&&standbyTimes.length?`<button class="btn" id="auto-rotation">${icon('spark')}Rotation automatisch planen</button>`:''}${canAdd?`<button class="btn primary" id="add">${icon('plus')}Bereitschaft einteilen</button>`:''}`;
  const sub=isDuty?((currentView==='Monat')?monthName(d):`KW ${isoWeek(ws)} · ${fmt(ws)} – ${fmt(we)}`):(currentView==='Zeitleiste'||currentView==='Woche'?`KW ${isoWeek(ws)} · ${fmt(ws)} – ${fmt(we)}${currentView==='Zeitleiste'?' · Wer hat wann Bereitschaft?':''}`:currentView==='Monat'?`${monthName(d)} · Rotationsübersicht aller Teams`:fmtWithWeekday(d));
  // Bereitschaft: Wer ist jetzt erreichbar? Lücken im Monat?
  let nowBlock='';
@@ -4157,7 +4157,7 @@ async function openSwapRequest(preId){
   <label class="wp-field"><span class="wp-label">Nachricht <small class="muted">(optional)</small></span><textarea name="note" rows="2" maxlength="200" placeholder="z. B. Grund für den Tausch"></textarea></label>
   <p class="small muted swap-hint">${icon('alert')}Getauscht wird erst, wenn deine Kollegin bzw. dein Kollege die Anfrage bestätigt.</p></div>`;
  const pendIn=swapsIncoming().length;
- const dlg=formDialog('Diensttausch anfragen',inner,'Anfrage senden',`Wähle die Person und den Tag – deine Dienste an diesem Tag werden getauscht.${pendIn?` <button type="button" class="link-btn" id="swap-open-center">${pendIn} ${pendIn===1?'Anfrage wartet':'Anfragen warten'} auf dich</button>`:''}`);
+ const dlg=formDialog('Diensttausch anfragen',inner,'Anfrage senden',`Wähle die Person und den Tag – deine Dienste an diesem Tag werden getauscht. <button type="button" class="link-btn" id="swap-open-center">${pendIn?`${pendIn} ${pendIn===1?'Anfrage wartet':'Anfragen warten'} auf dich`:'Anfragen &amp; Verlauf ansehen'}</button>`);
  const layer=[...document.querySelectorAll('.app-dialog')].pop(),$=sel=>layer.querySelector(sel),submit=$('button[type=submit]');
  $('.modal').classList.add('swap-modal');bindPersonPicker(layer);
  $('#swap-open-center')?.addEventListener('click',()=>{layer.querySelector('[data-dlg="cancel"]').click();openSwapCenter()});
@@ -4763,7 +4763,6 @@ function render(){
  content.querySelectorAll('[data-view]').forEach(b=>b.onclick=()=>{currentView=b.dataset.view;selectedMobileDate='';render()});
  ['prev','next','today'].forEach(id=>{const b=document.getElementById(id);if(b)b.onclick=()=>{if(id==='today'){currentDate=new Date();selectedMobileDate='';}else if(currentView==='Monat'){currentDate.setDate(1);currentDate.setMonth(currentDate.getMonth()+(id==='next'?1:-1));selectedMobileDate='';}else{currentDate.setDate(currentDate.getDate()+(id==='next'?1:-1)*(currentView==='Tag'?1:7));selectedMobileDate='';}render()}});
  const absenceAdd=document.getElementById('add-absence');if(absenceAdd)absenceAdd.onclick=()=>{bindAbsenceModal();document.getElementById('absence-modal').hidden=false};
- const swapBtn=document.getElementById('swap-center');if(swapBtn)swapBtn.onclick=()=>openSwapCenter();
  const swapNew=document.getElementById('swap-new-btn');if(swapNew)swapNew.onclick=()=>openSwapRequest();
  const workplaceAdd=document.getElementById('add-workplace'),workplaceModal=document.getElementById('workplace-modal'),workplaceForm=document.getElementById('workplace-form');
  if(workplaceAdd)workplaceAdd.onclick=()=>{const date=isoDate(currentDate);openWorkplaceModal({from:date,to:date})};

@@ -376,3 +376,4 @@ EN_RX.push(
  [/^(\d+) Mitglieder · (.+)$/,'$1 members · $2']
 );
 Object.assign(EN,{'Zur Auswahl stehen alle Personen mit der Rolle „Abteilungsleiter“.':'All people with the role “Department head” are available.','Es gibt noch keine Person mit der Rolle „Abteilungsleiter“. Die Rolle vergibst du unter „Kontakte“.':'There is no person with the role “Department head” yet. Assign the role under “Contacts”.','Keine Abteilungsleiter gefunden':'No department heads found','Als Abteilungsleitung sind nur Personen mit der Rolle „Abteilungsleiter“ möglich.':'Only people with the role “Department head” can lead a department.'});
+Object.assign(EN,{'Anfragen & Verlauf ansehen':'View requests & history'});
