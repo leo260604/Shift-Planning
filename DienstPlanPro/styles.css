@@ -2061,3 +2061,10 @@ body.dark-mode .wp-box.office .wp-ic{color:#7fb2ea}
 @container (max-width:250px){.contact-teams .teams-btn .ic{display:none}.contact-teams .teams-btn{font-size:12px}}
 @container (max-width:215px){.contact-tile-links .contact-teams{grid-template-columns:1fr}.contact-teams .teams-btn .ic{display:inline-block}}
 .contact-tile-name b{white-space:normal;overflow-wrap:break-word}
+/* Kontakte: Rollenfilter am Handy als Dropdown (wie Team-Filter im Dienstplan) */
+.role-dd{display:none}
+.role-dd .team-dd-panel{width:240px}
+@media (max-width:700px){
+  .contact-role-chips{display:none!important}
+  .role-dd{display:inline-flex}
+}
