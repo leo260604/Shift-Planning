@@ -1796,3 +1796,5 @@ body.dark-mode .pp-panel{box-shadow:0 18px 40px -12px rgba(0,0,0,.7),0 2px 6px r
 .swap-sum-wide small{margin-top:1px}
 .swap-sum-wide .wp-sum-ic{width:28px;height:28px}
 .swap-right .swap-dates{max-height:262px}
+/* gefüllte Symbole (z. B. Abwesenheit/Reise) – gleiche Farbe wie der Text, optisch gleich groß wie die Linien-Symbole */
+.ic.ic-fill{fill:currentColor;stroke:none;width:18px;height:18px}
