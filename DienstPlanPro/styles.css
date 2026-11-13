@@ -2079,3 +2079,10 @@ body.dark-mode .wp-box.office .wp-ic{color:#7fb2ea}
 .te-custom input[type=color]::-webkit-color-swatch{border:0;border-radius:50%}
 .te-custom input[type=color]::-moz-color-swatch{border:0;border-radius:50%}
 .nt-input-ic{background:color-mix(in srgb,var(--c,var(--accent-color)) 14%,transparent);color:var(--c,var(--accent-color))}
+/* Kontakte: Rollenfilter am Handy als Dropdown (wie Team-Filter im Dienstplan) */
+.role-dd{display:none}
+.role-dd .team-dd-panel{width:240px}
+@media (max-width:700px){
+  .contact-role-chips{display:none!important}
+  .role-dd{display:inline-flex}
+}
