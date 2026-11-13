@@ -1178,6 +1178,25 @@ function dashCtx(){
 const dashDay=iso=>new Date(iso+'T12:00:00');
 const daysUntil=iso=>Math.round((dashDay(iso)-dashDay(isoDate(new Date())))/86400000);
 const inDaysText=n=>n<=0?'heute':n===1?'morgen':`in ${n} Tagen`;
+/* Externer Link „Mein Porsche Cockpit“ – nur Admin kann ihn in der Administration festlegen/ändern */
+let cockpitLink=(()=>{const v=load('dienstplanCockpitLink',{});return v&&typeof v==='object'?v:{}})();
+function normalizeUrl(raw){let u=String(raw||'').trim();if(!u)return '';if(!/^[a-z][a-z0-9+.-]*:/i.test(u))u='https://'+u;try{const x=new URL(u);if(!['http:','https:'].includes(x.protocol))return null;if(!x.hostname||!x.hostname.includes('.')&&x.hostname!=='localhost')return null;return x.href}catch(e){return null}}
+function cockpitHost(){try{return new URL(cockpitLink.url).hostname.replace(/^www\./,'')}catch(e){return ''}}
+function openCockpitLink(){
+ if(!cockpitLink.url){toast(currentRole==='Admin'?'Für „Mein Porsche Cockpit“ ist noch kein Link hinterlegt. Du kannst ihn unter Einstellungen → Links festlegen.':'Für „Mein Porsche Cockpit“ ist noch kein Link hinterlegt. Bitte wende dich an einen Admin.');return}
+ const a=document.createElement('a');a.href=cockpitLink.url;a.target='_blank';a.rel='noopener noreferrer';document.body.appendChild(a);a.click();a.remove();
+}
+async function editCockpitLink(){
+ if(currentRole!=='Admin'){toast('Nur Admins können diesen Link ändern.');return}
+ const res=await formDialog('Link „Mein Porsche Cockpit“',`<label class="field">Adresse (URL)<input type="text" name="url" inputmode="url" autocomplete="url" spellcheck="false" placeholder="https://…" value="${escapeHtml(cockpitLink.url||'')}"></label><p class="small muted" style="margin:8px 0 0">Ein Klick auf die Kachel „Mein Porsche Cockpit“ im Dashboard öffnet diese Seite in einem neuen Tab – für alle Benutzer. Leer lassen und speichern entfernt den Link.</p>`,'Speichern','Nur für Admins. Der Link lässt sich jederzeit hier ändern.');
+ if(!res)return;
+ const url=normalizeUrl(res.url);
+ if(url===null){toast('Bitte eine gültige Adresse eingeben, z. B. https://beispiel.at');return editCockpitLink()}
+ const before=cockpitLink.url||'—';
+ cockpitLink=url?{url,by:currentUserName(),at:Date.now()}:{};save('dienstplanCockpitLink',cockpitLink);
+ audit(url?(before==='—'?'Erstellt':'Geändert'):'Gelöscht','Administration','Link „Mein Porsche Cockpit“',{title:'Dashboard-Link geändert',object:'Mein Porsche Cockpit',before,after:url||'—'});
+ toast(url?'Link gespeichert.':'Link entfernt.');render();
+}
 function statTile({label,value,note,ic,tone=''}){return `<div class="stat-card dash-stat"><div><div class="stat-label">${label}</div><div class="stat-value">${value}</div><div class="stat-note">${note}</div></div><div class="stat-icon ${tone}">${icon(ic)}</div></div>`}
 /* zusammenhängende Bereitschaftstage zu Blöcken zusammenfassen */
 function standbyRuns(list){const runs=[];list.forEach(a=>{const last=runs[runs.length-1];if(last&&last.team===a.team&&daysUntil(a.date)-daysUntil(last.to)===1){last.to=a.date;last.items.push(a)}else if(!(last&&last.to===a.date))runs.push({from:a.date,to:a.date,team:a.team,items:[a]})});return runs}
@@ -1201,7 +1220,7 @@ const DASH_WIDGETS=[
 {id:'kSwaps',title:'Diensttausch',desc:'Offene Tauschanfragen an dich und von dir · Klick öffnet die Übersicht',size:'tile',
   render:c=>{const inc=swapsIncoming().length,out=swapsOutgoing().length;return statTile({label:'Diensttausch',value:inc,note:inc?(inc===1?'Anfrage wartet auf dich':'Anfragen warten auf dich'):out?`${out} eigene ${out===1?'Anfrage':'Anfragen'} offen`:'Keine offenen Anfragen',ic:'refresh',tone:inc?'amber':''})},action:()=>openSwapCenter()},
  {id:'kHours',title:'Mein Porsche Cockpit',desc:'Ich@Porsche – Übersicht: Homeoffice- & Bürotage',size:'tile',
-  render:c=>statTile({label:'Mein Porsche Cockpit',value:'Ich@Porsche',note:'Übersicht: Homeoffice- & Bürotage',ic:'clock'})},
+  render:c=>statTile({label:'Mein Porsche Cockpit',value:'Ich@Porsche',note:'Übersicht: Homeoffice- & Bürotage',ic:'external',tone:'cockpit'}),action:c=>openCockpitLink()},
  {id:'kTeamDuty',title:'Heute im Dienst',desc:'Besetzung deiner Teams heute',size:'tile',lead:true,hidden:true,
   render:c=>{const on=new Set(c.teamDuties.map(a=>a.employee)).size,pct=c.memberCount?Math.round(on/c.memberCount*100):0;return statTile({label:'Heute im Dienst',value:`${on}<small> / ${c.memberCount}</small>`,note:`${pct} % Besetzung`,ic:'users'})},action:()=>goView('Dienstplan','Team')},
  {id:'kTeamStandby',title:'Bereitschaft heute',desc:'Bereitschaften deiner Teams heute',size:'tile',lead:true,hidden:true,
@@ -1449,7 +1468,7 @@ function settings(){
  const tog=(id,on)=>`<button type="button" class="toggle ${on?'on':''}" id="${id}" role="switch" aria-checked="${on}"></button>`;
  const theme=localStorage.getItem('dienstplanTheme')||'light',acc=localStorage.getItem('dienstplanAccentColor')||'turquoise',fs=localStorage.getItem('dienstplanFontScale')||'normal',compact=localStorage.getItem('dienstplanCompact')==='1';
  const used=Object.keys(localStorage).filter(k=>k.startsWith('dienstplan')).reduce((s,k)=>s+(localStorage.getItem(k)||'').length,0);
- const sections=[['set-cal','cal','Kalender'],['set-look','sun','Darstellung'],['set-lang','grid','Sprache & Datum'],['set-data','download','Daten & Sicherung']];
+ const sections=[['set-cal','cal','Kalender'],['set-look','sun','Darstellung'],['set-lang','grid','Sprache & Datum'],...(currentRole==='Admin'?[['link-admin','external','Links']]:[]),['set-data','download','Daten & Sicherung']];
  const preview=(k,label)=>`<button type="button" class="theme-card ${theme===k?'active':''}" data-theme="${k}"><span class="theme-prev ${k}"><i></i><span><i></i><i></i><i></i></span></span><span class="theme-card-foot"><b>${label}</b>${theme===k?'<em>Aktiv</em>':''}</span></button>`;
  const dfOpts=['dmy','iso','mdy','long'].map(k=>{const keep=dateFormat;dateFormat=k;const ex=fmt(new Date(2026,11,31));dateFormat=keep;const label={dmy:LANG==='en'?'DD.MM.YYYY':'TT.MM.JJJJ',iso:LANG==='en'?'YYYY-MM-DD':'JJJJ-MM-TT',mdy:LANG==='en'?'MM/DD/YYYY':'MM/TT/JJJJ',long:LANG==='en'?'Written out':'Ausgeschrieben'}[k];return `<option value="${k}" ${dateFormat===k?'selected':''}>${label}  ·  ${ex}</option>`}).join('');
  return `${heading('Einstellungen','Arbeitsumgebung, Darstellung und Daten anpassen.')}
@@ -1472,6 +1491,9 @@ function settings(){
     <div class="setting-row"><div><b>Datumsformat</b><small>So werden Datumswerte in der App und in Exporten angezeigt.</small></div><select class="form-select" id="date-format-select" data-no-translate>${dfOpts}</select></div>
     <div class="date-preview"><span>Beispiel:</span> <b>${escapeHtml(fmtWithWeekday(new Date()))}</b></div>
    </section>
+   ${currentRole==='Admin'?`<section class="settings-card link-admin" id="link-admin"><div class="panel-head"><div><h2>${icon('external')}Links &amp; Weiterleitungen</h2><p class="sub">Ziele der Link-Kacheln im Dashboard. Nur Admins sehen und ändern diesen Bereich.</p></div></div>
+  <div class="link-row"><span class="link-ic">${icon('external')}</span><div class="link-txt"><b>Mein Porsche Cockpit</b><small>Kachel „Ich@Porsche“ · Übersicht: Homeoffice- &amp; Bürotage</small>${cockpitLink.url?`<a href="${escapeHtml(cockpitLink.url)}" target="_blank" rel="noopener noreferrer" class="link-url">${escapeHtml(cockpitLink.url)}</a><small class="muted">Zuletzt geändert von ${escapeHtml(cockpitLink.by||'—')}${cockpitLink.at?' am '+escapeHtml(fmtWithWeekday(new Date(cockpitLink.at))):''}</small>`:'<span class="pill amber">Noch kein Link hinterlegt</span>'}</div>
+  <div class="btn-row">${cockpitLink.url?`<button type="button" class="btn small" id="cockpit-link-test">${icon('external')}Öffnen</button>`:''}<button type="button" class="btn small primary" id="cockpit-link-edit">${icon('edit')}${cockpitLink.url?'Ändern':'Link festlegen'}</button></div></div></section>`:''}
    <section class="settings-card" id="set-data"><h2>Daten &amp; Sicherung</h2><p class="sub">Alle Daten liegen lokal in diesem Browser. Sichere sie regelmäßig.</p>
     <div class="info-box">${icon('download')}Letzte Sicherung: <b>${localStorage.getItem('dienstplanLastBackup')?fmtDateTime(+localStorage.getItem('dienstplanLastBackup')):'noch nie'}</b> · Speicher belegt: ${(used/1048576).toLocaleString(LOC(),{maximumFractionDigits:1})} MB von ~5 MB</div>
     ${used>=STORAGE_LIMIT*0.8?`<div class="info-box warn">${icon('alert')}Der Browserspeicher ist zu ${Math.round(used/STORAGE_LIMIT*100)} % belegt. Archiviere alte Einträge, damit neue Einträge weiter gespeichert werden können.</div>`:''}
@@ -1504,6 +1526,8 @@ function validateBackup(text){
  return {ok:true,entries,info:{date,staff:values.dienstplanStaff.length,teams:values.dienstplanTeams.length,entries:values.dienstplanAssignments.length}};
 }
 function bindSettings(){
+ const cle=document.getElementById('cockpit-link-edit');if(cle)cle.onclick=editCockpitLink;
+ const clt=document.getElementById('cockpit-link-test');if(clt)clt.onclick=openCockpitLink;
  const segBind=(id,fn)=>{const el=document.getElementById(id);if(!el)return;el.querySelectorAll('button').forEach(b=>b.onclick=()=>{el.querySelectorAll('button').forEach(x=>x.classList.toggle('active',x===b));fn(b.dataset.v)})};
  const togBind=(id,fn)=>{const el=document.getElementById(id);if(!el)return;el.onclick=()=>{const on=!el.classList.contains('on');el.classList.toggle('on',on);el.setAttribute('aria-checked',on);fn(on)}};
  const saved=()=>toast('Einstellungen gespeichert.');
@@ -2191,7 +2215,8 @@ function administrationPage(){
   <div class="stat-card"><div><div class="stat-label">Selbst eintragen</div><div class="stat-value">${selfOn}</div><div class="stat-note">${selfOn===1?'Team erlaubt':'Teams erlauben'} eigene Einträge</div></div></div>
  </div>
  <div class="list-toolbar ta-toolbar"><label class="search-field">${icon('search')}<input id="team-search" type="search" placeholder="Team oder Person suchen …" value="${escapeHtml(adminQuery)}"></label><div class="chip-row"><button type="button" class="chip ${adminFilter==='all'?'active':''}" data-team-filter="all">Alle · ${mine.length}</button><button type="button" class="chip ${adminFilter==='complete'?'active':''}" data-team-filter="complete">Vollständig</button><button type="button" class="chip ${adminFilter==='open'?'active':''}" data-team-filter="open">Offen · ${open}</button></div></div>
- ${body}`;
+ ${body}
+`;
 }
 function bindAdministration(){
  const caps=adminCaps();
