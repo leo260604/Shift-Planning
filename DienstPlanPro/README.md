@@ -162,6 +162,9 @@ Alle Seiten wurden nach den freigegebenen Mockups neu aufgebaut. Keine bestehend
 - **Abteilungen (Admin):** In der Administration über „Abteilung anlegen“ eine Abteilung mit Name, Farbe, **Abteilungsleitung** (Auswahl mit Suche) und den zugehörigen **Teams** erstellen. Ein Team gehört zu höchstens einer Abteilung (wird beim Zuordnen automatisch verschoben). Die Teamkarten werden dann nach Abteilungen gruppiert, Teams ohne Zuordnung stehen unter „Ohne Abteilung“. Als Abteilungsleitung stehen nur Personen mit der Rolle „Abteilungsleiter“ zur Auswahl (Rolle unter „Kontakte“ vergeben). Eine Abteilungsleitung sieht in der Administration nur die Teams ihrer Abteilung(en); ist ein Abteilungsleiter keiner Abteilung zugeordnet, sieht er wie bisher alle Teams. Beim Löschen einer Abteilung bleiben die Teams erhalten.
 - **Diensttausch-Verlauf:** steht jetzt in einem eigenen Reiter „Verlauf“ als kompakte Liste (Person, Anzahl Dienste, Zeitraum, Status, Datum); ein Klick klappt die Details auf. Der Reiter „Offene Anfragen“ zeigt nur noch offene Anfragen.
 
+## Dienstplan am Handy (11/2026)
+- **Dienstplan am Handy:** Die Buttons Diensttausch, Arbeitsort, Abwesenheit, Rotation automatisch planen und Eintrag erstellen sind zu einem Button **„Aktionen“** zusammengefasst. Er öffnet ein Menü von unten mit allen Aktionen (inkl. kurzer Beschreibung); am Tablet und PC bleiben die einzelnen Buttons sichtbar.
+
 ## Automatische Bildschirmanpassung (alle Geräte)
 Alle Seiten passen sich automatisch an jedes Gerät an – getestet mit 15 Größen von 320 px (kleines Handy) über Tablets hoch/quer (768–1180 px) und Laptops bis 2560 px, jeweils ohne seitliches Überlaufen. Auf Tablets wird die Seitenleiste automatisch auf Symbole verkleinert, die Team-Ansicht/Zeitleiste zeigt die ganze Woche, hochkant erscheint die kompakte Wochenübersicht. Tabellen werden auf dem Handy als Karten dargestellt, die Berechtigungsmatrix zeigt nur die gewählte Rolle, und nichts muss seitlich gescrollt werden.
 
@@ -170,9 +173,3 @@ Alle Daten liegen im `localStorage` des Browsers (Schlüssel beginnen mit `diens
 
 ## Wichtiger Hinweis zur Anmeldung
 Die Anmeldung ist eine lokale Demo-Benutzerumschaltung ohne Passwort. Die Rollenprüfung läuft nur im Browser und ist nicht für den produktiven Mehrbenutzerbetrieb mit vertraulichen Daten geeignet. Dafür müssen Anmeldung und Rechteprüfung auf einem Server umgesetzt werden.
-
-## Link-Kachel „Mein Porsche Cockpit“ (11/2026)
-- Die Kachel „Mein Porsche Cockpit“ (Ich@Porsche · Übersicht: Homeoffice- & Bürotage) ist für **alle** – auch den Admin – nur ein Button: Ein Klick öffnet den hinterlegten Link in einem neuen Tab. Ist noch kein Link hinterlegt, erscheint ein Hinweis.
-- **Nur Admins** legen den Link fest und ändern ihn jederzeit unter **Einstellungen → Links** („Link festlegen“ / „Ändern“, „Öffnen“ zum Testen). Andere Rollen sehen diesen Bereich nicht.
-- Adressen ohne `https://` werden ergänzt; nur http/https-Adressen werden angenommen. Jede Änderung steht im Audit Log (vorher/nachher).
-- Hinweis: Wie alle Daten liegt der Link im Browser (localStorage) und ist in „Daten & Sicherung“ enthalten.

@@ -757,7 +757,9 @@ function calendar(){
  }
  const managerWorkplace=['Admin','Teamleiter','Abteilungsleiter'].includes(currentRole);
  const canAdd=entryTeams().length>0,canManageAny=manageableTeams().length>0;
-  const actions=isDuty?`${canRequestSwap()?`<button class="btn" id="swap-new-btn">${icon('refresh')}Diensttausch</button>`:''}<button class="btn" id="add-workplace">${icon('home')}Arbeitsort</button>${absenceTeams().length?`<button class="btn" id="add-absence">${icon('travel','ic-fill')}Abwesenheit</button>`:''}${canManageAny&&manageableTeams('Dienstplan').some(t=>shiftTypes.some(s=>s.team===t.name))?`<button class="btn" id="duty-rotation">${icon('spark')}Rotation automatisch planen</button>`:''}${canAdd?`<button class="btn primary" id="add">${icon('plus')}Eintrag erstellen</button>`:''}`:`${canManageAny&&standbyTimes.length?`<button class="btn" id="auto-rotation">${icon('spark')}Rotation automatisch planen</button>`:''}${canAdd?`<button class="btn primary" id="add">${icon('plus')}Bereitschaft einteilen</button>`:''}`;
+  const actionsRaw=isDuty?`${canRequestSwap()?`<button class="btn" id="swap-new-btn">${icon('refresh')}Diensttausch</button>`:''}<button class="btn" id="add-workplace">${icon('home')}Arbeitsort</button>${absenceTeams().length?`<button class="btn" id="add-absence">${icon('travel','ic-fill')}Abwesenheit</button>`:''}${canManageAny&&manageableTeams('Dienstplan').some(t=>shiftTypes.some(s=>s.team===t.name))?`<button class="btn" id="duty-rotation">${icon('spark')}Rotation automatisch planen</button>`:''}${canAdd?`<button class="btn primary" id="add">${icon('plus')}Eintrag erstellen</button>`:''}`:`${canManageAny&&standbyTimes.length?`<button class="btn" id="auto-rotation">${icon('spark')}Rotation automatisch planen</button>`:''}${canAdd?`<button class="btn primary" id="add">${icon('plus')}Bereitschaft einteilen</button>`:''}`;
+ // Mobil: Aktionen im Dienstplan unter einem Button „Aktionen“ zusammenfassen
+ const actions=isDuty&&actionsRaw?`<span class="dp-actions">${actionsRaw}</span><button type="button" class="btn dp-actions-toggle" id="dp-actions-toggle" aria-haspopup="dialog">${icon('dots')}Aktionen${icon('down','dp-act-caret')}</button>`:actionsRaw;
  const sub=isDuty?((currentView==='Monat')?monthName(d):`KW ${isoWeek(ws)} · ${fmt(ws)} – ${fmt(we)}`):(currentView==='Zeitleiste'||currentView==='Woche'?`KW ${isoWeek(ws)} · ${fmt(ws)} – ${fmt(we)}${currentView==='Zeitleiste'?' · Wer hat wann Bereitschaft?':''}`:currentView==='Monat'?`${monthName(d)} · Rotationsübersicht aller Teams`:fmtWithWeekday(d));
  // Bereitschaft: Wer ist jetzt erreichbar? Lücken im Monat?
  let nowBlock='';
@@ -2105,6 +2107,22 @@ function buildWpIndex(){const wp=new Map(),duty=new Set();assignments.forEach(a=
 const wpFor=a=>a&&a.kind==='Dienstplan'&&!a.isAbsence?WPX.wp.get(a.date+'|'+a.employee)||null:null;
 const wpMerged=a=>a.kind==='Arbeitsort'&&WPX.duty.has(a.date+'|'+a.employee);// steht bereits als Hinweis beim Dienst
 const wpHint=(wp,cls='')=>wp?`<span class="wp-hint ${wp.shift==='Homeoffice'?'is-home':'is-office'} ${cls}" title="Arbeitsort: ${escapeHtml(wp.shift)}">${icon(wp.shift==='Homeoffice'?'home':'build')}${escapeHtml(wp.shift)}</span>`:'';
+/* Mobil: Aktionen-Menü im Dienstplan (Diensttausch, Arbeitsort, Abwesenheit, Rotation, Eintrag erstellen) */
+function openDutyActionsSheet(){
+ const src=[...document.querySelectorAll('.dp-actions > button')];if(!src.length)return;
+ const desc={'swap-new-btn':'Dienst mit einer Kollegin oder einem Kollegen tauschen','add-workplace':'Homeoffice oder Büro eintragen','add-absence':'Urlaub, Krankenstand & Co. eintragen','duty-rotation':'Dienste im Wechsel automatisch verteilen','add':'Neuen Dienst einteilen'};
+ const layer=document.createElement('div');layer.className='modal-backdrop app-dialog dp-sheet-layer';
+ layer.innerHTML=`<div class="dp-sheet" role="dialog" aria-modal="true" aria-labelledby="dp-sheet-title"><div class="dp-sheet-grip" aria-hidden="true"></div><div class="dp-sheet-head"><b id="dp-sheet-title">Aktionen</b><button type="button" class="icon-btn" data-sheet-close aria-label="Schließen">×</button></div>
+  <div class="dp-sheet-list">${src.map((b,i)=>`<button type="button" class="dp-sheet-item ${b.classList.contains('primary')?'primary':''}" data-sheet-i="${i}"><span class="dp-sheet-ic">${b.querySelector('svg')?.outerHTML||''}</span><span class="dp-sheet-txt"><b>${escapeHtml(b.textContent.trim())}</b><small>${escapeHtml(desc[b.id]||'')}</small></span>${icon('chev','dp-sheet-chev')}</button>`).join('')}</div></div>`;
+ const close=()=>{layer.classList.remove('show');document.removeEventListener('keydown',key,true);setTimeout(()=>layer.remove(),180)};
+ const key=e=>{if(e.key==='Escape'){e.stopPropagation();close()}};
+ layer.addEventListener('click',e=>{if(e.target===layer)close()});
+ layer.querySelectorAll('[data-sheet-close]').forEach(b=>b.onclick=close);
+ layer.querySelectorAll('[data-sheet-i]').forEach(b=>b.onclick=()=>{const t=src[+b.dataset.sheetI];close();setTimeout(()=>t&&t.click(),60)});
+ document.addEventListener('keydown',key,true);document.body.appendChild(layer);
+ requestAnimationFrame(()=>layer.classList.add('show'));
+ setTimeout(()=>layer.querySelector('.dp-sheet-item')?.focus(),60);
+}
 /* Arbeitsort-Eingabemaske */
 function openWorkplaceModal({from,to,type,employee}={}){
  const m=document.getElementById('workplace-modal');if(!m)return;
@@ -2604,6 +2622,7 @@ function render(){
  content.querySelectorAll('[data-view]').forEach(b=>b.onclick=()=>{currentView=b.dataset.view;selectedMobileDate='';render()});
  ['prev','next','today'].forEach(id=>{const b=document.getElementById(id);if(b)b.onclick=()=>{if(id==='today'){currentDate=new Date();selectedMobileDate='';}else if(currentView==='Monat'){currentDate.setDate(1);currentDate.setMonth(currentDate.getMonth()+(id==='next'?1:-1));selectedMobileDate='';}else{currentDate.setDate(currentDate.getDate()+(id==='next'?1:-1)*(currentView==='Tag'?1:7));selectedMobileDate='';}render()}});
  const absenceAdd=document.getElementById('add-absence');if(absenceAdd)absenceAdd.onclick=()=>{bindAbsenceModal();document.getElementById('absence-modal').hidden=false};
+ const dpAct=document.getElementById('dp-actions-toggle');if(dpAct)dpAct.onclick=openDutyActionsSheet;
  const swapNew=document.getElementById('swap-new-btn');if(swapNew)swapNew.onclick=()=>openSwapRequest();
  const workplaceAdd=document.getElementById('add-workplace'),workplaceModal=document.getElementById('workplace-modal'),workplaceForm=document.getElementById('workplace-form');
  if(workplaceAdd)workplaceAdd.onclick=()=>{const date=isoDate(currentDate);openWorkplaceModal({from:date,to:date})};

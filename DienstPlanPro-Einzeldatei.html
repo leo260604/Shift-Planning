@@ -1808,8 +1808,8 @@ body.dark-mode .pp-panel{box-shadow:0 18px 40px -12px rgba(0,0,0,.7),0 2px 6px r
 
 /* Kachel „Büro & Homeoffice“ – aufgeräumtes Layout */
 .stat-card.wp-card{display:flex;flex-direction:column;align-items:stretch;gap:14px;padding:18px 20px}
-.wp-head{display:flex;align-items:center;justify-content:space-between;gap:10px;min-width:0}
-.wp-head .stat-label{margin:0}
+.stat-card.wp-card>.wp-head{display:flex;align-items:center;justify-content:space-between;gap:10px;min-width:0}
+.stat-card.wp-card>.wp-head .stat-label{margin:0}
 .wp-month{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:650;color:var(--muted);background:var(--surface-2);border:1px solid var(--line);border-radius:20px;padding:4px 10px;white-space:nowrap}
 .wp-month .ic{width:13px;height:13px}
 .wp-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
@@ -1832,6 +1832,33 @@ body.dark-mode .wp-box.office .wp-ic{color:#7fb2ea}
 @media(max-width:340px){.wp-grid{grid-template-columns:1fr}}
 .stat-card.wp-card>.wp-head{background:none!important;border:0!important;padding:0!important;margin:0!important;box-shadow:none!important;border-radius:0!important}
 @media(max-width:360px){.wp-month .ic{display:none}.wp-month{padding:3px 8px}}
+/* ===== Dienstplan mobil: Aktionen-Button + Bottom-Sheet ===== */
+.dp-actions{display:contents}
+.dp-actions-toggle{display:none}
+@media (max-width:700px){
+ .dp-actions{display:none}
+ .dp-actions-toggle{display:inline-flex;width:100%;justify-content:center;gap:8px;min-height:44px;font-weight:650}
+ .dp-actions-toggle .dp-act-caret{width:14px;height:14px;opacity:.7}
+}
+.dp-sheet-layer{align-items:flex-end;justify-content:center;padding:0;background:rgba(15,23,42,0);transition:background .18s}
+.dp-sheet-layer.show{background:rgba(15,23,42,.45)}
+.dp-sheet{width:100%;max-width:560px;background:var(--surface);border-radius:20px 20px 0 0;padding:6px 14px calc(14px + env(safe-area-inset-bottom));box-shadow:0 -12px 40px -12px rgba(0,0,0,.35);transform:translateY(100%);transition:transform .2s ease}
+.dp-sheet-layer.show .dp-sheet{transform:none}
+.dp-sheet-grip{width:40px;height:4px;border-radius:2px;background:var(--line);margin:4px auto 6px}
+.dp-sheet-head{display:flex;align-items:center;justify-content:space-between;padding:2px 2px 8px}
+.dp-sheet-head b{font-size:16px}
+.dp-sheet-list{display:flex;flex-direction:column;gap:4px}
+.dp-sheet-item{display:flex;align-items:center;gap:12px;width:100%;padding:11px 10px;border:0;border-radius:12px;background:transparent;color:var(--ink);font:inherit;text-align:left;cursor:pointer}
+.dp-sheet-item:hover,.dp-sheet-item:focus-visible{background:var(--surface-3);outline:0}
+.dp-sheet-ic{width:38px;height:38px;border-radius:11px;display:grid;place-items:center;background:var(--surface-2);border:1px solid var(--line);color:var(--ink-2);flex:none}
+.dp-sheet-ic .ic{width:19px;height:19px}
+.dp-sheet-txt{flex:1;min-width:0;display:flex;flex-direction:column}
+.dp-sheet-txt b{font-size:14.5px;font-weight:650}
+.dp-sheet-txt small{font-size:12px;color:var(--muted)}
+.dp-sheet-chev{width:15px;height:15px;color:var(--muted);transform:rotate(180deg)}
+.dp-sheet-item.primary .dp-sheet-ic{background:var(--accent-color);border-color:var(--accent-color);color:#fff}
+.dp-sheet-item.primary b{color:var(--accent-color)}
+@media (prefers-reduced-motion:reduce){.dp-sheet,.dp-sheet-layer{transition:none}}
 </style>
 </head>
 <body>
@@ -2348,6 +2375,7 @@ Object.assign(EN,{'Anfragen & Verlauf ansehen':'View requests & history'});
 Object.assign(EN,{'– einen oder mehrere Tage antippen':'– tap one or more days','Dein Dienst':'Your duty','Ausgewählt':'Selected','Voriger Monat':'Previous month','Nächster Monat':'Next month','Tippe oben im Kalender auf einen Tag mit deinem Dienst.':'Tap a day with your duty in the calendar above.','Bitte im Kalender mindestens einen Tag auswählen.':'Please select at least one day in the calendar.'});
 EN_RX.push([/^(.+) hat Dienst$/,'$1 is on duty']);
 Object.assign(EN,{'– Tage antippen':'– tap days','Auswahl':'Selection','Bereits angefragt':'Already requested','Tippe links im Kalender auf einen Tag mit deinem Dienst.':'Tap a day with your duty in the calendar on the left.'});
+Object.assign(EN,{'Aktionen':'Actions','Dienst mit einer Kollegin oder einem Kollegen tauschen':'Swap a duty with a colleague','Homeoffice oder Büro eintragen':'Enter home office or office','Urlaub, Krankenstand & Co. eintragen':'Enter leave, sick leave & more','Dienste im Wechsel automatisch verteilen':'Distribute duties automatically in rotation','Neuen Dienst einteilen':'Schedule a new duty'});
 </script>
   <script>'use strict';
 const content=document.getElementById('content');
@@ -3108,7 +3136,9 @@ function calendar(){
  }
  const managerWorkplace=['Admin','Teamleiter','Abteilungsleiter'].includes(currentRole);
  const canAdd=entryTeams().length>0,canManageAny=manageableTeams().length>0;
-  const actions=isDuty?`${canRequestSwap()?`<button class="btn" id="swap-new-btn">${icon('refresh')}Diensttausch</button>`:''}<button class="btn" id="add-workplace">${icon('home')}Arbeitsort</button>${absenceTeams().length?`<button class="btn" id="add-absence">${icon('travel','ic-fill')}Abwesenheit</button>`:''}${canManageAny&&manageableTeams('Dienstplan').some(t=>shiftTypes.some(s=>s.team===t.name))?`<button class="btn" id="duty-rotation">${icon('spark')}Rotation automatisch planen</button>`:''}${canAdd?`<button class="btn primary" id="add">${icon('plus')}Eintrag erstellen</button>`:''}`:`${canManageAny&&standbyTimes.length?`<button class="btn" id="auto-rotation">${icon('spark')}Rotation automatisch planen</button>`:''}${canAdd?`<button class="btn primary" id="add">${icon('plus')}Bereitschaft einteilen</button>`:''}`;
+  const actionsRaw=isDuty?`${canRequestSwap()?`<button class="btn" id="swap-new-btn">${icon('refresh')}Diensttausch</button>`:''}<button class="btn" id="add-workplace">${icon('home')}Arbeitsort</button>${absenceTeams().length?`<button class="btn" id="add-absence">${icon('travel','ic-fill')}Abwesenheit</button>`:''}${canManageAny&&manageableTeams('Dienstplan').some(t=>shiftTypes.some(s=>s.team===t.name))?`<button class="btn" id="duty-rotation">${icon('spark')}Rotation automatisch planen</button>`:''}${canAdd?`<button class="btn primary" id="add">${icon('plus')}Eintrag erstellen</button>`:''}`:`${canManageAny&&standbyTimes.length?`<button class="btn" id="auto-rotation">${icon('spark')}Rotation automatisch planen</button>`:''}${canAdd?`<button class="btn primary" id="add">${icon('plus')}Bereitschaft einteilen</button>`:''}`;
+ // Mobil: Aktionen im Dienstplan unter einem Button „Aktionen“ zusammenfassen
+ const actions=isDuty&&actionsRaw?`<span class="dp-actions">${actionsRaw}</span><button type="button" class="btn dp-actions-toggle" id="dp-actions-toggle" aria-haspopup="dialog">${icon('dots')}Aktionen${icon('down','dp-act-caret')}</button>`:actionsRaw;
  const sub=isDuty?((currentView==='Monat')?monthName(d):`KW ${isoWeek(ws)} · ${fmt(ws)} – ${fmt(we)}`):(currentView==='Zeitleiste'||currentView==='Woche'?`KW ${isoWeek(ws)} · ${fmt(ws)} – ${fmt(we)}${currentView==='Zeitleiste'?' · Wer hat wann Bereitschaft?':''}`:currentView==='Monat'?`${monthName(d)} · Rotationsübersicht aller Teams`:fmtWithWeekday(d));
  // Bereitschaft: Wer ist jetzt erreichbar? Lücken im Monat?
  let nowBlock='';
@@ -4456,6 +4486,22 @@ function buildWpIndex(){const wp=new Map(),duty=new Set();assignments.forEach(a=
 const wpFor=a=>a&&a.kind==='Dienstplan'&&!a.isAbsence?WPX.wp.get(a.date+'|'+a.employee)||null:null;
 const wpMerged=a=>a.kind==='Arbeitsort'&&WPX.duty.has(a.date+'|'+a.employee);// steht bereits als Hinweis beim Dienst
 const wpHint=(wp,cls='')=>wp?`<span class="wp-hint ${wp.shift==='Homeoffice'?'is-home':'is-office'} ${cls}" title="Arbeitsort: ${escapeHtml(wp.shift)}">${icon(wp.shift==='Homeoffice'?'home':'build')}${escapeHtml(wp.shift)}</span>`:'';
+/* Mobil: Aktionen-Menü im Dienstplan (Diensttausch, Arbeitsort, Abwesenheit, Rotation, Eintrag erstellen) */
+function openDutyActionsSheet(){
+ const src=[...document.querySelectorAll('.dp-actions > button')];if(!src.length)return;
+ const desc={'swap-new-btn':'Dienst mit einer Kollegin oder einem Kollegen tauschen','add-workplace':'Homeoffice oder Büro eintragen','add-absence':'Urlaub, Krankenstand & Co. eintragen','duty-rotation':'Dienste im Wechsel automatisch verteilen','add':'Neuen Dienst einteilen'};
+ const layer=document.createElement('div');layer.className='modal-backdrop app-dialog dp-sheet-layer';
+ layer.innerHTML=`<div class="dp-sheet" role="dialog" aria-modal="true" aria-labelledby="dp-sheet-title"><div class="dp-sheet-grip" aria-hidden="true"></div><div class="dp-sheet-head"><b id="dp-sheet-title">Aktionen</b><button type="button" class="icon-btn" data-sheet-close aria-label="Schließen">×</button></div>
+  <div class="dp-sheet-list">${src.map((b,i)=>`<button type="button" class="dp-sheet-item ${b.classList.contains('primary')?'primary':''}" data-sheet-i="${i}"><span class="dp-sheet-ic">${b.querySelector('svg')?.outerHTML||''}</span><span class="dp-sheet-txt"><b>${escapeHtml(b.textContent.trim())}</b><small>${escapeHtml(desc[b.id]||'')}</small></span>${icon('chev','dp-sheet-chev')}</button>`).join('')}</div></div>`;
+ const close=()=>{layer.classList.remove('show');document.removeEventListener('keydown',key,true);setTimeout(()=>layer.remove(),180)};
+ const key=e=>{if(e.key==='Escape'){e.stopPropagation();close()}};
+ layer.addEventListener('click',e=>{if(e.target===layer)close()});
+ layer.querySelectorAll('[data-sheet-close]').forEach(b=>b.onclick=close);
+ layer.querySelectorAll('[data-sheet-i]').forEach(b=>b.onclick=()=>{const t=src[+b.dataset.sheetI];close();setTimeout(()=>t&&t.click(),60)});
+ document.addEventListener('keydown',key,true);document.body.appendChild(layer);
+ requestAnimationFrame(()=>layer.classList.add('show'));
+ setTimeout(()=>layer.querySelector('.dp-sheet-item')?.focus(),60);
+}
 /* Arbeitsort-Eingabemaske */
 function openWorkplaceModal({from,to,type,employee}={}){
  const m=document.getElementById('workplace-modal');if(!m)return;
@@ -4955,6 +5001,7 @@ function render(){
  content.querySelectorAll('[data-view]').forEach(b=>b.onclick=()=>{currentView=b.dataset.view;selectedMobileDate='';render()});
  ['prev','next','today'].forEach(id=>{const b=document.getElementById(id);if(b)b.onclick=()=>{if(id==='today'){currentDate=new Date();selectedMobileDate='';}else if(currentView==='Monat'){currentDate.setDate(1);currentDate.setMonth(currentDate.getMonth()+(id==='next'?1:-1));selectedMobileDate='';}else{currentDate.setDate(currentDate.getDate()+(id==='next'?1:-1)*(currentView==='Tag'?1:7));selectedMobileDate='';}render()}});
  const absenceAdd=document.getElementById('add-absence');if(absenceAdd)absenceAdd.onclick=()=>{bindAbsenceModal();document.getElementById('absence-modal').hidden=false};
+ const dpAct=document.getElementById('dp-actions-toggle');if(dpAct)dpAct.onclick=openDutyActionsSheet;
  const swapNew=document.getElementById('swap-new-btn');if(swapNew)swapNew.onclick=()=>openSwapRequest();
  const workplaceAdd=document.getElementById('add-workplace'),workplaceModal=document.getElementById('workplace-modal'),workplaceForm=document.getElementById('workplace-form');
  if(workplaceAdd)workplaceAdd.onclick=()=>{const date=isoDate(currentDate);openWorkplaceModal({from:date,to:date})};
