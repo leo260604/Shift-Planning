@@ -400,3 +400,5 @@ EN_RX.push([/^(.+ · .+)$/,t=>t.split(' · ').map(seg=>{if(EN[seg]!==undefined)r
  return seg}).join(' · ')]);
 Object.assign(EN,{'Dienste auswählen …':'Choose shifts …','Alle Dienste':'All shifts','Dienst suchen …':'Search shift …','Kein Dienst gefunden':'No shift found','Die gewählten Teams haben keine Dienstzeiten.':'The selected teams have no shift times.','1×/Tag':'1×/day'});
 EN_RX.unshift([/^Alle Dienste \((\d+)\)$/,'All shifts ($1)'],[/^Alle meine Teams \((\d+)\)$/,'All my teams ($1)']);
+Object.assign(EN,{'Neues Team anlegen':'Create new team','z. B. Team Ost':'e.g. Team East','Der Name erscheint im Dienstplan, in der Bereitschaft und in den Filtern.':'The name appears in the duty roster, on-call view and filters.','Keine Abteilung':'No department','Danach legst du Mitglieder, Teamleitung und Deputy fest.':'Next you set members, team lead and deputy.','Neues Team':'New team','0 Mitglieder':'0 members'});
+EN_RX.push([/^(\d+) von (\d+) Teams$/,'$1 of $2 teams']);

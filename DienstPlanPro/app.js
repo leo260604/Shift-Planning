@@ -2472,8 +2472,43 @@ function bindAdministration(){
  content.querySelectorAll('[data-edit-dept]').forEach(b=>b.onclick=()=>openDeptEditor(b.dataset.editDept));
  ['create-dept','create-dept-hint'].forEach(id=>{const b=document.getElementById(id);if(b)b.onclick=()=>openDeptEditor(null)});
  const create=document.getElementById('create-team');
- if(create)create.onclick=async()=>{if(!adminCaps().create)return;const name=(await askText('Name des neuen Teams:')).trim();if(!name)return;if(teams.length>=MAX_TEAMS){toast(`Es sind maximal ${MAX_TEAMS} Teams möglich.`);return}if(teams.some(t=>t.name.toLowerCase()===name.toLowerCase())){toast('Ein Team mit diesem Namen existiert bereits.');return}const t={id:makeId(),name:name.slice(0,60),memberIds:[],leaderId:'',deputyId:'',standbyColor:'#159da8'};teams.push(t);persistTeams();audit('Erstellt','Teams',t.name,{title:'Team angelegt',object:t.name});render();toast('Team angelegt.');openTeamEditor(t.id,'members')};
+ if(create)create.onclick=()=>openCreateTeam();
  if(adminOpenTeam){const id=adminOpenTeam;adminOpenTeam='';if(adminTeams().some(t=>t.id===id))setTimeout(()=>openTeamEditor(id),0)}
+}
+/* Neues Team anlegen (nur Admin): Name, Farbe und optional Abteilung */
+async function openCreateTeam(){
+ if(!adminCaps().create)return;
+ if(teams.length>=MAX_TEAMS){toast(`Es sind maximal ${MAX_TEAMS} Teams möglich.`);return}
+ const used=new Set(teams.map(t=>teamColor(t).toLowerCase())),color0=TEAM_COLORS.find(c=>!used.has(c.toLowerCase()))||TEAM_COLORS[0];
+ const depts=adminDepartments();
+ const dlg=formDialog('Neues Team anlegen',`
+  <div class="wp-field"><label class="wp-label" for="nt-name">Teamname</label>
+   <div class="nt-input"><span class="nt-input-ic">${icon('users')}</span><input id="nt-name" name="name" maxlength="60" autocomplete="off" placeholder="z. B. Team Ost" required><span class="nt-count" id="nt-count">0/60</span></div>
+   <small class="wp-note nt-msg" id="nt-msg">Der Name erscheint im Dienstplan, in der Bereitschaft und in den Filtern.</small></div>
+  <div class="wp-field"><span class="wp-label">Teamfarbe</span><div class="te-colors">${TEAM_COLORS.map(c=>`<button type="button" class="te-swatch ${c===color0?'on':''}" style="--c:${c}" data-color="${c}" aria-label="Farbe ${c}">${icon('check')}</button>`).join('')}<label class="te-custom" title="Eigene Farbe"><input type="color" id="nt-color-pick" value="${color0}"><span>Eigene</span></label></div><input type="hidden" name="color" id="nt-color" value="${color0}"></div>
+  ${depts.length?`<div class="wp-field"><span class="wp-label">Abteilung <span class="muted">(optional)</span></span><select id="nt-dept" name="dept"><option value="">Keine Abteilung</option>${depts.map(d=>`<option value="${escapeHtml(d.id)}">${escapeHtml(d.name)}</option>`).join('')}</select></div>`:''}
+  <div class="wp-summary nt-preview" id="nt-preview"></div>`,'Team anlegen','Danach legst du Mitglieder, Teamleitung und Deputy fest.',{icon:'users',cls:'nt-modal'});
+ const layer=[...document.querySelectorAll('.app-dialog')].pop(),$=id=>layer.querySelector('#'+id);
+ const name=$('nt-name'),msg=$('nt-msg'),cnt=$('nt-count'),col=$('nt-color'),pick=$('nt-color-pick'),prev=$('nt-preview'),head=layer.querySelector('.wp-head-icon'),dept=$('nt-dept');
+ if(dept)fancySelect(dept,{kind:'dept',placeholder:'Keine Abteilung',meta:o=>{const d=departments.find(x=>x.id===o.value);return d?{pic:'shift',icon:'build',color:d.color||'var(--accent-color)',sub:`${d.teamIds.length} ${d.teamIds.length===1?'Team':'Teams'}`}:{}}});
+ const problem=()=>{const v=name.value.trim();if(!v)return 'empty';if(teams.some(t=>t.name.toLowerCase()===v.toLowerCase()))return 'Ein Team mit diesem Namen existiert bereits.';return ''};
+ const upd=()=>{const v=name.value.trim(),c=col.value,pr=problem();cnt.textContent=`${name.value.length}/60`;
+  msg.textContent=pr&&pr!=='empty'?pr:'Der Name erscheint im Dienstplan, in der Bereitschaft und in den Filtern.';msg.classList.toggle('bad',!!pr&&pr!=='empty');name.closest('.nt-input').classList.toggle('bad',!!pr&&pr!=='empty');
+  head.style.background=c;head.style.boxShadow=`0 6px 16px -6px ${c}`;name.closest('.nt-input').style.setProperty('--c',c);
+  const d=dept&&departments.find(x=>x.id===dept.value);
+  prev.innerHTML=`<span class="nt-badge" style="--c:${c}">${escapeHtml((v||'T').replace(/^Team\s+/i,'').slice(0,2).toUpperCase()||'T')}</span><div><b>${escapeHtml(v||'Neues Team')}</b><small>0 Mitglieder${d?' · '+escapeHtml(d.name):''} · ${teams.length+1} von ${MAX_TEAMS} Teams</small></div>`;
+  layer.querySelector('button[type=submit]').disabled=!!pr};
+ const setColor=c=>{col.value=c;pick.value=c;layer.querySelectorAll('.te-swatch').forEach(b=>b.classList.toggle('on',b.dataset.color.toLowerCase()===c.toLowerCase()));upd()};
+ layer.querySelectorAll('.te-swatch').forEach(b=>b.onclick=()=>setColor(b.dataset.color));pick.oninput=()=>setColor(pick.value);
+ name.oninput=upd;dept?.addEventListener('change',upd);upd();
+ layer.addEventListener('submit',e=>{if(problem()){e.preventDefault();e.stopPropagation();name.focus()}},true);
+ setTimeout(()=>name.focus(),30);
+ const res=await dlg;if(!res)return;
+ const nm=res.name.trim().slice(0,60);if(!nm||teams.some(t=>t.name.toLowerCase()===nm.toLowerCase()))return;
+ const c=/^#[0-9a-f]{6}$/i.test(res.color)?res.color:'#14A1A9';
+ const t={id:makeId(),name:nm,memberIds:[],leaderId:'',deputyId:'',standbyColor:c};teams.push(t);persistTeams();
+ const d=res.dept&&departments.find(x=>x.id===res.dept);if(d){departments.forEach(x=>x.teamIds=x.teamIds.filter(id=>id!==t.id));d.teamIds.push(t.id);persistDepartments()}
+ audit('Erstellt','Teams',t.name,{title:'Team angelegt',object:t.name,after:d?'Abteilung: '+d.name:''});render();toast('Team angelegt.');openTeamEditor(t.id,'members');
 }
 /* Abteilung anlegen / bearbeiten (nur Admin) */
 function openDeptEditor(id){
