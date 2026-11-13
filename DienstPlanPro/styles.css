@@ -2129,3 +2129,67 @@ input[data-color-input]:disabled{cursor:default;opacity:.6}
 .color-swatch.custom input[data-color-input]{opacity:0!important;width:100%;height:100%;border:0}
 .te-custom input[data-color-input]{width:32px!important;height:32px!important;min-height:0!important;flex:none;box-sizing:border-box;border-radius:50%!important}
 @media (max-width:700px){.dept-hint{display:none!important}}
+/* Berichte: Mitarbeitersuche rechts neben dem Team-Dropdown, auch am Handy */
+.report-who{display:inline-flex;align-items:center;gap:8px;min-width:0}
+.report-filters{flex-wrap:wrap}
+.report-filters .report-break{flex-basis:100%;height:0;margin:0;padding:0}
+.report-filters .report-member-search{min-width:240px}
+@media (max-width:700px){.report-filters .report-who{display:flex;align-items:center;gap:8px;flex:1 1 100%;min-width:0}.report-filters .report-member-search{flex:1 1 auto!important;min-width:0!important;width:auto}.report-filters .team-dd{flex:none;margin:0}}
+/* Berichte: Art-Filter am Handy als Dropdown */
+.kind-dd{display:none}
+.kind-dd .team-dd-panel{width:220px}
+.report-kind-chips{display:contents}
+@media (max-width:700px){.report-kind-chips{display:none}.report-filters .kind-dd{display:inline-flex}}
+
+/* ================= Berichte: Einträge (PC-Tabelle & Handy-Liste) ================= */
+.rt-count{display:inline-grid;place-items:center;min-width:26px;height:22px;padding:0 8px;border-radius:999px;background:var(--surface-3);color:var(--ink-2);font-size:12px;font-weight:700}
+.rt-selall{display:none;align-items:center;gap:7px;font-size:13px;font-weight:600;color:var(--ink-2);cursor:pointer}
+.report-table{width:100%;border-collapse:separate;border-spacing:0}
+.report-table thead th{position:sticky;top:0;z-index:1;background:var(--surface-2);font-size:11px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);padding:10px 14px;border-bottom:1px solid var(--line)}
+.report-table tbody td{padding:10px 14px;border-bottom:1px solid var(--line-2);vertical-align:middle}
+.report-table tbody tr{transition:background .12s}
+.report-table tbody tr:hover{background:var(--surface-2)}
+.report-table tbody tr.is-selected{background:var(--accent-soft)}
+.report-table tbody tr.is-selected td:first-child{box-shadow:inset 3px 0 0 var(--accent-color)}
+.report-table .cb-col{width:44px}
+.rt-date{white-space:nowrap}
+.rt-date .rt-day{display:block;font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;line-height:1.2}
+.rt-date b{font-size:13.5px}
+.rt-person .person{display:flex;align-items:center;gap:10px;min-width:0}
+.rt-name{display:flex;flex-direction:column;min-width:0;line-height:1.25}
+.rt-name b{font-size:13.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rt-name small,.rt-shift small{display:flex;align-items:center;gap:5px;color:var(--muted);font-size:12px;white-space:nowrap}
+.rt-name .dot{width:7px;height:7px;border-radius:50%;background:var(--c);flex:none;display:inline-block}
+.rt-shift b{display:block;font-size:13.5px;font-weight:600;line-height:1.25}
+.rt-shift small .ic{width:12px;height:12px}
+.rt-hours{white-space:nowrap}
+.rt-hours b{font-size:14px;font-variant-numeric:tabular-nums}
+.rt-hours small{margin-left:3px;color:var(--muted);font-size:11px}
+@media (max-width:700px){
+  .report-table-wrap{overflow:visible}
+  .report-table thead{display:none}
+  .report-table,.report-table tbody{display:block}
+  .report-table tbody tr{display:grid;grid-template-columns:30px minmax(0,1fr) auto;grid-template-areas:"cb person hours" "cb shift kind";column-gap:10px;row-gap:6px;padding:12px 14px;border-bottom:1px solid var(--line-2);cursor:pointer}
+  .report-table tbody tr.is-selected td:first-child{box-shadow:none}
+  .report-table tbody tr.is-selected{box-shadow:inset 3px 0 0 var(--accent-color)}
+  .report-table tbody td{display:block;padding:0;border:0;min-width:0}
+  .report-table td.rt-cb{grid-area:cb;align-self:center;width:auto}
+  .report-table td.rt-person{grid-area:person}
+  .report-table td.rt-hours{grid-area:hours;text-align:right;align-self:center}
+  .report-table td.rt-kind{grid-area:kind;justify-self:end;align-self:center}
+  .report-table td.rt-shift{grid-area:shift;display:flex;align-items:center;gap:8px;flex-wrap:wrap;min-width:0}
+  .report-table td.rt-date{display:none}
+  .rt-shift b{display:inline;font-size:13px}
+  .rt-shift small{font-size:12px}
+  .rt-shift::before{content:attr(data-date);font-size:12px;font-weight:700;color:var(--ink-2)}
+  .report-table td.empty-note{grid-column:1/-1;text-align:center;padding:20px 0}
+  .report-table tbody tr:has(.empty-note){display:block}
+  .rt-hint{display:none}
+  .rt-selall{display:inline-flex;margin-left:auto}
+}
+@media (max-width:700px){
+  .report-table-wrap .report-table td.rt-kind,.report-table-wrap .report-table td.rt-hours{display:block!important}
+  .report-table-wrap .report-table td.rt-shift{display:flex!important}
+  .report-table-wrap .report-table td.rt-date{display:none!important}
+  .report-table-wrap .report-table tbody td{background:transparent!important}
+}
