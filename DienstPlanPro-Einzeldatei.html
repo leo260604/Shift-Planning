@@ -5,7 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#14A1A9">
   <title>DienstPlan Pro – Dienst- & Bereitschaftsmanagement</title>
-  <style>/* =====================================================================
+  <style>
+/* =====================================================================
    DienstPlan Pro – Stylesheet (überarbeitet 11/2026)
    Ein Satz Design-Variablen steuert Hell/Dunkel und die Akzentfarbe.
    ===================================================================== */
@@ -2135,6 +2136,18 @@ input[data-color-input]:disabled{cursor:default;opacity:.6}
 .te-custom input[data-color-input]{border-radius:50%;box-shadow:inset 0 0 0 2px var(--surface)}
 .color-swatch.custom input[data-color-input]{opacity:0!important;width:100%;height:100%;border:0}
 .te-custom input[data-color-input]{width:32px!important;height:32px!important;min-height:0!important;flex:none;box-sizing:border-box;border-radius:50%!important}
+/* Berichte: Mitarbeitersuche rechts neben dem Team-Dropdown, auch am Handy */
+.report-who{display:inline-flex;align-items:center;gap:8px;min-width:0}
+.report-filters{flex-wrap:wrap}
+.report-filters .report-break{flex-basis:100%;height:0;margin:0;padding:0}
+.report-filters .report-member-search{min-width:240px}
+@media (max-width:700px){.report-filters .report-who{display:flex;align-items:center;gap:8px;flex:1 1 100%;min-width:0}.report-filters .report-member-search{flex:1 1 auto!important;min-width:0!important;width:auto}.report-filters .team-dd{flex:none;margin:0}}
+/* Berichte: Art-Filter am Handy als Dropdown */
+.kind-dd{display:none}
+.kind-dd .team-dd-panel{width:220px}
+.report-kind-chips{display:contents}
+@media (max-width:700px){.report-kind-chips{display:none}.report-filters .kind-dd{display:inline-flex}}
+
 </style>
 </head>
 <body>
@@ -2267,7 +2280,8 @@ input[data-color-input]:disabled{cursor:default;opacity:.6}
     </div>
   </div>
   <div class="toast" id="toast" role="status"></div>
-  <script>'use strict';
+  <script>
+'use strict';
 /* =====================================================================
    Sprache: Deutsch (Standard) / Englisch
    Die Oberfläche wird auf Deutsch erzeugt und bei „English“ automatisch
@@ -2303,7 +2317,7 @@ const EN={
  // Dienstzeiten
  'Schichtmodelle pro Team – stehen beim Einteilen als Auswahl zur Verfügung.':'Shift templates per team – available when scheduling.','＋ Dienstzeit erstellen':'＋ Create shift time','Dienstzeit erstellen':'Create shift time','Dienstzeit bearbeiten':'Edit shift time','Dienstzeit suchen …':'Search shift time …','z. B. 1A Dienst':'e.g. Shift 1A','Farbe auswählen':'Choose colour','Eigene Farbe wählen':'Pick custom colour','Farbvorschläge':'Colour suggestions','Vorschau der Dienstfarbe':'Shift colour preview','Vorschau':'Preview','Für diese Auswahl sind noch keine Dienstzeiten angelegt.':'No shift times for this selection yet.','Für dich sind keine Teams zur Bearbeitung zugeordnet.':'No teams are assigned to you for editing.','Bitte wende dich an die Administration.':'Please contact your administrator.',
  // Kontakte
- 'Mitarbeiter & Kontakte':'Employees & contacts','Meine Favoriten':'My favourites','Alle Rollen':'All roles','Vorherige Favoriten':'Previous favourites','Weitere Favoriten':'More favourites','Suchergebnisse':'Search results','Teams-Chat':'Teams chat','Teams-Telefonnummer':'Teams phone number','(Teams Anruf)':'(Teams call)','Keine E-Mail hinterlegt':'No email on file','Keine Bereitschaftsnummer hinterlegt':'No on-call number on file','Bereitschaftsnummer':'On-call number','Chat in Microsoft Teams starten':'Start chat in Microsoft Teams','Anruf in Microsoft Teams starten':'Start call in Microsoft Teams','Anruf':'Call','Chat':'Chat','Teams':'Teams','Kontakt':'Contact','Teams-Anruf':'Teams call','Aus Favoriten entfernen':'Remove from favourites','Zu Favoriten hinzufügen':'Add to favourites','Suche nach Name, Team, Telefon oder E-Mail, um Kontakte anzuzeigen.':'Search by name, team, phone or email to show contacts.','Noch keine Favoriten. Tippe bei einem Kontakt auf den Stern, um ihn hier anzuzeigen.':'No favourites yet. Tap the star on a contact to show it here.','Treffer':'results','CSV exportieren':'Export CSV','＋ Mitarbeiter hinzufügen':'＋ Add employee','Name, Team, Telefon oder E-Mail …':'Name, team, phone or email …','Teams':'Teams','Keine Mitarbeiter gefunden.':'No employees found.','Mitarbeiter hinzufügen':'Add employee','Mitarbeiter bearbeiten':'Edit employee','Vor- und Nachname':'First and last name','Benutzerrolle':'User role','Profilbild wählen':'Choose profile photo','Teams zuordnen':'Assign teams',
+ 'Mitarbeiter & Kontakte':'Employees & contacts','Meine Favoriten':'My favourites','Alle Rollen':'All roles','Alle Arten':'All types','Vorherige Favoriten':'Previous favourites','Weitere Favoriten':'More favourites','Suchergebnisse':'Search results','Teams-Chat':'Teams chat','Teams-Telefonnummer':'Teams phone number','(Teams Anruf)':'(Teams call)','Keine E-Mail hinterlegt':'No email on file','Keine Bereitschaftsnummer hinterlegt':'No on-call number on file','Bereitschaftsnummer':'On-call number','Chat in Microsoft Teams starten':'Start chat in Microsoft Teams','Anruf in Microsoft Teams starten':'Start call in Microsoft Teams','Anruf':'Call','Chat':'Chat','Teams':'Teams','Kontakt':'Contact','Teams-Anruf':'Teams call','Aus Favoriten entfernen':'Remove from favourites','Zu Favoriten hinzufügen':'Add to favourites','Suche nach Name, Team, Telefon oder E-Mail, um Kontakte anzuzeigen.':'Search by name, team, phone or email to show contacts.','Noch keine Favoriten. Tippe bei einem Kontakt auf den Stern, um ihn hier anzuzeigen.':'No favourites yet. Tap the star on a contact to show it here.','Treffer':'results','CSV exportieren':'Export CSV','＋ Mitarbeiter hinzufügen':'＋ Add employee','Name, Team, Telefon oder E-Mail …':'Name, team, phone or email …','Teams':'Teams','Keine Mitarbeiter gefunden.':'No employees found.','Mitarbeiter hinzufügen':'Add employee','Mitarbeiter bearbeiten':'Edit employee','Vor- und Nachname':'First and last name','Benutzerrolle':'User role','Profilbild wählen':'Choose profile photo','Teams zuordnen':'Assign teams',
  // Teamverwaltung
  'Teamverwaltung':'Team management','Teams, Mitglieder und Verantwortlichkeiten zentral verwalten.':'Manage teams, members and responsibilities in one place.','Teams gesamt':'Teams in total','Zugeordnete Mitarbeiter':'Assigned employees','Teamleiter bestimmt':'Team leads assigned','Deputy bestimmt':'Deputies assigned','Neues Team erstellen':'Create new team','Anschließend Mitglieder und Verantwortliche in der Teamkarte zuordnen.':'Then assign members and leads in the team card.','Teamname, z. B. Team Ost':'Team name, e.g. Team East','Teamname':'Team name','＋ Team erstellen':'＋ Create team','Team oder Mitarbeiter suchen …':'Search team or employee …','Vollständig eingerichtet':'Fully set up','Vollständig':'Complete','Deputy fehlt':'Deputy missing','Teamleiter fehlt':'Team lead missing','TEAMLEITER':'TEAM LEAD','DEPUTY':'DEPUTY','Noch keine Mitarbeiter zugeordnet':'No employees assigned yet','Team bearbeiten':'Edit team','Mitglieder & Zuständigkeiten':'Members & responsibilities','Mitarbeiter suchen …':'Search employee …','Deputy / Stellvertretung':'Deputy','Team löschen':'Delete team','Änderungen speichern':'Save changes','Die Teamverwaltung ist nur für Administratoren freigegeben.':'Team management is available to administrators only.','Bitte über das Profilmenü als Admin anmelden.':'Please sign in as admin via the profile menu.','Noch keine Teams vorhanden. Lege oben dein erstes Team an.':'No teams yet. Create your first team above.',
  // Berichte
@@ -2672,8 +2686,10 @@ EN_RX.unshift([/^Alle Dienste \((\d+)\)$/,'All shifts ($1)'],[/^Alle meine Teams
 Object.assign(EN,{'Neues Team anlegen':'Create new team','z. B. Team Ost':'e.g. Team East','Der Name erscheint im Dienstplan, in der Bereitschaft und in den Filtern.':'The name appears in the duty roster, on-call view and filters.','Keine Abteilung':'No department','Danach legst du Mitglieder, Teamleitung und Deputy fest.':'Next you set members, team lead and deputy.','Neues Team':'New team','0 Mitglieder':'0 members'});
 EN_RX.push([/^(\d+) von (\d+) Teams$/,'$1 of $2 teams']);
 Object.assign(EN,{'Farbe wählen':'Choose colour','Ziehen, bis die Farbe passt':'Drag until the colour fits','Zuletzt verwendet':'Recently used','Vorher / Nachher':'Before / after','Sättigung und Helligkeit':'Saturation and brightness','Farbton':'Hue','Eigene Farbe':'Custom colour'});
+
 </script>
-  <script>'use strict';
+  <script>
+'use strict';
 const content=document.getElementById('content');
 
 /* ------------------------------------------------------------------
@@ -5404,11 +5420,11 @@ function openTeamEditor(id,startTab){
 /* ------------------------------------------------------------------
    Berichte / Export
 ------------------------------------------------------------------ */
-let reportTeam='Alle Teams',reportMember='Alle Mitarbeiter',reportKinds=['Dienst','Bereitschaft','Abwesenheit','Arbeitsort'],reportSel=new Set(),reportPage=0;
+let reportTeams=[],reportMember='Alle Mitarbeiter',reportKinds=['Dienst','Bereitschaft','Abwesenheit','Arbeitsort'],reportSel=new Set(),reportPage=0;
 const REPORT_PAGE=25;
 const kindLabel=a=>a.isAbsence?'Abwesenheit':a.kind==='Dienstplan'?'Dienst':a.kind;
 function reportRows(){
- return assignments.filter(a=>(reportTeam==='Alle Teams'||a.team===reportTeam)&&(reportMember==='Alle Mitarbeiter'||a.employee===reportMember)&&reportKinds.includes(kindLabel(a))&&(!reportFrom||a.date>=reportFrom)&&(!reportTo||a.date<=reportTo)&&(['Admin','Abteilungsleiter','Lohnverrechnung'].includes(currentRole)||currentUserTeamNames().includes(a.team))).sort((a,b)=>b.date.localeCompare(a.date)||(a.start||'').localeCompare(b.start||'')||a.employee.localeCompare(b.employee));
+ return assignments.filter(a=>(!reportTeams.length||reportTeams.includes(a.team))&&(reportMember==='Alle Mitarbeiter'||a.employee===reportMember)&&reportKinds.includes(kindLabel(a))&&(!reportFrom||a.date>=reportFrom)&&(!reportTo||a.date<=reportTo)&&(['Admin','Abteilungsleiter','Lohnverrechnung'].includes(currentRole)||currentUserTeamNames().includes(a.team))).sort((a,b)=>b.date.localeCompare(a.date)||(a.start||'').localeCompare(b.start||'')||a.employee.localeCompare(b.employee));
 }
 const rangeText=()=>`${reportFrom?fmtIsoDate(reportFrom):'…'} – ${reportTo?fmtIsoDate(reportTo):'…'}`;
 const entryRow=a=>[fmtIsoDate(a.date),a.employee,a.team,kindLabel(a),a.shift,a.groupName||'',a.start||'',a.end||'',a.start&&a.end&&!a.isAbsence?+netHours(a).toFixed(2):'',a.note||''];
@@ -5417,7 +5433,7 @@ function exportGuard(report,format){if(canEdit('Berichte / Export'))return true;
 function hoursPerEmployee(list){const map={};list.forEach(a=>{const m=map[a.employee]=map[a.employee]||{team:a.team,dn:0,dh:0,sn:0,sh:0,abs:0,vac:0};if(a.isAbsence){m.abs++;if(String(a.shift).startsWith('Urlaub'))m.vac+=a.shift==='Urlaub 1/2 Tag'?0.5:1}else if(a.kind==='Dienstplan'){m.dn++;m.dh+=netHours(a)}else if(a.kind==='Bereitschaft'){m.sn++;m.sh+=durationHours(a.start,a.end)}});return Object.entries(map).sort((a,b)=>a[1].team.localeCompare(b[1].team)||a[0].localeCompare(b[0]))}
 const REPORT_TEMPLATES=[
  {id:'payroll',icon:'file',title:'Monatsbericht Lohnverrechnung',sub:'Stunden je Mitarbeiter · XLSX',run:list=>{const rows=hoursPerEmployee(list).map(([n,m])=>[n,m.team,m.dn,+m.dh.toFixed(2),m.sn,+m.sh.toFixed(2),m.vac,m.abs]);if(!rows.length)return 0;saveFile(`lohnverrechnung-${reportFrom}_${reportTo}.xlsx`,makeXlsx('Lohnverrechnung',[['Mitarbeiter','Team','Dienste','Dienststunden (netto)','Bereitschaften','Bereitschaftsstunden','Urlaubstage','Abwesenheitstage gesamt'],...rows]));return {n:rows.length,f:'XLSX'}}},
- {id:'standby',icon:'moon',title:'Bereitschaftsabrechnung',sub:'Bereitschaftsstunden je Team · PDF',run:list=>{const sb=list.filter(a=>a.kind==='Bereitschaft');const map={};sb.forEach(a=>{const k=a.team+'|'+a.employee;const m=map[k]=map[k]||{team:a.team,emp:a.employee,days:0,h:0};m.days++;m.h+=durationHours(a.start,a.end)});const rows=Object.values(map).sort((a,b)=>a.team.localeCompare(b.team)||a.emp.localeCompare(b.emp)).map(m=>[m.team,m.emp,m.days,m.h.toLocaleString(LOC(),{maximumFractionDigits:1})+' h']);if(!rows.length)return 0;const tot=Object.values(map).reduce((s,m)=>s+m.h,0);rows.push(['Gesamt','',sb.length,tot.toLocaleString(LOC(),{maximumFractionDigits:1})+' h']);saveFile(`bereitschaftsabrechnung-${reportFrom}_${reportTo}.pdf`,makePdf('Bereitschaftsabrechnung',`Zeitraum ${rangeText()} · ${reportTeam}`,['Team','Mitarbeiter','Tage','Stunden'],rows,[3,4,1.2,1.5]));return {n:rows.length,f:'PDF'}}},
+ {id:'standby',icon:'moon',title:'Bereitschaftsabrechnung',sub:'Bereitschaftsstunden je Team · PDF',run:list=>{const sb=list.filter(a=>a.kind==='Bereitschaft');const map={};sb.forEach(a=>{const k=a.team+'|'+a.employee;const m=map[k]=map[k]||{team:a.team,emp:a.employee,days:0,h:0};m.days++;m.h+=durationHours(a.start,a.end)});const rows=Object.values(map).sort((a,b)=>a.team.localeCompare(b.team)||a.emp.localeCompare(b.emp)).map(m=>[m.team,m.emp,m.days,m.h.toLocaleString(LOC(),{maximumFractionDigits:1})+' h']);if(!rows.length)return 0;const tot=Object.values(map).reduce((s,m)=>s+m.h,0);rows.push(['Gesamt','',sb.length,tot.toLocaleString(LOC(),{maximumFractionDigits:1})+' h']);saveFile(`bereitschaftsabrechnung-${reportFrom}_${reportTo}.pdf`,makePdf('Bereitschaftsabrechnung',`Zeitraum ${rangeText()} · ${reportTeams.length?reportTeams.join(', '):'Alle Teams'}`,['Team','Mitarbeiter','Tage','Stunden'],rows,[3,4,1.2,1.5]));return {n:rows.length,f:'PDF'}}},
  {id:'absence',icon:'plane',title:'Abwesenheitsübersicht',sub:'Urlaub & Abwesenheiten · CSV',run:list=>{const ab=list.filter(a=>a.isAbsence).sort((a,b)=>a.employee.localeCompare(b.employee)||a.date.localeCompare(b.date));if(!ab.length)return 0;downloadCsv([['Mitarbeiter','Team','Datum','Art','Von','Bis','Bemerkung'],...ab.map(a=>[a.employee,a.team,fmtIsoDate(a.date),a.shift,a.start||'',a.end||'',a.note||''])],`abwesenheiten-${reportFrom}_${reportTo}.csv`);return {n:ab.length,f:'CSV'}}},
  {id:'hours',icon:'clock',title:'Stunden je Mitarbeiter',sub:'Dienst- & Bereitschaftsstunden · CSV',run:list=>{const rows=hoursPerEmployee(list).map(([n,m])=>[n,m.team,m.dh.toLocaleString(LOC(),{maximumFractionDigits:2}),m.sh.toLocaleString(LOC(),{maximumFractionDigits:2}),m.abs]);if(!rows.length)return 0;downloadCsv([['Mitarbeiter','Team','Dienststunden','Bereitschaftsstunden','Abwesenheitstage'],...rows],`stunden-je-mitarbeiter-${reportFrom}_${reportTo}.csv`);return {n:rows.length,f:'CSV'}}}
 ];
@@ -5432,16 +5448,18 @@ function reportExportPage(){
  const nf=v=>v.toLocaleString(LOC(),{maximumFractionDigits:1});
  const d=new Date(),ws=weekStart(d),q={week:[isoDate(ws),isoDate(addDays(ws,6))],month:[isoDate(new Date(d.getFullYear(),d.getMonth(),1)),isoDate(new Date(d.getFullYear(),d.getMonth()+1,0))],last:[isoDate(new Date(d.getFullYear(),d.getMonth()-1,1)),isoDate(new Date(d.getFullYear(),d.getMonth(),0))]};
  const isQ=k=>reportFrom===q[k][0]&&reportTo===q[k][1];
- const members=staff.filter(s=>reportTeam==='Alle Teams'||teams.some(t=>t.name===reportTeam&&t.memberIds.includes(s[8])));
+ const members=staff.filter(s=>!reportTeams.length||teams.some(t=>reportTeams.includes(t.name)&&t.memberIds.includes(s[8])));
  const allChecked=shown.length&&shown.every(a=>reportSel.has(a.id));
  return `${heading('Berichte / Export','Auswertungen erstellen und Dienst- und Bereitschaftsdaten exportieren.',`<button class="btn" id="export-pdf">${icon('file')}PDF</button><button class="btn" id="export-xlsx">${icon('file')}Excel</button><button class="btn primary" id="export-all">${icon('download')}Alle exportieren (CSV)</button>`)}
  <section class="panel filter-panel report-filters">
   <span class="date-range">${icon('cal')}<input type="date" id="report-from" value="${reportFrom}" aria-label="Von"><span>–</span><input type="date" id="report-to" value="${reportTo}" aria-label="Bis"></span>
   <button type="button" class="chip ${isQ('week')?'active':''}" data-range="week">Diese Woche</button><button type="button" class="chip ${isQ('month')?'active':''}" data-range="month">Dieser Monat</button><button type="button" class="chip ${isQ('last')?'active':''}" data-range="last">Letzter Monat</button>
-  <span class="vsep"></span>
-  <select class="chip-select ${reportTeam!=='Alle Teams'?'active':''}" id="report-team"><option value="Alle Teams">Alle Teams</option>${teamNames().map(t=>`<option value="${escapeHtml(t)}" ${reportTeam===t?'selected':''}>${escapeHtml(t)}</option>`).join('')}</select>
-  <select class="chip-select ${reportMember!=='Alle Mitarbeiter'?'active':''}" id="report-member"><option value="Alle Mitarbeiter">Alle Mitarbeiter</option>${members.map(m=>`<option value="${escapeHtml(m[0])}" ${reportMember===m[0]?'selected':''}>${escapeHtml(m[0])}</option>`).join('')}</select>
-  ${['Dienst','Bereitschaft','Abwesenheit','Arbeitsort'].map(k=>`<button type="button" class="chip ${reportKinds.includes(k)?'active':''}" data-kind="${k}">${k}</button>`).join('')}
+  <span class="report-break" aria-hidden="true"></span>
+  <div class="report-who">${teamFilterDropdown(reportTeamCtx)}
+  <label class="search-field report-member-search">${icon('search')}<input id="report-member-filter" type="search" list="report-member-options" placeholder="Mitarbeiter suchen …" value="${reportMember==='Alle Mitarbeiter'?'':escapeHtml(reportMember)}" autocomplete="off"><datalist id="report-member-options"><option value="Alle Mitarbeiter"></option>${members.map(m=>`<option value="${escapeHtml(m[0])}">`).join('')}</datalist></label></div>
+  <span class="report-kind-chips">${['Dienst','Bereitschaft','Abwesenheit','Arbeitsort'].map(k=>`<button type="button" class="chip ${reportKinds.includes(k)?'active':''}" data-kind="${k}">${k}</button>`).join('')}</span>
+  <div class="team-dd kind-dd" id="kind-dd"><button type="button" class="chip ${reportKinds.length<4?'active':''} team-dd-btn" id="kind-dd-btn" aria-haspopup="listbox" aria-expanded="false">${icon('filter')}<span class="team-dd-label">${reportKinds.length===4?'Alle Arten':reportKinds.length===1?reportKinds[0]:reportKinds.join(', ')}</span>${icon('down','team-dd-caret')}</button>
+   <div class="team-dd-panel" id="kind-dd-panel" hidden><div class="team-dd-list" role="listbox" aria-multiselectable="true">${['Dienst','Bereitschaft','Abwesenheit','Arbeitsort'].map(k=>`<button type="button" class="team-dd-opt ${reportKinds.includes(k)?'on':''}" data-kind="${k}" role="option" aria-selected="${reportKinds.includes(k)}"><span class="team-dd-check">${icon('check')}</span><span class="team-dd-name">${k}</span></button>`).join('')}</div></div></div>
  </section>
  <div class="stats">
   <div class="stat-card"><div><div class="stat-label">Einträge</div><div class="stat-value">${filtered.length.toLocaleString(LOC())}</div><div class="stat-note">im gewählten Zeitraum</div></div></div>
@@ -5457,13 +5475,19 @@ function reportExportPage(){
   <aside class="side-stack"><div class="side-label">BERICHTSVORLAGEN</div>${REPORT_TEMPLATES.map(t=>`<button type="button" class="panel template-card" data-template="${t.id}"><span class="stat-icon">${icon(t.icon)}</span><span><b>${t.title}</b><small>${t.sub}</small></span><span class="icon-btn">${icon('download')}</span></button>`).join('')}<p class="muted small">Vorlagen verwenden den oben gewählten Zeitraum und Filter.</p></aside>
  </div>`;
 }
+const reportTeamCtx={list:()=>teams.filter(t=>teamNames().includes(t.name)),sel:()=>reportTeams.filter(n=>teams.some(t=>t.name===n)),count:t=>t.memberIds.length,
+ apply(next){reportTeams=next;if(reportMember!=='Alle Mitarbeiter'&&reportTeams.length&&!staff.some(s=>s[0]===reportMember&&teams.some(t=>reportTeams.includes(t.name)&&t.memberIds.includes(s[8]))))reportMember='Alle Mitarbeiter';reportPage=0;const y=window.scrollX,sy=window.scrollY;render();window.scrollTo(y,sy)}};
 function bindReports(){
  const from=document.getElementById('report-from'),to=document.getElementById('report-to');
  from.onchange=()=>{reportFrom=from.value;if(reportTo&&reportFrom>reportTo)reportTo=reportFrom;reportPage=0;render()};to.onchange=()=>{reportTo=to.value;reportPage=0;render()};
  content.querySelectorAll('[data-range]').forEach(b=>b.onclick=()=>{const d=new Date();if(b.dataset.range==='week'){const ws=weekStart(d);reportFrom=isoDate(ws);reportTo=isoDate(addDays(ws,6));}else if(b.dataset.range==='month'){reportFrom=isoDate(new Date(d.getFullYear(),d.getMonth(),1));reportTo=isoDate(new Date(d.getFullYear(),d.getMonth()+1,0));}else{reportFrom=isoDate(new Date(d.getFullYear(),d.getMonth()-1,1));reportTo=isoDate(new Date(d.getFullYear(),d.getMonth(),0));}reportPage=0;render()});
- document.getElementById('report-team').onchange=e=>{reportTeam=e.target.value;if(reportMember!=='Alle Mitarbeiter'&&reportTeam!=='Alle Teams'&&!teams.some(t=>t.name===reportTeam&&staff.some(s=>s[0]===reportMember&&t.memberIds.includes(s[8]))))reportMember='Alle Mitarbeiter';reportPage=0;render()};
- document.getElementById('report-member').onchange=e=>{reportMember=e.target.value;reportPage=0;render()};
- content.querySelectorAll('[data-kind]').forEach(b=>b.onclick=()=>{const k=b.dataset.kind;reportKinds=reportKinds.includes(k)?reportKinds.filter(x=>x!==k):[...reportKinds,k];if(!reportKinds.length)reportKinds=[k];reportPage=0;render()});
+ bindTeamDropdown(reportTeamCtx);
+ const rmf=document.getElementById('report-member-filter');if(rmf){const applyRM=()=>{const v=rmf.value.trim();if(!v||v==='Alle Mitarbeiter')reportMember='Alle Mitarbeiter';else if(staff.some(s=>s[0]===v))reportMember=v;else{toast('Kein Mitarbeiter mit diesem Namen gefunden.');return}reportPage=0;const sy=window.scrollY;render();window.scrollTo(0,sy)};rmf.addEventListener('change',applyRM);rmf.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();applyRM()}});rmf.addEventListener('search',()=>{if(!rmf.value)applyRM()})}
+ content.querySelectorAll('[data-kind]').forEach(b=>b.onclick=e=>{e.stopPropagation();const k=b.dataset.kind,fromDd=b.classList.contains('team-dd-opt');reportKinds=reportKinds.includes(k)?reportKinds.filter(x=>x!==k):[...reportKinds,k];if(!reportKinds.length)reportKinds=[k];reportPage=0;const sy=window.scrollY;render();window.scrollTo(0,sy);if(fromDd){const kd=document.getElementById('kind-dd');if(kd){kd.classList.add('open');kd.querySelector('#kind-dd-panel').hidden=false;kd.querySelector('#kind-dd-btn').setAttribute('aria-expanded','true')}}});
+ const kdd=document.getElementById('kind-dd');if(kdd){const kb=kdd.querySelector('#kind-dd-btn'),kp=kdd.querySelector('#kind-dd-panel');const kClose=()=>{kdd.classList.remove('open');kp.hidden=true;kb.setAttribute('aria-expanded','false')};
+  kb.onclick=e=>{e.stopPropagation();if(kp.hidden){kdd.classList.add('open');kp.hidden=false;kb.setAttribute('aria-expanded','true')}else kClose()};
+  kdd.addEventListener('pointerdown',e=>e.stopPropagation());kdd.onkeydown=e=>{if(e.key==='Escape'){kClose();kb.focus()}};
+  if(!window.__kindDdBound){window.__kindDdBound=true;document.addEventListener('pointerdown',()=>{const d=document.getElementById('kind-dd');if(!d)return;const p=d.querySelector('#kind-dd-panel');if(p&&!p.hidden){d.classList.remove('open');p.hidden=true;d.querySelector('#kind-dd-btn').setAttribute('aria-expanded','false')}})}}
  content.querySelectorAll('[data-sel]').forEach(cb=>cb.onchange=()=>{if(cb.checked)reportSel.add(cb.dataset.sel);else reportSel.delete(cb.dataset.sel);render()});
  const sp=document.getElementById('select-page');if(sp)sp.onchange=()=>{const shown=reportRows().slice(reportPage*REPORT_PAGE,(reportPage+1)*REPORT_PAGE);shown.forEach(a=>sp.checked?reportSel.add(a.id):reportSel.delete(a.id));render()};
  const pp=document.getElementById('page-prev');if(pp)pp.onclick=()=>{reportPage--;render()};const pn=document.getElementById('page-next');if(pn)pn.onclick=()=>{reportPage++;render()};
@@ -5472,7 +5496,7 @@ function bindReports(){
  const es=document.getElementById('export-selection');if(es)es.onclick=()=>{if(!exportGuard('Auswahl','CSV'))return;const list=reportRows().filter(a=>reportSel.has(a.id));downloadCsv([ENTRY_HEAD,...list.map(entryRow)],`auswahl-${isoDate(new Date())}.csv`);logExport(`Auswahl (${list.length} Einträge)`,'CSV',list.length,status(list.length),{range:rangeText()});toast(`${list.length} Einträge exportiert.`)};
  document.getElementById('export-all').onclick=()=>{if(!exportGuard('Alle Einträge','CSV'))return;const list=reportRows();if(!list.length){toast('Keine Einträge zum Exportieren.');return}downloadCsv([ENTRY_HEAD,...list.map(entryRow)],`dienstplan-export-${reportFrom||'alle'}_${reportTo||''}.csv`);logExport('Alle Einträge','CSV',list.length,status(list.length),{range:rangeText()});toast(`${list.length} Einträge exportiert.`)};
  document.getElementById('export-xlsx').onclick=()=>{if(!exportGuard('Alle Einträge','XLSX'))return;const list=reportRows();if(!list.length){toast('Keine Einträge zum Exportieren.');return}saveFile(`dienstplan-export-${reportFrom}_${reportTo}.xlsx`,makeXlsx('Einträge',[ENTRY_HEAD,...list.map(entryRow)]));logExport('Alle Einträge','XLSX',list.length,status(list.length),{range:rangeText()});toast(`${list.length} Einträge exportiert.`)};
- document.getElementById('export-pdf').onclick=()=>{if(!exportGuard('Alle Einträge','PDF'))return;const list=reportRows();if(!list.length){toast('Keine Einträge zum Exportieren.');return}saveFile(`dienstplan-bericht-${reportFrom}_${reportTo}.pdf`,makePdf('Dienstplan – Bericht',`Zeitraum ${rangeText()} · ${reportTeam} · ${list.length} Einträge`,['Datum','Mitarbeiter','Team','Art','Dienst','Uhrzeit','Std.'],list.map(a=>[fmtIsoDate(a.date),a.employee,a.team,kindLabel(a),a.shift,a.start?a.start+'–'+a.end:'ganztägig',a.start&&!a.isAbsence?netHours(a).toLocaleString(LOC(),{maximumFractionDigits:1}):'—']),[1.4,2.6,1.8,1.4,2.2,1.5,0.8]));logExport('Alle Einträge','PDF',list.length,status(list.length),{range:rangeText()});toast(`${list.length} Einträge exportiert.`)};
+ document.getElementById('export-pdf').onclick=()=>{if(!exportGuard('Alle Einträge','PDF'))return;const list=reportRows();if(!list.length){toast('Keine Einträge zum Exportieren.');return}saveFile(`dienstplan-bericht-${reportFrom}_${reportTo}.pdf`,makePdf('Dienstplan – Bericht',`Zeitraum ${rangeText()} · ${reportTeams.length?reportTeams.join(", "):"Alle Teams"} · ${list.length} Einträge`,['Datum','Mitarbeiter','Team','Art','Dienst','Uhrzeit','Std.'],list.map(a=>[fmtIsoDate(a.date),a.employee,a.team,kindLabel(a),a.shift,a.start?a.start+'–'+a.end:'ganztägig',a.start&&!a.isAbsence?netHours(a).toLocaleString(LOC(),{maximumFractionDigits:1}):'—']),[1.4,2.6,1.8,1.4,2.2,1.5,0.8]));logExport('Alle Einträge','PDF',list.length,status(list.length),{range:rangeText()});toast(`${list.length} Einträge exportiert.`)};
  content.querySelectorAll('[data-template]').forEach(b=>b.onclick=()=>{const t=REPORT_TEMPLATES.find(x=>x.id===b.dataset.template);const fmtName=t.sub.split('·').pop().trim();if(!exportGuard(t.title,fmtName))return;const res=t.run(reportRows());if(!res){toast('Keine Daten im Zeitraum.');return}logExport(t.title,res.f,res.n,'Erfolgreich',{range:rangeText()});toast(`„${t.title}“ wurde erstellt.`)});
 }
 
@@ -5674,6 +5698,7 @@ function limitDateInputs(){document.querySelectorAll('input[type=date]').forEach
 {let ld=0;new MutationObserver(()=>{clearTimeout(ld);ld=setTimeout(limitDateInputs,0)}).observe(document.body,{childList:true,subtree:true});limitDateInputs();}
 /* Tabellen nach jedem Neuzeichnen für das Handy beschriften */
 {let lt=0;new MutationObserver(()=>{clearTimeout(lt);lt=setTimeout(labelTables,0)}).observe(content,{childList:true,subtree:true});labelTables();}
+
 </script>
 </body>
 </html>

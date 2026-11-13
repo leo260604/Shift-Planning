@@ -2128,3 +2128,14 @@ input[data-color-input]:disabled{cursor:default;opacity:.6}
 .te-custom input[data-color-input]{border-radius:50%;box-shadow:inset 0 0 0 2px var(--surface)}
 .color-swatch.custom input[data-color-input]{opacity:0!important;width:100%;height:100%;border:0}
 .te-custom input[data-color-input]{width:32px!important;height:32px!important;min-height:0!important;flex:none;box-sizing:border-box;border-radius:50%!important}
+/* Berichte: Mitarbeitersuche rechts neben dem Team-Dropdown, auch am Handy */
+.report-who{display:inline-flex;align-items:center;gap:8px;min-width:0}
+.report-filters{flex-wrap:wrap}
+.report-filters .report-break{flex-basis:100%;height:0;margin:0;padding:0}
+.report-filters .report-member-search{min-width:240px}
+@media (max-width:700px){.report-filters .report-who{display:flex;align-items:center;gap:8px;flex:1 1 100%;min-width:0}.report-filters .report-member-search{flex:1 1 auto!important;min-width:0!important;width:auto}.report-filters .team-dd{flex:none;margin:0}}
+/* Berichte: Art-Filter am Handy als Dropdown */
+.kind-dd{display:none}
+.kind-dd .team-dd-panel{width:220px}
+.report-kind-chips{display:contents}
+@media (max-width:700px){.report-kind-chips{display:none}.report-filters .kind-dd{display:inline-flex}}
