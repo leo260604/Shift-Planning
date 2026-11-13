@@ -163,7 +163,7 @@ Alle Seiten wurden nach den freigegebenen Mockups neu aufgebaut. Keine bestehend
 - **Diensttausch-Verlauf:** steht jetzt in einem eigenen Reiter „Verlauf“ als kompakte Liste (Person, Anzahl Dienste, Zeitraum, Status, Datum); ein Klick klappt die Details auf. Der Reiter „Offene Anfragen“ zeigt nur noch offene Anfragen.
 
 ## Dienstplan am Handy (11/2026)
-- **Dienstplan am Handy:** Die Buttons Diensttausch, Arbeitsort, Abwesenheit, Rotation automatisch planen und Eintrag erstellen sind zu einem Button **„Aktionen“** zusammengefasst. Er öffnet ein Menü von unten mit allen Aktionen (inkl. kurzer Beschreibung); am Tablet und PC bleiben die einzelnen Buttons sichtbar.
+- **Dienstplan am Handy:** Die Buttons Diensttausch, Arbeitsort, Abwesenheit, Rotation automatisch planen und Eintrag erstellen sind zu einem Button **„Aktionen“** zusammengefasst. Er öffnet ein Menü von unten mit allen Aktionen (inkl. kurzer Beschreibung); am Tablet und PC bleiben die einzelnen Buttons sichtbar. Dasselbe gilt in der **Bereitschaft** (Rotation automatisch planen, Bereitschaft einteilen).
 
 ## Automatische Bildschirmanpassung (alle Geräte)
 Alle Seiten passen sich automatisch an jedes Gerät an – getestet mit 15 Größen von 320 px (kleines Handy) über Tablets hoch/quer (768–1180 px) und Laptops bis 2560 px, jeweils ohne seitliches Überlaufen. Auf Tablets wird die Seitenleiste automatisch auf Symbole verkleinert, die Team-Ansicht/Zeitleiste zeigt die ganze Woche, hochkant erscheint die kompakte Wochenübersicht. Tabellen werden auf dem Handy als Karten dargestellt, die Berechtigungsmatrix zeigt nur die gewählte Rolle, und nichts muss seitlich gescrollt werden.

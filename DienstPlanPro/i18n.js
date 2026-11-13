@@ -383,3 +383,4 @@ Object.assign(EN,{'– einen oder mehrere Tage antippen':'– tap one or more da
 EN_RX.push([/^(.+) hat Dienst$/,'$1 is on duty']);
 Object.assign(EN,{'– Tage antippen':'– tap days','Auswahl':'Selection','Bereits angefragt':'Already requested','Tippe links im Kalender auf einen Tag mit deinem Dienst.':'Tap a day with your duty in the calendar on the left.'});
 Object.assign(EN,{'Aktionen':'Actions','Dienst mit einer Kollegin oder einem Kollegen tauschen':'Swap a duty with a colleague','Homeoffice oder Büro eintragen':'Enter home office or office','Urlaub, Krankenstand & Co. eintragen':'Enter leave, sick leave & more','Dienste im Wechsel automatisch verteilen':'Distribute duties automatically in rotation','Neuen Dienst einteilen':'Schedule a new duty'});
+Object.assign(EN,{'Bereitschaften im Wechsel automatisch verteilen':'Distribute on-call duties automatically in rotation','Neue Bereitschaft einteilen':'Schedule a new on-call duty'});

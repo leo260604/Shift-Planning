@@ -2376,6 +2376,7 @@ Object.assign(EN,{'– einen oder mehrere Tage antippen':'– tap one or more da
 EN_RX.push([/^(.+) hat Dienst$/,'$1 is on duty']);
 Object.assign(EN,{'– Tage antippen':'– tap days','Auswahl':'Selection','Bereits angefragt':'Already requested','Tippe links im Kalender auf einen Tag mit deinem Dienst.':'Tap a day with your duty in the calendar on the left.'});
 Object.assign(EN,{'Aktionen':'Actions','Dienst mit einer Kollegin oder einem Kollegen tauschen':'Swap a duty with a colleague','Homeoffice oder Büro eintragen':'Enter home office or office','Urlaub, Krankenstand & Co. eintragen':'Enter leave, sick leave & more','Dienste im Wechsel automatisch verteilen':'Distribute duties automatically in rotation','Neuen Dienst einteilen':'Schedule a new duty'});
+Object.assign(EN,{'Bereitschaften im Wechsel automatisch verteilen':'Distribute on-call duties automatically in rotation','Neue Bereitschaft einteilen':'Schedule a new on-call duty'});
 </script>
   <script>'use strict';
 const content=document.getElementById('content');
@@ -3138,7 +3139,7 @@ function calendar(){
  const canAdd=entryTeams().length>0,canManageAny=manageableTeams().length>0;
   const actionsRaw=isDuty?`${canRequestSwap()?`<button class="btn" id="swap-new-btn">${icon('refresh')}Diensttausch</button>`:''}<button class="btn" id="add-workplace">${icon('home')}Arbeitsort</button>${absenceTeams().length?`<button class="btn" id="add-absence">${icon('travel','ic-fill')}Abwesenheit</button>`:''}${canManageAny&&manageableTeams('Dienstplan').some(t=>shiftTypes.some(s=>s.team===t.name))?`<button class="btn" id="duty-rotation">${icon('spark')}Rotation automatisch planen</button>`:''}${canAdd?`<button class="btn primary" id="add">${icon('plus')}Eintrag erstellen</button>`:''}`:`${canManageAny&&standbyTimes.length?`<button class="btn" id="auto-rotation">${icon('spark')}Rotation automatisch planen</button>`:''}${canAdd?`<button class="btn primary" id="add">${icon('plus')}Bereitschaft einteilen</button>`:''}`;
  // Mobil: Aktionen im Dienstplan unter einem Button „Aktionen“ zusammenfassen
- const actions=isDuty&&actionsRaw?`<span class="dp-actions">${actionsRaw}</span><button type="button" class="btn dp-actions-toggle" id="dp-actions-toggle" aria-haspopup="dialog">${icon('dots')}Aktionen${icon('down','dp-act-caret')}</button>`:actionsRaw;
+ const actions=actionsRaw?`<span class="dp-actions">${actionsRaw}</span><button type="button" class="btn dp-actions-toggle" id="dp-actions-toggle" aria-haspopup="dialog">Aktionen${icon('down','dp-act-caret')}</button>`:actionsRaw;
  const sub=isDuty?((currentView==='Monat')?monthName(d):`KW ${isoWeek(ws)} · ${fmt(ws)} – ${fmt(we)}`):(currentView==='Zeitleiste'||currentView==='Woche'?`KW ${isoWeek(ws)} · ${fmt(ws)} – ${fmt(we)}${currentView==='Zeitleiste'?' · Wer hat wann Bereitschaft?':''}`:currentView==='Monat'?`${monthName(d)} · Rotationsübersicht aller Teams`:fmtWithWeekday(d));
  // Bereitschaft: Wer ist jetzt erreichbar? Lücken im Monat?
  let nowBlock='';
@@ -3578,7 +3579,7 @@ async function editCockpitLink(){
  audit(url?(before==='—'?'Erstellt':'Geändert'):'Gelöscht','Administration','Link „Mein Porsche Cockpit“',{title:'Dashboard-Link geändert',object:'Mein Porsche Cockpit',before,after:url||'—'});
  toast(url?'Link gespeichert.':'Link entfernt.');render();
 }
-function statTile({label,value,note,ic,tone=''}){return `<div class="stat-card dash-stat"><div><div class="stat-label">${label}</div><div class="stat-value">${value}</div><div class="stat-note">${note}</div></div><div class="stat-icon ${tone}">${icon(ic)}</div></div>`}
+function statTile({label,value,note,ic,tone=''}){return `<div class="stat-card dash-stat"><div><div class="stat-label">${label}</div><div class="stat-value">${value}</div><div class="stat-note">${note}</div></div><div class="stat-icon ${tone}">${icon(ic,ic==='travel'?'ic-fill':'')}</div></div>`}
 /* zusammenhängende Bereitschaftstage zu Blöcken zusammenfassen */
 function standbyRuns(list){const runs=[];list.forEach(a=>{const last=runs[runs.length-1];if(last&&last.team===a.team&&daysUntil(a.date)-daysUntil(last.to)===1){last.to=a.date;last.items.push(a)}else if(!(last&&last.to===a.date))runs.push({from:a.date,to:a.date,team:a.team,items:[a]})});return runs}
 
@@ -3595,7 +3596,7 @@ const DASH_WIDGETS=[
  {id:'kStandby',title:'Kommende Bereitschaften',desc:'Anzahl deiner nächsten Bereitschaften · Klick öffnet die Bereitschaft (Woche)',size:'tile',
   render:c=>statTile({label:'Kommende Bereitschaften',value:c.standbys.length,note:c.standbys[0]?'Nächste: '+fmtShortWd(dashDay(c.standbys[0].date)):'Keine Bereitschaft geplant',ic:'moon'}),action:()=>goView('Bereitschaft','Woche',{teams:[],member:''})},
  {id:'kAbsence',title:'Aktuelle Abwesenheiten',desc:'Wer heute fehlt · Klick zeigt Details',size:'tile',
-  render:c=>{const n=new Set(c.absences.map(a=>a.employee)).size;return statTile({label:'Aktuelle Abwesenheiten',value:n,note:n?escapeHtml([...new Set(c.absences.map(a=>a.shift))].slice(0,2).join(', ')):'Niemand abwesend',ic:'plane',tone:'amber'})},action:c=>absencePopup(c)},
+  render:c=>{const n=new Set(c.absences.map(a=>a.employee)).size;return statTile({label:'Aktuelle Abwesenheiten',value:n,note:n?escapeHtml([...new Set(c.absences.map(a=>a.shift))].slice(0,2).join(', ')):'Niemand abwesend',ic:'travel',tone:'amber'})},action:c=>absencePopup(c)},
  {id:'kIssues',title:'Offene Punkte',desc:'Automatisch erkannte Lücken & Konflikte · Klick zeigt Details',size:'tile',lead:true,
   render:c=>statTile({label:'Offene Punkte',value:c.issues.length,note:c.issues.length?`${c.issues.filter(i=>i.level==='crit').length} kritisch`:'Alles erledigt',ic:'alert',tone:'red'}),action:c=>issuesPopup(c)},
 {id:'kSwaps',title:'Diensttausch',desc:'Offene Tauschanfragen an dich und von dir · Klick öffnet die Übersicht',size:'tile',
@@ -4486,10 +4487,10 @@ function buildWpIndex(){const wp=new Map(),duty=new Set();assignments.forEach(a=
 const wpFor=a=>a&&a.kind==='Dienstplan'&&!a.isAbsence?WPX.wp.get(a.date+'|'+a.employee)||null:null;
 const wpMerged=a=>a.kind==='Arbeitsort'&&WPX.duty.has(a.date+'|'+a.employee);// steht bereits als Hinweis beim Dienst
 const wpHint=(wp,cls='')=>wp?`<span class="wp-hint ${wp.shift==='Homeoffice'?'is-home':'is-office'} ${cls}" title="Arbeitsort: ${escapeHtml(wp.shift)}">${icon(wp.shift==='Homeoffice'?'home':'build')}${escapeHtml(wp.shift)}</span>`:'';
-/* Mobil: Aktionen-Menü im Dienstplan (Diensttausch, Arbeitsort, Abwesenheit, Rotation, Eintrag erstellen) */
+/* Mobil: Aktionen-Menü im Dienstplan und in der Bereitschaft */
 function openDutyActionsSheet(){
  const src=[...document.querySelectorAll('.dp-actions > button')];if(!src.length)return;
- const desc={'swap-new-btn':'Dienst mit einer Kollegin oder einem Kollegen tauschen','add-workplace':'Homeoffice oder Büro eintragen','add-absence':'Urlaub, Krankenstand & Co. eintragen','duty-rotation':'Dienste im Wechsel automatisch verteilen','add':'Neuen Dienst einteilen'};
+ const desc={'swap-new-btn':'Dienst mit einer Kollegin oder einem Kollegen tauschen','add-workplace':'Homeoffice oder Büro eintragen','add-absence':'Urlaub, Krankenstand & Co. eintragen','duty-rotation':'Dienste im Wechsel automatisch verteilen','auto-rotation':'Bereitschaften im Wechsel automatisch verteilen','add':currentPage==='Bereitschaft'?'Neue Bereitschaft einteilen':'Neuen Dienst einteilen'};
  const layer=document.createElement('div');layer.className='modal-backdrop app-dialog dp-sheet-layer';
  layer.innerHTML=`<div class="dp-sheet" role="dialog" aria-modal="true" aria-labelledby="dp-sheet-title"><div class="dp-sheet-grip" aria-hidden="true"></div><div class="dp-sheet-head"><b id="dp-sheet-title">Aktionen</b><button type="button" class="icon-btn" data-sheet-close aria-label="Schließen">×</button></div>
   <div class="dp-sheet-list">${src.map((b,i)=>`<button type="button" class="dp-sheet-item ${b.classList.contains('primary')?'primary':''}" data-sheet-i="${i}"><span class="dp-sheet-ic">${b.querySelector('svg')?.outerHTML||''}</span><span class="dp-sheet-txt"><b>${escapeHtml(b.textContent.trim())}</b><small>${escapeHtml(desc[b.id]||'')}</small></span>${icon('chev','dp-sheet-chev')}</button>`).join('')}</div></div>`;
