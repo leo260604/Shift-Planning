@@ -165,6 +165,17 @@ Alle Seiten wurden nach den freigegebenen Mockups neu aufgebaut. Keine bestehend
 ## Dienstplan am Handy (11/2026)
 - **Dienstplan am Handy:** Die Buttons Diensttausch, Arbeitsort, Abwesenheit, Rotation automatisch planen und Eintrag erstellen sind zu einem Button **„Aktionen“** zusammengefasst. Er öffnet ein Menü von unten mit allen Aktionen (inkl. kurzer Beschreibung); am Tablet und PC bleiben die einzelnen Buttons sichtbar. Dasselbe gilt in der **Bereitschaft** (Rotation automatisch planen, Bereitschaft einteilen).
 
+## Dienstzeiten (11/2026)
+- **Dienstzeiten:** Die Liste nutzt jetzt die volle Breite. Die Eingabemaske erscheint erst als **Popup**, wenn man auf „Dienstzeit erstellen“ (oder beim Bearbeiten/Duplizieren auf das Stift-Symbol) klickt. Nach „Speichern“ schließt sich das Popup und wird zurückgesetzt; Abbrechen, × , Esc oder Klick daneben schließen es ebenfalls. Die Vorschau in der Maske entfällt.
+- **Design & Mittagspause:** Die Maske hat jetzt dasselbe Design wie „Arbeitsort“ im Dienstplan (Kopfzeile mit Symbol in Dienstfarbe, Zeitbereich Beginn → Ende, Zusammenfassung). Die Auswahl der Mittagspause entfällt: Von jedem Dienst werden fix **30 Minuten Mittagspause** abgezogen (z. B. 07:00–15:00 = 7 Std. 30 Min. netto).
+
+## Eingabemasken im Arbeitsort-Design (11/2026)
+- **Abwesenheit, Eintrag erstellen, Bereitschaft einteilen und „Rotation automatisch planen“** (Dienstplan und Bereitschaft) haben jetzt dasselbe Design wie die Arbeitsort-Maske: Kopfzeile mit Symbol, beschriftete Felder, Zeitraum „Von → Bis“, eine Zusammenfassung vor dem Speichern und Buttons mit Häkchen.
+- Team-, Mitarbeiter-, Dienst- und Gruppenauswahl öffnen eine Liste im Vordergrund (mit Suche bei längeren Listen); Klick daneben oder Esc schließt nur die Liste.
+- Die Art der Abwesenheit wird über ein Dropdown gewählt, das sich im Vordergrund öffnet (mit Symbol und kurzer Beschreibung je Art); bei „Abwesend untertägig“ und „Arztbesuch“ erscheinen die Uhrzeiten.
+- Rotation: Teams und „Dienste im Wechsel“ jeweils als Dropdown im Vordergrund (Mehrfachauswahl mit „Alle“; es werden nur Dienste der gewählten Teams angezeigt), Wechsel wöchentlich/täglich als Karten; die Erklärung ist unter „So funktioniert die Rotation“ aufklappbar.
+- Fehler behoben: Im Team-Dropdown bei „Rotation automatisch planen“ wurde das gewählte Team nicht angezeigt.
+
 ## Automatische Bildschirmanpassung (alle Geräte)
 Alle Seiten passen sich automatisch an jedes Gerät an – getestet mit 15 Größen von 320 px (kleines Handy) über Tablets hoch/quer (768–1180 px) und Laptops bis 2560 px, jeweils ohne seitliches Überlaufen. Auf Tablets wird die Seitenleiste automatisch auf Symbole verkleinert, die Team-Ansicht/Zeitleiste zeigt die ganze Woche, hochkant erscheint die kompakte Wochenübersicht. Tabellen werden auf dem Handy als Karten dargestellt, die Berechtigungsmatrix zeigt nur die gewählte Rolle, und nichts muss seitlich gescrollt werden.
 

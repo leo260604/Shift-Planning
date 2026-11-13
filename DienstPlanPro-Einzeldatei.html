@@ -1859,6 +1859,126 @@ body.dark-mode .wp-box.office .wp-ic{color:#7fb2ea}
 .dp-sheet-item.primary .dp-sheet-ic{background:var(--accent-color);border-color:var(--accent-color);color:#fff}
 .dp-sheet-item.primary b{color:var(--accent-color)}
 @media (prefers-reduced-motion:reduce){.dp-sheet,.dp-sheet-layer{transition:none}}
+
+/* ===== Dienstzeiten: Eingabemaske als Popup ===== */
+.modal.shift-modal{width:min(540px,100%);padding:0}
+.shift-modal .panel-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px}
+.shift-modal .panel-head h2{margin:0;font-size:18px}
+.shift-modal .stack-form{gap:12px}
+.shift-modal .btn-row.end{margin-top:4px}
+
+.shift-modal .shift-color-presets{display:flex;flex-wrap:wrap;align-items:center;gap:8px}
+.shift-modal .shift-color-presets .color-swatch{margin:0}
+/* Dienstzeiten-Maske im Stil der Arbeitsort-Maske */
+.shift-head-ic{background:var(--sc,var(--accent-color))!important;box-shadow:0 6px 16px -6px var(--sc,var(--accent-color))!important}
+.shift-modal .wp-head{background:linear-gradient(180deg,color-mix(in srgb,var(--sc,var(--accent-color)) 12%,transparent),transparent)}
+.shift-modal .wp-form{gap:14px}
+.modal .shift-modal label.wp-field,.shift-modal .wp-field{margin:0}
+.shift-modal .te-two{gap:12px}
+.shift-modal .wp-range input[type=time]{font-size:16px;font-weight:650}
+.shift-modal .shift-net{align-items:center}
+.shift-modal .shift-net b{font-size:15px;color:var(--ink)}
+.modal label.wp-check{display:flex;flex-direction:row;align-items:flex-start;gap:10px;margin:0;padding:12px 14px;border:1px solid var(--line);border-radius:12px;background:var(--surface);font-weight:500;cursor:pointer}
+.wp-check input{margin-top:2px;flex:none}
+.wp-check b{font-size:13.5px;color:var(--ink)}
+.wp-check small{font-size:12px;margin-top:2px;line-height:1.4}
+.shift-modal .shift-color-presets{display:flex;flex-wrap:wrap;align-items:center;gap:8px}
+@media (max-width:560px){.shift-modal .te-two{grid-template-columns:1fr}}
+/* Dienstzeiten: Team-Auswahl im Stil der Personen-Auswahl */
+.pp-team{width:30px;height:30px;flex:none;border-radius:9px;display:grid;place-items:center;background:color-mix(in srgb,var(--c) 16%,transparent);color:var(--c)}
+.pp-team .ic{width:16px;height:16px}
+.pp-btn .pp-team{width:28px;height:28px;border-radius:8px}
+.shift-modal .te-two{align-items:end}
+.shift-modal .pp-btn{min-height:46px;padding:5px 12px 5px 8px}
+.shift-modal .pp-btn small{display:none}
+.shift-modal #shift-name{height:46px;box-sizing:border-box}
+.shift-modal .pp-opt small{white-space:normal}
+/* ================= Eingabemasken im Arbeitsort-Design (Abwesenheit, Eintrag, Bereitschaft, Rotation) ================= */
+.fs-native{display:none!important}
+.pp.fs{min-width:0}
+.pp.fs .pp-btn{min-height:46px;padding:5px 12px 5px 8px}
+.pp.fs .pp-btn:disabled{cursor:default;opacity:.7;background:var(--surface-2)}
+.pp.fs .pp-btn small{white-space:nowrap}
+.pp.fs-plain .pp-btn{padding-left:13px}
+.pp-few .pp-panel .team-dd-search{display:none}
+.pp .pp-team{--c:var(--accent-color)}
+.wp-modal .te-two{display:grid;grid-template-columns:1fr 1fr;gap:12px;align-items:end}
+.wp-modal .te-two>.wp-field{min-width:0}
+.wp-modal textarea{width:100%;box-sizing:border-box;min-height:62px;resize:vertical;border:1.5px solid var(--line);border-radius:12px;padding:10px 12px;font:inherit;font-size:14px;background:var(--surface);color:var(--ink)}
+.wp-modal textarea:focus{outline:0;border-color:var(--accent-color);box-shadow:0 0 0 3px var(--accent-ring)}
+.wp-modal .wp-label .muted{font-weight:550}
+.modal .wp-form label.wp-label{display:block;margin:0}
+.duty-modal,.abs-modal,.rot-modal{width:min(560px,100%)}
+.duty-modal .wp-head-icon{background:var(--accent-color)}
+/* Abwesenheitsarten als Karten */
+.abs-head-ic{background:#d69b38!important;box-shadow:0 6px 16px -6px #d69b38!important}
+.abs-types{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+.modal label.abs-type{display:block;margin:0;cursor:pointer;position:relative;min-width:0}
+.abs-type input{position:absolute;opacity:0;pointer-events:none}
+.abs-type-card{display:flex;flex-direction:column;align-items:flex-start;gap:1px;height:100%;box-sizing:border-box;padding:10px 10px 9px;border:1.5px solid var(--line);border-radius:12px;background:var(--surface);transition:border-color .15s,box-shadow .15s,background .15s}
+.abs-type-card .wp-type-ic{width:28px;height:28px;margin-bottom:5px}
+.abs-type-card .wp-type-ic .ic{width:15px;height:15px}
+.abs-type-card b{font-size:12.5px;line-height:1.25;color:var(--ink)}
+.abs-type-card small{font-size:11px;color:var(--muted);font-weight:500;line-height:1.3}
+.abs-type:hover .abs-type-card{border-color:color-mix(in srgb,#d69b38 50%,var(--line))}
+.abs-type input:checked+.abs-type-card{border-color:#d69b38;background:color-mix(in srgb,#d69b38 11%,var(--surface));box-shadow:0 0 0 3px color-mix(in srgb,#d69b38 22%,transparent)}
+.abs-type input:checked+.abs-type-card .wp-type-ic{background:#d69b38;color:#fff}
+.abs-type input:focus-visible+.abs-type-card{outline:2px solid #d69b38;outline-offset:2px}
+.abs-modal .wp-sum-ic{background:color-mix(in srgb,#d69b38 15%,transparent);color:#c08326}
+/* Rotation */
+.dlg-team-dd{margin:0}
+.dlg-team-dd>summary{min-height:46px;padding:5px 12px 5px 8px;border-width:1.5px;border-radius:12px;gap:10px;font-size:14px;font-weight:650}
+.dlg-team-dd>summary .pp-team{width:28px;height:28px;border-radius:8px}
+.dlg-team-dd>summary .pp-team .ic{width:15px;height:15px;color:var(--c);transform:none!important}
+.dlg-team-dd>summary:hover{border-color:color-mix(in srgb,var(--accent-color) 45%,var(--line))}
+.dlg-team-dd .team-dd-panel{z-index:1000;padding:6px;border-radius:14px;box-shadow:0 18px 40px -12px rgba(0,0,0,.28),0 0 0 1px var(--line)}
+.dlg-team-dd .team-dd-panel .team-dd-search{margin:2px 2px 6px}
+.dlg-team-dd .team-dd-panel .check{display:flex;align-items:center;gap:9px;margin:0;padding:8px 9px;border-radius:9px;cursor:pointer}
+.dlg-team-dd .team-dd-panel .check:hover{background:var(--surface-2)}
+.dlg-team-dd .team-dd-panel .check small{margin-left:auto;color:var(--muted);font-size:12px}
+.dlg-team-dd .team-dd-panel .check[hidden]{display:none}
+.dlg-team-dd .team-dd-empty{padding:10px;color:var(--muted);font-size:13px}
+.rot-shifts{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px}
+.modal label.rot-shift{display:block;margin:0;cursor:pointer;position:relative;min-width:0}
+.rot-shift input{position:absolute;opacity:0;pointer-events:none}
+.rot-shift-card{position:relative;display:flex;align-items:center;gap:9px;padding:10px 30px 10px 11px;border:1.5px solid var(--line);border-radius:12px;background:var(--surface);transition:border-color .15s,background .15s,box-shadow .15s}
+.rot-shift-card .dot{--c:inherit;width:10px;height:10px;border-radius:50%;background:var(--c);flex:none}
+.rot-shift-card b{display:block;font-size:13px;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rot-shift-card small{display:block;font-size:11.5px;color:var(--muted)}
+.rot-shift-card>span{min-width:0}
+.rot-shift-card .wp-type-check{top:50%;right:9px;margin-top:-10px}
+.rot-shift:hover .rot-shift-card{border-color:color-mix(in srgb,var(--c) 50%,var(--line))}
+.rot-shift input:checked+.rot-shift-card{border-color:var(--c);background:color-mix(in srgb,var(--c) 9%,var(--surface))}
+.rot-shift input:checked+.rot-shift-card .wp-type-check{opacity:1;transform:none;background:var(--c)}
+.rot-shift input:focus-visible+.rot-shift-card{outline:2px solid var(--c);outline-offset:2px}
+.rot-note{display:flex;gap:8px;align-items:flex-start;line-height:1.45}
+.rot-note .ic{width:14px;height:14px;flex:none;margin-top:2px;color:var(--accent-color)}
+.rot-help{border:1px solid var(--line);border-radius:12px;background:var(--surface-2);font-size:12.5px;color:var(--muted)}
+.rot-help>summary{display:flex;align-items:center;gap:8px;padding:10px 12px;cursor:pointer;font-weight:650;color:var(--ink-2);list-style:none}
+.rot-help>summary::-webkit-details-marker{display:none}
+.rot-help>summary .ic{width:14px;height:14px;color:var(--accent-color)}
+.rot-help p{margin:0;padding:0 12px 12px;line-height:1.5}
+@media (max-width:560px){
+ .wp-modal .te-two{grid-template-columns:1fr}
+ .abs-types{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .abs-type-card{flex-direction:row;align-items:center;gap:8px;padding:9px}
+ .abs-type-card .wp-type-ic{margin:0;flex:none}
+ .abs-type-card small{display:none}
+ .rot-shifts{grid-template-columns:1fr 1fr}
+ .rot-modal .rot-modes .wp-type-card small{display:none}
+}
+.dlg-team-dd{display:block;width:100%}
+.dlg-team-dd>summary{width:100%;box-sizing:border-box}
+.dlg-team-dd>summary:focus-visible{outline:0;border-color:var(--accent-color);box-shadow:0 0 0 3px var(--accent-ring)}
+.dlg-team-dd .team-dd-panel .check{flex-direction:row!important}
+.dlg-team-dd .team-dd-panel .check>span{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:600;color:var(--ink);font-size:13.5px}
+.dlg-team-dd .team-dd-all{flex-direction:row!important}
+.modal label.check.wp-check{align-items:flex-start;padding:12px 14px!important}
+.check.wp-check small{display:block;margin:3px 0 0;max-width:none;white-space:normal;font-size:12px;line-height:1.4;text-align:left}
+.check.wp-check input{margin-top:2px}
+.dlg-team-dd .team-dd-panel .check.q-miss{display:none}
+.dlg-shift-dd .team-dd-panel .check small{max-width:none}
+.dlg-team-dd>summary .pp-team{--c:var(--accent-color)}
 </style>
 </head>
 <body>
@@ -2377,6 +2497,22 @@ EN_RX.push([/^(.+) hat Dienst$/,'$1 is on duty']);
 Object.assign(EN,{'– Tage antippen':'– tap days','Auswahl':'Selection','Bereits angefragt':'Already requested','Tippe links im Kalender auf einen Tag mit deinem Dienst.':'Tap a day with your duty in the calendar on the left.'});
 Object.assign(EN,{'Aktionen':'Actions','Dienst mit einer Kollegin oder einem Kollegen tauschen':'Swap a duty with a colleague','Homeoffice oder Büro eintragen':'Enter home office or office','Urlaub, Krankenstand & Co. eintragen':'Enter leave, sick leave & more','Dienste im Wechsel automatisch verteilen':'Distribute duties automatically in rotation','Neuen Dienst einteilen':'Schedule a new duty'});
 Object.assign(EN,{'Bereitschaften im Wechsel automatisch verteilen':'Distribute on-call duties automatically in rotation','Neue Bereitschaft einteilen':'Schedule a new on-call duty'});
+Object.assign(EN,{'Dienstzeit erstellt.':'Shift time created.','Dienstzeit dupliziert – Bezeichnung jetzt anpassen.':'Shift time duplicated – now adjust the name.'});
+Object.assign(EN,{'Steht beim Einteilen als Auswahl zur Verfügung.':'Available as a choice when scheduling.','Arbeitszeit':'Working time','Netto-Arbeitszeit · abzüglich 30 Min. fixer Mittagspause':'Net working time · minus fixed 30-min lunch break','abzgl. 30 Min. Mittagspause':'minus 30-min lunch break'});
+Object.assign(EN,{'Team auswählen':'Choose team'});
+EN_RX.push([/^(\d+) Mitglied(?:er)? · (\d+) Dienstzeit(?:en)?$/,(m,a,b)=>`${a} ${a==='1'?'member':'members'} · ${b} ${b==='1'?'shift time':'shift times'}`]);
+Object.assign(EN,{'Wird im Dienstplan beim Mitarbeiter angezeigt.':'Shown with the employee in the duty roster.','Art der Abwesenheit':'Type of absence','Bis (optional)':'To (optional)','Ohne „Bis“ gilt die Abwesenheit nur für einen Tag.':'Without “To” the absence applies to one day only.','Ganzer Tag':'Full day','Halber Tag':'Half day','Zeitausgleich':'Time off in lieu','z. B. Hochzeit, Umzug':'e.g. wedding, moving','Schultag':'School day','Mit Uhrzeit':'With time','Art der Abwesenheit wählen':'Choose type of absence','Danach Zeitraum festlegen und speichern.':'Then set the period and save.','Das Enddatum liegt vor dem Startdatum.':'The end date is before the start date.','Wird an jedem Tag im Zeitraum eingetragen.':'Entered on every day in the period.','Wird an jedem Arbeitstag im Zeitraum eingetragen.':'Entered on every working day in the period.','Uhrzeit für diesen Eintrag':'Time for this entry','Eintrag ändern':'Change entry','Gruppe auswählen':'Choose group','Keine Treffer':'No matches','Dienste im Wechsel':'Shifts in rotation','(in dieser Reihenfolge)':'(in this order)','Wöchentlich':'Weekly','Wechsel jeden Montag':'Changes every Monday','Wechsel jeden Tag':'Changes every day','Bestehende Einträge behalten':'Keep existing entries','Nur Lücken füllen – bereits geplante Tage bleiben unverändert.':'Fill gaps only – days already planned stay unchanged.','So funktioniert die Rotation':'How the rotation works','Mitglied':'member','Tage':'days','netto':'net'});
+// Zusammenfassungen „A · B · C“: jedes Stück einzeln übersetzen
+EN_RX.push([/^(.+ · .+)$/,t=>t.split(' · ').map(seg=>{if(EN[seg]!==undefined)return EN[seg];let m;
+ if(m=seg.match(/^(\d+) (Tag|Tage)$/))return `${m[1]} ${m[1]==='1'?'day':'days'}`;
+ if(m=seg.match(/^(\d+) (Eintrag|Einträge)$/))return `${m[1]} ${m[1]==='1'?'entry':'entries'}`;
+ if(m=seg.match(/^(\d+) (Mitglied|Mitglieder)$/))return `${m[1]} ${m[1]==='1'?'member':'members'}`;
+ if(m=seg.match(/^(\d+) (Bereitschaftszeit|Bereitschaftszeiten)$/))return `${m[1]} on-call ${m[1]==='1'?'time':'times'}`;
+ if(m=seg.match(/^(\d+) (freier Tag|freie Tage) ausgelassen$/))return `${m[1]} ${m[1]==='1'?'day off':'days off'} skipped`;
+ if(m=seg.match(/^(\d+) Std\.(?: (\d+) Min\.)?( netto)?$/))return `${m[1]} h${m[2]?' '+m[2]+' min':''}${m[3]?' net':''}`;
+ return seg}).join(' · ')]);
+Object.assign(EN,{'Dienste auswählen …':'Choose shifts …','Alle Dienste':'All shifts','Dienst suchen …':'Search shift …','Kein Dienst gefunden':'No shift found','Die gewählten Teams haben keine Dienstzeiten.':'The selected teams have no shift times.','1×/Tag':'1×/day'});
+EN_RX.unshift([/^Alle Dienste \((\d+)\)$/,'All shifts ($1)'],[/^Alle meine Teams \((\d+)\)$/,'All my teams ($1)']);
 </script>
   <script>'use strict';
 const content=document.getElementById('content');
@@ -3052,7 +3188,8 @@ function pushUndo(label){undoStack.push({label,data:JSON.stringify(assignments)}
 function undoLast(){const last=undoStack.pop();if(!last){toast('Nichts zum Rückgängigmachen.');return}assignments=JSON.parse(last.data);persistAssignments();audit('Geändert','Dienstplan','Rückgängig: '+last.label,{title:'Änderung rückgängig gemacht',object:last.label});toast('Rückgängig: '+last.label);render()}
 document.addEventListener('keydown',e=>{if((e.ctrlKey||e.metaKey)&&!e.shiftKey&&e.key.toLowerCase()==='z'&&(currentPage==='Dienstplan'||currentPage==='Bereitschaft')&&!e.target.closest('input,textarea,select,[contenteditable]')&&document.getElementById('login-modal').hidden){e.preventDefault();undoLast()}});
 function weekHoursOf(name,ws){const a=isoDate(ws),b=isoDate(addDays(ws,6));return assignments.filter(x=>x.employee===name&&x.kind==='Dienstplan'&&!x.isAbsence&&x.date>=a&&x.date<=b).reduce((s,x)=>s+netHours(x),0)}
-function netHours(a){const st=shiftTypes.find(s=>s.team===a.team&&s.name===a.shift);return Math.max(0,durationHours(a.start,a.end)-((st&&+st.pause)||0)/60)}
+const LUNCH_MIN=30;// fixe Mittagspause, wird bei jedem Dienst abgezogen
+function netHours(a){return Math.max(0,durationHours(a.start,a.end)-(a.kind==='Dienstplan'&&!a.isAbsence?LUNCH_MIN/60:0))}
 function standbyGapRanges(teamName,dates){const out=[];let cur=null;dates.forEach(date=>{const has=assignments.some(a=>a.kind==='Bereitschaft'&&a.team===teamName&&a.date===date);if(!has){if(cur&&cur.to===isoDate(addDays(new Date(date+'T12:00:00'),-1)))cur.to=date;else{cur={from:date,to:date};out.push(cur)}}});return out}
 
 function calendar(){
@@ -3179,20 +3316,39 @@ function calendar(){
   <div class="wp-summary" id="workplace-summary" aria-live="polite"></div>
   <div class="btn-row modal-actions wp-actions"><button type="button" class="btn ghost danger-text" id="workplace-remove">${icon('trash')}Im Zeitraum entfernen</button><span class="wp-actions-right"><button type="button" class="btn" id="cancel-workplace">Abbrechen</button><button type="submit" class="btn primary">${icon('check')}Speichern</button></span></div>
  </form></div></div>
- <div class="modal-backdrop" id="absence-modal" hidden><div class="modal"><div class="panel-head"><h2>Abwesenheit eintragen</h2><button class="icon-btn" id="close-absence" type="button" aria-label="Schließen">×</button></div><form id="absence-form"><label>Mitarbeiter auswählen<select id="absence-employee" required></select></label><label>Abwesenheit<select id="absence-type" required><option value="">Bitte auswählen</option><option value="Urlaub">Urlaub</option><option value="Urlaub 1/2 Tag">Urlaub 1/2 Tag</option><option value="Gleittag">Gleittag</option><option value="Sonderurlaub">Sonderurlaub</option><option value="Berufsschule">Berufsschule</option><option value="Abwesend">Abwesend</option><option value="Abwesend untertägig">Abwesend untertägig</option><option value="Arztbesuch">Arztbesuch</option></select></label><div class="form-two" id="absence-time-fields" hidden><label>Von Uhrzeit<input type="time" id="absence-start"></label><label>Bis Uhrzeit<input type="time" id="absence-end"></label></div><div class="form-two"><label>Datum von<input type="date" id="absence-date-from" value="${isoDate(new Date())}" required></label><label>Datum bis<input type="date" id="absence-date-to"></label></div><p class="small muted">Ohne „Datum bis“ gilt die Abwesenheit nur für einen Tag.</p><div class="absence-note-field"><label for="absence-note">Bemerkung <span>(optional)</span></label><textarea id="absence-note" rows="3" placeholder="Zusätzliche Information oder Hinweis …"></textarea><small>Die Bemerkung wird beim Mitarbeiter im Dienstplan angezeigt.</small></div><div class="btn-row modal-actions"><button type="button" class="btn" id="cancel-absence">Abbrechen</button><button type="submit" class="btn primary">Abwesenheit speichern</button></div></form></div></div>
- <div class="modal-backdrop" id="duty-modal" hidden><div class="modal"><div class="panel-head"><h2>${!isDuty?'Bereitschaft einteilen':'Neuen Dienst einteilen'}</h2><button class="icon-btn" id="close-duty" type="button" aria-label="Schließen">×</button></div><form id="duty-form"><label>Team<select id="duty-team" required>${entryTeams().map(t=>`<option value="${escapeHtml(t.name)}">${escapeHtml(t.name)}</option>`).join('')}</select></label><label>Mitarbeiter auswählen<select id="duty-employee" required></select></label>${!isDuty?`<label>Bereitschaftsgruppe<select id="duty-standby-group" required></select></label>`:''}<label>${!isDuty?'Bereitschaftszeit auswählen':'Dienst auswählen'}<select id="duty-shift" required></select></label><div class="form-two" id="duty-time-override" hidden><label>Beginn für diesen Eintrag<input type="time" id="duty-start-time"></label><label>Ende für diesen Eintrag<input type="time" id="duty-end-time"></label></div><p class="small muted" id="duty-time-hint" hidden>Die Uhrzeiten gelten nur für diesen Eintrag und ändern die hinterlegte Dienstzeit nicht.</p><div class="form-two"><label>Datum von<input type="date" id="duty-date-from" value="${isoDate(new Date())}" required></label><label>Datum bis<input type="date" id="duty-date-to" value="${isoDate(new Date())}" required></label></div><p class="small muted">Der Eintrag wird an jedem Tag im Zeitraum angelegt (inkl. Start- und Enddatum).</p><div class="btn-row modal-actions"><button type="button" class="btn" id="cancel-duty">Abbrechen</button><button type="submit" class="btn primary">${!isDuty?'Bereitschaft einteilen':'Dienst einteilen'}</button></div></form></div></div>`;
+ <div class="modal-backdrop" id="absence-modal" hidden><div class="modal wp-modal abs-modal" role="dialog" aria-modal="true" aria-labelledby="abs-title"><div class="wp-head"><span class="wp-head-icon abs-head-ic">${icon('travel')}</span><div><h2 id="abs-title">Abwesenheit eintragen</h2><p class="small muted">Wird im Dienstplan beim Mitarbeiter angezeigt.</p></div><button class="icon-btn" id="close-absence" type="button" aria-label="Schließen">×</button></div>
+ <form id="absence-form" class="wp-form" novalidate>
+  <div class="wp-field"><span class="wp-label">Mitarbeiter</span><select id="absence-employee"></select></div>
+  <div class="wp-field"><span class="wp-label">Art der Abwesenheit</span><select id="absence-type"><option value="">Bitte auswählen</option>${ABSENCE_KINDS.map(([v])=>`<option value="${escapeHtml(v)}">${escapeHtml(v)}</option>`).join('')}</select></div>
+  <div class="wp-field" id="absence-time-fields" hidden><span class="wp-label">Uhrzeit</span><div class="wp-range"><label><small>Von</small><input type="time" id="absence-start"></label><span class="wp-range-arrow" aria-hidden="true">→</span><label><small>Bis</small><input type="time" id="absence-end"></label></div></div>
+  <div class="wp-field"><span class="wp-label">Zeitraum</span><div class="wp-range"><label><small>Von</small><input type="date" id="absence-date-from" value="${isoDate(new Date())}" required></label><span class="wp-range-arrow" aria-hidden="true">→</span><label><small>Bis (optional)</small><input type="date" id="absence-date-to"></label></div><small class="wp-note">Ohne „Bis“ gilt die Abwesenheit nur für einen Tag.</small></div>
+  <div class="wp-field"><label class="wp-label" for="absence-note">Bemerkung <span class="muted">(optional)</span></label><textarea id="absence-note" rows="2" placeholder="Zusätzliche Information oder Hinweis …"></textarea><small class="wp-note">Die Bemerkung wird beim Mitarbeiter im Dienstplan angezeigt.</small></div>
+  <div class="wp-summary" id="absence-summary" aria-live="polite"></div>
+  <div class="btn-row modal-actions wp-actions"><span class="wp-actions-right"><button type="button" class="btn" id="cancel-absence">Abbrechen</button><button type="submit" class="btn primary">${icon('check')}Abwesenheit speichern</button></span></div>
+ </form></div></div>
+ <div class="modal-backdrop" id="duty-modal" hidden><div class="modal wp-modal duty-modal" role="dialog" aria-modal="true" aria-labelledby="duty-title"><div class="wp-head"><span class="wp-head-icon" id="duty-head-ic">${icon(isDuty?'cal':'moon')}</span><div><h2 id="duty-title">${!isDuty?'Bereitschaft einteilen':'Neuen Dienst einteilen'}</h2><p class="small muted">${!isDuty?'Wird an jedem Tag im Zeitraum eingetragen.':'Wird an jedem Arbeitstag im Zeitraum eingetragen.'}</p></div><button class="icon-btn" id="close-duty" type="button" aria-label="Schließen">×</button></div>
+ <form id="duty-form" class="wp-form" novalidate>
+  <div class="te-two"><div class="wp-field"><span class="wp-label">Team</span><select id="duty-team">${entryTeams().map(t=>`<option value="${escapeHtml(t.name)}">${escapeHtml(t.name)}</option>`).join('')}</select></div><div class="wp-field"><span class="wp-label">Mitarbeiter</span><select id="duty-employee"></select></div></div>
+  ${!isDuty?`<div class="wp-field"><span class="wp-label">Bereitschaftsgruppe</span><select id="duty-standby-group"></select></div>`:''}
+  <div class="wp-field"><span class="wp-label">${!isDuty?'Bereitschaftszeit':'Dienst'}</span><select id="duty-shift"></select></div>
+  <div class="wp-field" id="duty-time-override" hidden><span class="wp-label">Uhrzeit für diesen Eintrag</span><div class="wp-range"><label><small>Beginn</small><input type="time" id="duty-start-time"></label><span class="wp-range-arrow" aria-hidden="true">→</span><label><small>Ende</small><input type="time" id="duty-end-time"></label></div><small class="wp-note" id="duty-time-hint" hidden>Die Uhrzeiten gelten nur für diesen Eintrag und ändern die hinterlegte Dienstzeit nicht.</small></div>
+  <div class="wp-field"><span class="wp-label">Zeitraum</span><div class="wp-range"><label><small>Von</small><input type="date" id="duty-date-from" value="${isoDate(new Date())}" required></label><span class="wp-range-arrow" aria-hidden="true">→</span><label><small>Bis</small><input type="date" id="duty-date-to" value="${isoDate(new Date())}" required></label></div></div>
+  <div class="wp-summary" id="duty-summary" aria-live="polite"></div>
+  <div class="btn-row modal-actions wp-actions"><span class="wp-actions-right"><button type="button" class="btn" id="cancel-duty">Abbrechen</button><button type="submit" class="btn primary">${icon('check')}${!isDuty?'Bereitschaft einteilen':'Dienst einteilen'}</button></span></div>
+ </form></div></div>`;
 }
 /* Formular-Dialog: liefert das Formular-Element zurück (oder null bei Abbruch) */
-function formDialog(title,inner,okLabel='Speichern',sub=''){
+function formDialog(title,inner,okLabel='Speichern',sub='',opt={}){
  return new Promise(resolve=>{
   const layer=document.createElement('div');layer.className='modal-backdrop app-dialog';
-  layer.innerHTML=`<form class="modal form-dialog" role="dialog" aria-modal="true"><div class="panel-head"><div><h2>${escapeHtml(title)}</h2>${sub?`<p class="small muted">${sub}</p>`:''}</div><button type="button" class="icon-btn" data-dlg="cancel" aria-label="Schließen">×</button></div>${inner}<div class="btn-row modal-actions"><button type="button" class="btn" data-dlg="cancel">Abbrechen</button><button type="submit" class="btn primary">${escapeHtml(okLabel)}</button></div></form>`;
+  layer.innerHTML=opt.icon?`<form class="modal form-dialog wp-modal ${opt.cls||''}" role="dialog" aria-modal="true" novalidate><div class="wp-head"><span class="wp-head-icon">${icon(opt.icon)}</span><div><h2>${escapeHtml(title)}</h2>${sub?`<p class="small muted">${sub}</p>`:''}</div><button type="button" class="icon-btn" data-dlg="cancel" aria-label="Schließen">×</button></div><div class="wp-form">${inner}<div class="btn-row modal-actions wp-actions"><span class="wp-actions-right"><button type="button" class="btn" data-dlg="cancel">Abbrechen</button><button type="submit" class="btn primary">${icon('check')}${escapeHtml(okLabel)}</button></span></div></div></form>`
+   :`<form class="modal form-dialog" role="dialog" aria-modal="true"><div class="panel-head"><div><h2>${escapeHtml(title)}</h2>${sub?`<p class="small muted">${sub}</p>`:''}</div><button type="button" class="icon-btn" data-dlg="cancel" aria-label="Schließen">×</button></div>${inner}<div class="btn-row modal-actions"><button type="button" class="btn" data-dlg="cancel">Abbrechen</button><button type="submit" class="btn primary">${escapeHtml(okLabel)}</button></div></form>`;
   document.body.appendChild(layer);const form=layer.querySelector('form');
   const done=v=>{layer.remove();document.removeEventListener('keydown',key,true);resolve(v)};
-  const key=e=>{if(e.key==='Escape'){e.stopPropagation();const open=layer.querySelector('details.team-dd[open]');if(open){open.open=false;return}done(null)}};document.addEventListener('keydown',key,true);
-  layer.addEventListener('click',e=>{if(e.target===layer||e.target.closest('[data-dlg="cancel"]'))done(null)});
+  const key=e=>{if(e.key==='Escape'){if([...document.querySelectorAll('.app-dialog')].pop()!==layer)return;e.stopPropagation();if(layer.querySelector('.pp.open'))return;const open=layer.querySelector('details.team-dd[open]');if(open){open.open=false;open.querySelector('summary').focus();return}done(null)}};document.addEventListener('keydown',key,true);
+  layer.addEventListener('click',e=>{if(e.target.closest('[data-dlg="cancel"]'))return done(null);if(e.target===layer){const dd=layer.querySelector('details.team-dd[open]');if(dd){dd.open=false;return}done(null)}});
   form.onsubmit=e=>{e.preventDefault();const data=Object.fromEntries(new FormData(form).entries());data.__form=form;done(data)};
-  if(!window.matchMedia('(pointer: coarse)').matches)setTimeout(()=>form.querySelector('input,select,button[type=submit]')?.focus(),20);
+  if(!window.matchMedia('(pointer: coarse)').matches)setTimeout(()=>form.querySelector(opt.icon?'.team-dd>summary,input:not([type=hidden]),button[type=submit]':'input,select,button[type=submit]')?.focus(),20);
  });
 }
 const fullDayAbsent=(name,date)=>assignments.some(a=>a.isAbsence&&a.employee===name&&a.date===date&&!a.start&&a.shift!=='Urlaub 1/2 Tag');
@@ -3234,35 +3390,69 @@ async function swapStandby(teamName,ids){
 }
 /* Teamauswahl als Dropdown (mehrere Teams wählbar) – zeigt nur Teams, für die man Berechtigungen hat */
 function teamDropdown(list,pre){
- return `<div class="field-label">Teams</div><details class="team-dd"><summary><span class="team-dd-text"></span>${icon('down')}</summary><div class="team-dd-panel">
+ return `<div class="wp-field"><span class="wp-label">Teams</span><details class="team-dd dlg-team-dd"><summary><span class="pp-team dlg-dd-ic">${icon('users')}</span><span class="team-dd-text"></span>${icon('down')}</summary><div class="team-dd-panel">
+  ${list.length>5?`<label class="team-dd-search">${icon('search')}<input type="search" class="dlg-dd-q" placeholder="Team suchen …" autocomplete="off"></label>`:''}
   ${list.length>1?`<label class="check team-dd-all"><input type="checkbox" data-dd-all><span>Alle meine Teams</span></label>`:''}
-  ${list.map(t=>`<label class="check"><input type="checkbox" name="team:${escapeHtml(t.name)}" data-dd-team="${escapeHtml(t.name)}" ${pre.includes(t.name)?'checked':''}><i class="dot" style="--c:${teamColor(t)}"></i><span>${escapeHtml(t.name)}</span></label>`).join('')}</div></details>`;
+  <div class="dlg-dd-list">${list.map(t=>`<label class="check" data-q="${escapeHtml(t.name.toLowerCase())}"><input type="checkbox" name="team:${escapeHtml(t.name)}" data-dd-team="${escapeHtml(t.name)}" ${pre.includes(t.name)?'checked':''}><i class="dot" style="--c:${teamColor(t)}"></i><span>${escapeHtml(t.name)}</span><small>${t.memberIds.length}</small></label>`).join('')}<div class="team-dd-empty" hidden>Kein Team gefunden</div></div></div></details></div>`;
 }
-function bindTeamDropdown(){
+/* Team-Mehrfachauswahl in Dialogen (Rotation automatisch planen) */
+function bindDialogTeamDropdown(){
  const layer=[...document.querySelectorAll('.app-dialog')].pop(),dd=layer?.querySelector('.team-dd');if(!dd)return;
  const boxes=[...dd.querySelectorAll('[data-dd-team]')],all=dd.querySelector('[data-dd-all]'),text=dd.querySelector('.team-dd-text');
  const update=()=>{const sel=boxes.filter(b=>b.checked).map(b=>b.dataset.ddTeam);
   text.textContent=!sel.length?'Team auswählen …':sel.length===boxes.length&&boxes.length>1?`Alle meine Teams (${sel.length})`:sel.length>2?`${sel.slice(0,2).join(', ')} +${sel.length-2}`:sel.join(', ');
-  text.classList.toggle('muted',!sel.length);
+  text.classList.toggle('muted',!sel.length);const ic=dd.querySelector('.dlg-dd-ic');if(ic)ic.style.setProperty('--c',sel.length===1?teamColor(teamByName(sel[0])):'var(--accent-color)');
   if(all){all.checked=sel.length===boxes.length;all.indeterminate=sel.length>0&&sel.length<boxes.length}
   // Dienste anzeigen, die es in den gewählten Teams gibt
-  layer.querySelectorAll('[data-shift-teams]').forEach(l=>{const ts=l.dataset.shiftTeams.split('|');l.hidden=sel.length>0&&!ts.some(x=>sel.includes(x))})};
+  layer.querySelectorAll('[data-shift-teams]').forEach(l=>{const ts=l.dataset.shiftTeams.split('|');l.hidden=sel.length>0&&!ts.some(x=>sel.includes(x))});layer.dispatchEvent(new Event('dd-teams'))};
  boxes.forEach(b=>b.addEventListener('change',update));
  if(all)all.addEventListener('change',()=>{boxes.forEach(b=>b.checked=all.checked);update()});
- layer.addEventListener('click',e=>{if(dd.open&&!e.target.closest('.team-dd'))dd.open=false});
- dd.addEventListener('keydown',e=>{if(e.key==='Escape'&&dd.open){e.stopPropagation();dd.open=false;dd.querySelector('summary').focus()}});
+ floatDialogDetails(layer,dd,all);
  update();
+}
+/* Aufklappliste (details) im Dialog: schwebt im Vordergrund, Suche, schließt bei Klick daneben / Esc / Scrollen */
+function floatDialogDetails(layer,dd,all){
+ layer.addEventListener('pointerdown',e=>{if(dd.open&&!dd.contains(e.target)&&e.target!==layer)dd.open=false});
+ dd.addEventListener('keydown',e=>{if(e.key==='Escape'&&dd.open){e.stopPropagation();dd.open=false;dd.querySelector('summary').focus()}});
+ dd.addEventListener('toggle',()=>{if(dd.open)layer.querySelectorAll('details.team-dd[open]').forEach(o=>{if(o!==dd)o.open=false})});
+ // Liste schwebt im Vordergrund (fixed), damit sie im scrollbaren Fenster nicht abgeschnitten wird
+ const panel=dd.querySelector('.team-dd-panel'),sum=dd.querySelector('summary'),q=dd.querySelector('.dlg-dd-q');
+ const place=()=>{if(!dd.open)return;const r=sum.getBoundingClientRect(),vh=window.innerHeight,below=vh-r.bottom-12,above=r.top-12;
+  panel.style.position='fixed';panel.style.left=r.left+'px';panel.style.width=r.width+'px';panel.style.right='auto';
+  const mh=Math.max(140,Math.min(320,Math.max(below,above)));panel.style.maxHeight=mh+'px';
+  const h=Math.min(panel.scrollHeight,mh);panel.style.top=(below>=h||below>=above?r.bottom+6:r.top-h-6)+'px'};
+ const filter=()=>{if(!q)return;const v=q.value.trim().toLowerCase();let n=0;dd.querySelectorAll('.dlg-dd-list .check').forEach(l=>{const hit=!v||l.dataset.q.includes(v);l.classList.toggle('q-miss',!hit);if(hit&&!l.hidden)n++});dd.querySelector('.team-dd-empty').hidden=n>0;if(all)all.closest('label').hidden=!!v};
+ if(q){q.addEventListener('input',filter);q.addEventListener('keydown',e=>{if(e.key==='Enter')e.preventDefault()})}
+ dd.addEventListener('toggle',()=>{if(dd.open){if(q){q.value='';filter()}place();if(q&&!window.matchMedia('(pointer: coarse)').matches)q.focus({preventScroll:true})}});
+ layer.querySelector('form')?.addEventListener('scroll',()=>{if(dd.open)dd.open=false},{passive:true});window.addEventListener('resize',place);
+}
+/* Rotation (Dienstplan): Dienste im Wechsel als Mehrfachauswahl-Dropdown */
+function bindDialogShiftDropdown(){
+ const layer=[...document.querySelectorAll('.app-dialog')].pop(),dd=layer?.querySelector('.dlg-shift-dd');if(!dd)return;
+ const boxes=[...dd.querySelectorAll('[name^="shift:"]')],all=dd.querySelector('[data-dd-all]'),text=dd.querySelector('.team-dd-text');
+ const update=()=>{const vis=boxes.filter(b=>!b.closest('label').hidden),sel=vis.filter(b=>b.checked).map(b=>b.name.slice(6));
+  text.textContent=!sel.length?'Dienste auswählen …':sel.length===vis.length&&vis.length>1?`Alle Dienste (${sel.length})`:sel.length>2?`${sel.slice(0,2).join(', ')} +${sel.length-2}`:sel.join(', ');
+  text.classList.toggle('muted',!sel.length);
+  if(all){all.checked=sel.length===vis.length&&vis.length>0;all.indeterminate=sel.length>0&&sel.length<vis.length}
+  const empty=dd.querySelector('.dlg-shift-none');if(empty)empty.hidden=vis.length>0};
+ boxes.forEach(b=>b.addEventListener('change',update));
+ if(all)all.addEventListener('change',()=>{boxes.forEach(b=>{if(!b.closest('label').hidden)b.checked=all.checked});update()});
+ layer.addEventListener('dd-teams',update);
+ floatDialogDetails(layer,dd,all);update();
 }
 async function autoRotation(){
  const teamsAvail=manageableTeams('Bereitschaft');if(!teamsAvail.length||!standbyTimes.length)return;
  const d=new Date(currentDate),from=isoDate(new Date(d.getFullYear(),d.getMonth(),1)),to=isoDate(new Date(d.getFullYear(),d.getMonth()+1,0));
  const pre=calendarTeams.length?calendarTeams:teamsAvail.map(t=>t.name);
  const dlg=formDialog('Rotation automatisch planen',`${teamDropdown(teamsAvail,pre)}
-  <div class="form-two"><label>Von<input type="date" name="from" value="${from}" required></label><label>Bis<input type="date" name="to" value="${to}" required></label></div>
-  <div class="form-two"><label>Wechsel<select name="mode"><option value="week">Wöchentlich (montags)</option><option value="day">Täglich</option></select></label><label>Bereitschaftszeit<select name="time">${standbyTimes.map(x=>`<option value="${escapeHtml(x.id)}">${escapeHtml(x.name)} (${x.start}–${x.end})</option>`).join('')}</select></label></div>
-  <label class="check"><input type="checkbox" name="keep" checked><span>Bestehende Einträge behalten – nur Lücken füllen</span></label>
-  <p class="small muted">Die Reihenfolge setzt dort fort, wo die letzte Bereitschaft vor dem Zeitraum endete. Ganztägig abwesende Personen werden für diesen Tag automatisch vertreten.</p>`,'Rotation erstellen','Verteilt die Bereitschaft gleichmäßig auf alle Teammitglieder.');
- bindTeamDropdown();const res=await dlg;
+
+  <div class="wp-field"><span class="wp-label">Bereitschaftszeit</span><select name="time" id="rot-time">${standbyTimes.map(x=>`<option value="${escapeHtml(x.id)}">${escapeHtml(x.name)} (${x.start}–${x.end})</option>`).join('')}</select></div>
+  <div class="wp-field"><span class="wp-label">Zeitraum</span><div class="wp-range"><label><small>Von</small><input type="date" name="from" value="${from}" required></label><span class="wp-range-arrow" aria-hidden="true">→</span><label><small>Bis</small><input type="date" name="to" value="${to}" required></label></div></div>
+  <div class="wp-field"><span class="wp-label">Wechsel</span><div class="wp-types rot-modes" role="radiogroup" aria-label="Wechsel"><label class="wp-type"><input type="radio" name="mode" value="week" checked><span class="wp-type-card"><span class="wp-type-ic">${icon('cal')}</span><b>Wöchentlich</b><small>Wechsel jeden Montag</small><i class="wp-type-check">${icon('check')}</i></span></label><label class="wp-type"><input type="radio" name="mode" value="day"><span class="wp-type-card"><span class="wp-type-ic">${icon('refresh')}</span><b>Täglich</b><small>Wechsel jeden Tag</small><i class="wp-type-check">${icon('check')}</i></span></label></div></div>
+  <label class="check wp-check"><input type="checkbox" name="keep" checked><span><b>Bestehende Einträge behalten</b><small class="muted block">Nur Lücken füllen – bereits geplante Tage bleiben unverändert.</small></span></label>
+  <small class="wp-note rot-note">${icon('alert')}<span>Die Reihenfolge setzt dort fort, wo die letzte Bereitschaft vor dem Zeitraum endete. Ganztägig abwesende Personen werden für diesen Tag automatisch vertreten.</span></small>`,'Rotation erstellen','Verteilt die Bereitschaft gleichmäßig auf alle Teammitglieder.',{icon:'refresh',cls:'rot-modal'});
+ fancySelect(document.getElementById('rot-time'),{kind:'shift',placeholder:'Bereitschaftszeit auswählen',meta:o=>{const x=standbyTimes.find(y=>String(y.id)===o.value);const g=x&&standbyGroups.find(gr=>gr.id===x.groupId);return x?{label:x.name,sub:`${x.start} – ${x.end}${g?' · '+g.name:''}`,icon:'moon'}:{}}});
+ bindDialogTeamDropdown();const res=await dlg;
  if(!res)return;
  const chosen=teamsAvail.filter(t=>res['team:'+t.name]);if(!chosen.length){toast('Bitte mindestens ein Team wählen.');return}
  if(res.to<res.from){toast('Das Enddatum darf nicht vor dem Startdatum liegen.');return}
@@ -3303,12 +3493,16 @@ async function dutyRotation(){
  const shiftLabel=n=>{const x=shiftTypes.find(s=>s.name===n&&teamsAvail.some(t=>t.name===s.team));return x?`${escapeHtml(n)} <small class="muted">${x.start}–${x.end}${shiftMulti(x)?'':' · 1× pro Tag'}</small>`:escapeHtml(n)};
  const dayNames=['Mo','Di','Mi','Do','Fr','Sa','So'].slice(0,dutyDays).join(', ');
  const dlg=formDialog('Rotation automatisch planen',`${teamDropdown(teamsAvail,pre)}
-  <fieldset class="team-checks"><legend>Dienste im Wechsel (in dieser Reihenfolge)</legend><div class="check-grid">${names.map(n=>`<label class="check" data-shift-teams="${escapeHtml(teamsAvail.filter(t=>shiftTypes.some(x=>x.team===t.name&&x.name===n)).map(t=>t.name).join('|'))}"><input type="checkbox" name="shift:${escapeHtml(n)}" checked><span>${shiftLabel(n)}</span></label>`).join('')}</div></fieldset>
-  <div class="form-two"><label>Von<input type="date" name="from" value="${from}" required></label><label>Bis<input type="date" name="to" value="${to}" required></label></div>
-  <label>Wechsel<select name="mode"><option value="week">Wöchentlich (montags)</option><option value="day">Täglich</option></select></label>
-  <label class="check"><input type="checkbox" name="keep" checked><span>Bestehende Einträge behalten – nur Lücken füllen</span></label>
-  <p class="small muted">Jedes Teammitglied bekommt an jedem Arbeitstag (${dayNames}) einen Dienst; die Dienste wechseln der Reihe nach. Bei Urlaub, Gleittag, Sonderurlaub, Berufsschule oder „Abwesend“ bekommt die Person keinen Dienst, und die Dienste dieses Tages werden unter den Anwesenden neu verteilt, damit jede Schicht gleichmäßig besetzt bleibt. Jeder Dienst wird pro Tag mindestens einmal besetzt; Dienste, die laut Dienstzeiten nur einmal pro Tag vorkommen dürfen, genau einmal. Tage, an denen jemand schon einen Dienst hat, bleiben unverändert.</p>`,'Rotation erstellen','Verteilt die Dienste gleichmäßig im Wechsel auf alle Teammitglieder.');
- bindTeamDropdown();const res=await dlg;
+
+  <div class="wp-field"><span class="wp-label">Dienste im Wechsel <span class="muted">(in dieser Reihenfolge)</span></span><details class="team-dd dlg-team-dd dlg-shift-dd"><summary><span class="pp-team dlg-dd-ic">${icon('clock')}</span><span class="team-dd-text"></span>${icon('down')}</summary><div class="team-dd-panel">
+   ${names.length>5?`<label class="team-dd-search">${icon('search')}<input type="search" class="dlg-dd-q" placeholder="Dienst suchen …" autocomplete="off"></label>`:''}
+   ${names.length>1?`<label class="check team-dd-all"><input type="checkbox" data-dd-all><span>Alle Dienste</span></label>`:''}
+   <div class="dlg-dd-list">${names.map(n=>{const x=shiftTypes.find(s=>s.name===n&&teamsAvail.some(t=>t.name===s.team));return `<label class="check" data-q="${escapeHtml(n.toLowerCase())}" data-shift-teams="${escapeHtml(teamsAvail.filter(t=>shiftTypes.some(y=>y.team===t.name&&y.name===n)).map(t=>t.name).join('|'))}"><input type="checkbox" name="shift:${escapeHtml(n)}" checked><i class="dot" style="--c:${shiftHexColor(x?.color||'teal')}"></i><span>${escapeHtml(n)}</span><small>${x?`${x.start}–${x.end}${shiftMulti(x)?'':' · 1×/Tag'}`:''}</small></label>`}).join('')}<div class="team-dd-empty" hidden>Kein Dienst gefunden</div><div class="team-dd-empty dlg-shift-none" hidden>Die gewählten Teams haben keine Dienstzeiten.</div></div></div></details></div>
+  <div class="wp-field"><span class="wp-label">Zeitraum</span><div class="wp-range"><label><small>Von</small><input type="date" name="from" value="${from}" required></label><span class="wp-range-arrow" aria-hidden="true">→</span><label><small>Bis</small><input type="date" name="to" value="${to}" required></label></div></div>
+  <div class="wp-field"><span class="wp-label">Wechsel</span><div class="wp-types rot-modes" role="radiogroup" aria-label="Wechsel"><label class="wp-type"><input type="radio" name="mode" value="week" checked><span class="wp-type-card"><span class="wp-type-ic">${icon('cal')}</span><b>Wöchentlich</b><small>Wechsel jeden Montag</small><i class="wp-type-check">${icon('check')}</i></span></label><label class="wp-type"><input type="radio" name="mode" value="day"><span class="wp-type-card"><span class="wp-type-ic">${icon('refresh')}</span><b>Täglich</b><small>Wechsel jeden Tag</small><i class="wp-type-check">${icon('check')}</i></span></label></div></div>
+  <label class="check wp-check"><input type="checkbox" name="keep" checked><span><b>Bestehende Einträge behalten</b><small class="muted block">Nur Lücken füllen – bereits geplante Tage bleiben unverändert.</small></span></label>
+  <details class="rot-help"><summary>${icon('alert')}So funktioniert die Rotation</summary><p>Jedes Teammitglied bekommt an jedem Arbeitstag (${dayNames}) einen Dienst; die Dienste wechseln der Reihe nach. Bei Urlaub, Gleittag, Sonderurlaub, Berufsschule oder „Abwesend“ bekommt die Person keinen Dienst, und die Dienste dieses Tages werden unter den Anwesenden neu verteilt, damit jede Schicht gleichmäßig besetzt bleibt. Jeder Dienst wird pro Tag mindestens einmal besetzt; Dienste, die laut Dienstzeiten nur einmal pro Tag vorkommen dürfen, genau einmal. Tage, an denen jemand schon einen Dienst hat, bleiben unverändert.</p></details>`,'Rotation erstellen','Verteilt die Dienste gleichmäßig im Wechsel auf alle Teammitglieder.',{icon:'refresh',cls:'rot-modal'});
+ bindDialogTeamDropdown();bindDialogShiftDropdown();const res=await dlg;
  if(!res)return;
  const chosen=teamsAvail.filter(t=>res['team:'+t.name]);if(!chosen.length){toast('Bitte mindestens ein Team wählen.');return}
  const picked=names.filter(n=>res['shift:'+n]);if(!picked.length){toast('Bitte mindestens einen Dienst wählen.');return}
@@ -3395,19 +3589,24 @@ function labelTables(){
 }
 /* Team-Filter als Dropdown mit Suche (Dienstplan & Bereitschaft) */
 let teamDd={open:false,q:''};
-function teamFilterDropdown(){
- const sel=calendarTeams.filter(n=>teams.some(t=>t.name===n));
+/* Kontext: Dienstplan/Bereitschaft (Standard) – Dienstzeiten nutzt eigenen Kontext */
+const calTeamCtx={list:()=>teams,sel:()=>calendarTeams.filter(n=>teams.some(t=>t.name===n)),count:t=>t.memberIds.length,
+ apply(next){calendarTeams=next;calendarTeamFilter=calendarTeams[0]||'Alle Teams';
+  if(calendarMemberFilter!=='Alle Mitarbeiter'&&calendarTeams.length&&!staff.some(s=>s[0]===calendarMemberFilter&&teams.some(t=>calendarTeams.includes(t.name)&&t.memberIds.includes(s[8]))))calendarMemberFilter='Alle Mitarbeiter';
+  const y=window.scrollX,sy=window.scrollY;render();window.scrollTo(y,sy)}};
+function teamFilterDropdown(ctx=calTeamCtx){
+ const list=ctx.list(),sel=ctx.sel();
  const label=!sel.length?'Alle Teams':sel.length===1?sel[0]:sel.length===2?sel.join(', '):sel.length+' Teams';
  const dot=sel.length===1?`<i class="dot" style="--c:${teamColor(teamByName(sel[0]))}"></i>`:'';
  return `<div class="team-dd ${teamDd.open?'open':''}" id="team-dd"><button type="button" class="chip ${sel.length?'active':''} team-dd-btn" id="team-dd-btn" aria-haspopup="listbox" aria-expanded="${teamDd.open}" title="${escapeHtml(sel.join(', ')||'Alle Teams')}">${icon('users')}${dot}<span class="team-dd-label">${escapeHtml(label)}</span>${icon('down','team-dd-caret')}</button>
   <div class="team-dd-panel" id="team-dd-panel" ${teamDd.open?'':'hidden'}><label class="team-dd-search">${icon('search')}<input type="search" id="team-dd-q" placeholder="Team suchen …" autocomplete="off" value="${escapeHtml(teamDd.q)}"></label>
   <div class="team-dd-list" role="listbox" aria-multiselectable="true"><button type="button" class="team-dd-opt all ${sel.length?'':'on'}" data-team-opt="__all" role="option" aria-selected="${!sel.length}"><span class="team-dd-check">${icon('check')}</span>Alle Teams</button>
-  ${teams.map(t=>`<button type="button" class="team-dd-opt ${sel.includes(t.name)?'on':''}" data-team-opt="${escapeHtml(t.name)}" data-q="${escapeHtml(t.name.toLowerCase())}" role="option" aria-selected="${sel.includes(t.name)}"><span class="team-dd-check">${icon('check')}</span><i class="dot" style="--c:${teamColor(t)}"></i><span class="team-dd-name">${escapeHtml(t.name)}</span><small>${t.memberIds.length}</small></button>`).join('')}
+  ${list.map(t=>`<button type="button" class="team-dd-opt ${sel.includes(t.name)?'on':''}" data-team-opt="${escapeHtml(t.name)}" data-q="${escapeHtml(t.name.toLowerCase())}" role="option" aria-selected="${sel.includes(t.name)}"><span class="team-dd-check">${icon('check')}</span><i class="dot" style="--c:${teamColor(t)}"></i><span class="team-dd-name">${escapeHtml(t.name)}</span><small>${ctx.count(t)}</small></button>`).join('')}
   <div class="team-dd-empty" hidden>Kein Team gefunden</div></div>
   ${sel.length?`<div class="team-dd-foot"><span>${sel.length} ausgewählt</span><button type="button" class="link-btn" data-team-opt="__all">Auswahl aufheben</button></div>`:''}</div></div>`;
 }
 let teamDdDocBound=false;
-function bindTeamDropdown(){
+function bindTeamDropdown(ctx=calTeamCtx){
  const dd=document.getElementById('team-dd');if(!dd)return;
  const btn=dd.querySelector('#team-dd-btn'),panel=dd.querySelector('#team-dd-panel'),q=dd.querySelector('#team-dd-q');
  const filter=()=>{const v=q.value.trim().toLowerCase();teamDd.q=q.value;let n=0;
@@ -3416,18 +3615,16 @@ function bindTeamDropdown(){
  const place=()=>{panel.style.left='';panel.style.right='';const r=panel.getBoundingClientRect();if(r.right>window.innerWidth-8){panel.style.left='auto';panel.style.right='0'}if(panel.getBoundingClientRect().left<8){panel.style.right='auto';panel.style.left=(8-dd.getBoundingClientRect().left)+'px'}};
  const open=(focus=true)=>{teamDd.open=true;dd.classList.add('open');panel.hidden=false;btn.setAttribute('aria-expanded','true');filter();place();if(focus)q.focus({preventScroll:true})};
  const close=()=>{teamDd.open=false;teamDd.q='';dd.classList.remove('open');panel.hidden=true;btn.setAttribute('aria-expanded','false')};
- btn.onclick=e=>{e.stopPropagation();teamDd.open?close():open()};
+ btn.onclick=e=>{e.stopPropagation();if(teamDd.open)close();else{q.value='';open()}};
  q.oninput=filter;
  const opts=()=>[...dd.querySelectorAll('.team-dd-opt')].filter(o=>!o.hidden);
  q.onkeydown=e=>{if(e.key==='ArrowDown'){e.preventDefault();opts()[0]?.focus()}else if(e.key==='Enter'){e.preventDefault();const o=dd.querySelector('.team-dd-opt[data-q]:not([hidden])');o&&o.click()}else if(e.key==='Escape'){e.stopPropagation();close();btn.focus()}};
  dd.querySelector('.team-dd-list').onkeydown=e=>{const list=opts(),i=list.indexOf(document.activeElement);
   if(e.key==='ArrowDown'){e.preventDefault();list[Math.min(list.length-1,i+1)]?.focus()}else if(e.key==='ArrowUp'){e.preventDefault();i<=0?q.focus():list[i-1].focus()}else if(e.key==='Escape'){e.stopPropagation();close();btn.focus()}};
  dd.querySelectorAll('[data-team-opt]').forEach(o=>o.onclick=e=>{e.stopPropagation();const v=o.dataset.teamOpt;
-  if(v==='__all')calendarTeams=[];else calendarTeams=calendarTeams.includes(v)?calendarTeams.filter(t=>t!==v):[...calendarTeams.filter(n=>teams.some(t=>t.name===n)),v];
-  calendarTeamFilter=calendarTeams[0]||'Alle Teams';
-  if(calendarMemberFilter!=='Alle Mitarbeiter'&&calendarTeams.length&&!staff.some(s=>s[0]===calendarMemberFilter&&teams.some(t=>calendarTeams.includes(t.name)&&t.memberIds.includes(s[8]))))calendarMemberFilter='Alle Mitarbeiter';
-  const keep=teamDd.q,focusName=v,y=window.scrollX,sy=window.scrollY,ls=dd.querySelector('.team-dd-list').scrollTop;
-  render();window.scrollTo(y,sy);
+  const cur=ctx.sel(),next=v==='__all'?[]:cur.includes(v)?cur.filter(t=>t!==v):[...cur,v];
+  const keep=teamDd.q,focusName=v,ls=dd.querySelector('.team-dd-list').scrollTop;
+  ctx.apply(next);
   const nd=document.getElementById('team-dd');if(!nd)return;teamDd.q=keep;
   bindTeamDropdownOpen(nd,ls,focusName)});
  if(teamDd.open)open(false);
@@ -3965,33 +4162,35 @@ function bindSettings(){
 /* ------------------------------------------------------------------
    Dienstzeiten
 ------------------------------------------------------------------ */
-let shiftTeamChip='Alle',editingShiftId=null;
+let shiftTeamSel=[],editingShiftId=null;
+function shiftVisibleTeams(){const editable=manageableTeams('Dienstzeiten');return editable.length?editable:teams.filter(t=>currentRole==='Admin'||currentUserTeamNames().includes(t.name))}
+const shiftTeamCtx={list:shiftVisibleTeams,sel:()=>shiftTeamSel.filter(n=>shiftVisibleTeams().some(t=>t.name===n)),count:t=>shiftTypes.filter(x=>x.team===t.name).length,
+ apply(next){shiftTeamSel=next;const old=document.getElementById('team-dd');if(old)old.outerHTML=teamFilterDropdown(shiftTeamCtx);bindTeamDropdown(shiftTeamCtx);renderShiftRows()}};
 const SHIFT_SWATCHES=['#3974c6','#24966b','#e09a2d','#9b69c8','#dc6475','#159da8','#596579','#d95f20','#7b8f32','#263d75','#e2b5ca','#20242d'];
 function shiftTimes(){
  const editable=manageableTeams('Dienstzeiten');
  const visibleTeams=editable.length?editable:teams.filter(t=>currentRole==='Admin'||currentUserTeamNames().includes(t.name));
  if(!visibleTeams.length)return `${heading('Dienstzeiten','Für dich sind keine Teams zur Bearbeitung zugeordnet.')}<section class="settings-card"><p>Bitte wende dich an die Administration.</p></section>`;
- if(shiftTeamChip!=='Alle'&&!visibleTeams.some(t=>t.name===shiftTeamChip))shiftTeamChip='Alle';
+ shiftTeamSel=shiftTeamSel.filter(n=>visibleTeams.some(t=>t.name===n));
  const canEditAny=editable.length>0;
  return `${heading('Dienstzeiten','Schichtmodelle pro Team – stehen beim Einteilen als Auswahl zur Verfügung.',canEditAny?`<button class="btn primary" id="new-shift">${icon('plus')}Dienstzeit erstellen</button>`:'')}
- <div class="split-layout ${canEditAny?'':'no-side'}">
+ <div class="split-layout no-side">
   <section class="panel flush">
-   <div class="panel-toolbar"><label class="search-field">${icon('search')}<input id="shift-search" type="search" placeholder="Dienstzeit suchen …"></label><div class="chip-row" id="shift-team-chips"><button type="button" class="chip ${shiftTeamChip==='Alle'?'active':''}" data-shift-team="Alle">Alle Teams</button>${visibleTeams.map(t=>`<button type="button" class="chip ${shiftTeamChip===t.name?'active':''}" data-shift-team="${escapeHtml(t.name)}">${escapeHtml(t.name.replace(/^Team\s+/,''))}</button>`).join('')}</div><span class="muted small push-right" id="shift-count"></span></div>
+   <div class="panel-toolbar"><label class="search-field">${icon('search')}<input id="shift-search" type="search" placeholder="Dienstzeit suchen …"></label>${teamFilterDropdown(shiftTeamCtx)}<span class="muted small push-right" id="shift-count"></span></div>
    <div class="table-wrap borderless shift-times-table-wrap"><table><thead><tr><th>Bezeichnung</th><th>Zeit</th><th>Dauer</th><th class="hide-sm scale-head"><span>00</span><span>12</span><span>24</span></th><th class="hide-sm">Genutzt</th><th>Aktionen</th></tr></thead><tbody id="shift-rows"></tbody></table></div>
   </section>
-  ${canEditAny?`<aside class="panel side-editor" id="shift-editor">
-   <div class="panel-head"><h2 id="shift-modal-title">Neue Dienstzeit</h2><button type="button" class="icon-btn" id="close-shift" aria-label="Zurücksetzen" title="Zurücksetzen">×</button></div>
-   <form id="shift-form" class="stack-form"><input type="hidden" id="shift-id">
-    <label>Team<select id="shift-team" required>${editable.map(t=>`<option value="${escapeHtml(t.name)}">${escapeHtml(t.name)}</option>`).join('')}</select></label>
-    <label>Bezeichnung<input id="shift-name" placeholder="z. B. 1A Dienst" required maxlength="60"></label>
-    <div class="form-two"><label>Beginn<input type="time" class="big-time" id="shift-start" value="06:00" required></label><label>Ende<input type="time" class="big-time" id="shift-end" value="14:12" required></label></div>
-    <div class="form-two"><label>Pause<select id="shift-pause">${[0,15,20,30,45,60].map(m=>`<option value="${m}">${m} Min.</option>`).join('')}</select></label><label>Netto<output id="shift-duration" class="net-box"></output></label></div>
-    <label class="check shift-multi"><input type="checkbox" id="shift-multi" checked><span>Mehrfach am Tag besetzbar<small class="muted block">Aus: Dieser Dienst wird pro Tag und Team nur einer Person zugeteilt. Bei „Rotation automatisch planen“ wird jeder Dienst mindestens einmal besetzt.</small></span></label>
-    <div class="shift-color-field"><label for="shift-color">Farbe</label><div class="shift-color-presets">${SHIFT_SWATCHES.map(c=>`<button type="button" class="color-swatch" data-color="${c}" style="--swatch:${c}" aria-label="Farbe ${c}" title="${c}"></button>`).join('')}<label class="color-swatch custom" title="Eigene Farbe wählen"><input type="color" id="shift-color" value="#3974c6" aria-label="Eigene Farbe wählen"></label></div></div>
-    <div class="field-label">Vorschau</div><div class="shift-color-preview" id="shift-color-preview"><b id="shift-preview-name">${escapeHtml(currentUserName())}</b><span id="shift-preview-line">Dienst · 06:00–14:12</span></div>
-    <div class="btn-row end"><button type="button" class="btn" id="cancel-shift">Abbrechen</button><button type="submit" class="btn primary">Speichern</button></div>
+  ${canEditAny?`<div class="modal-backdrop" id="shift-editor-modal" hidden><div class="modal wp-modal shift-modal" id="shift-editor" role="dialog" aria-modal="true" aria-labelledby="shift-modal-title">
+   <div class="wp-head"><span class="wp-head-icon shift-head-ic" id="shift-head-ic">${icon('clock')}</span><div><h2 id="shift-modal-title">Neue Dienstzeit</h2><p class="small muted">Steht beim Einteilen als Auswahl zur Verfügung.</p></div><button type="button" class="icon-btn" id="close-shift" aria-label="Schließen" title="Schließen">×</button></div>
+   <form id="shift-form" class="wp-form"><input type="hidden" id="shift-id">
+    <div class="te-two"><div class="wp-field"><span class="wp-label">Team</span>${personPicker({id:'shift-team',people:editable.map(t=>{const n=(t.memberIds||[]).length,k=shiftTypes.filter(x=>x.team===t.name).length;return{name:t.name,team:true,color:teamColor(t),sub:`${n} ${n===1?'Mitglied':'Mitglieder'} · ${k} ${k===1?'Dienstzeit':'Dienstzeiten'}`}}),value:editable[0]?.name||'',placeholder:'Team auswählen',empty:'Kein Team gefunden',search:'Team suchen …'})}</div>
+    <label class="wp-field"><span class="wp-label">Bezeichnung</span><input id="shift-name" placeholder="z. B. 1A Dienst" required maxlength="60"></label></div>
+    <div class="wp-field"><span class="wp-label">Arbeitszeit</span><div class="wp-range"><label><small>Beginn</small><input type="time" id="shift-start" value="06:00" required></label><span class="wp-range-arrow" aria-hidden="true">→</span><label><small>Ende</small><input type="time" id="shift-end" value="14:12" required></label></div></div>
+    <div class="wp-summary shift-net"><span class="wp-sum-ic">${icon('clock')}</span><div><b id="shift-duration"></b><small>Netto-Arbeitszeit · abzüglich ${LUNCH_MIN} Min. fixer Mittagspause</small></div></div>
+    <label class="check shift-multi wp-check"><input type="checkbox" id="shift-multi" checked><span><b>Mehrfach am Tag besetzbar</b><small class="muted block">Aus: Dieser Dienst wird pro Tag und Team nur einer Person zugeteilt. Bei „Rotation automatisch planen“ wird jeder Dienst mindestens einmal besetzt.</small></span></label>
+    <div class="wp-field shift-color-field"><span class="wp-label">Farbe</span><div class="shift-color-presets">${SHIFT_SWATCHES.map(c=>`<button type="button" class="color-swatch" data-color="${c}" style="--swatch:${c}" aria-label="Farbe ${c}" title="${c}"></button>`).join('')}<label class="color-swatch custom" title="Eigene Farbe wählen"><input type="color" id="shift-color" value="#3974c6" aria-label="Eigene Farbe wählen"></label></div></div>
+    <div class="btn-row modal-actions wp-actions"><span></span><span class="wp-actions-right"><button type="button" class="btn" id="cancel-shift">Abbrechen</button><button type="submit" class="btn primary">${icon('check')}Speichern</button></span></div>
    </form>
-  </aside>`:''}
+  </div></div>`:''}
  </div>
  <div id="shift-modal" hidden></div>`;
 }
@@ -3999,67 +4198,68 @@ function renderShiftRows(){
  const body=document.getElementById('shift-rows');if(!body)return;
  const editable=manageableTeams('Dienstzeiten'),visibleTeams=editable.length?editable:teams.filter(t=>currentRole==='Admin'||currentUserTeamNames().includes(t.name));
  const q=(document.getElementById('shift-search').value||'').toLowerCase();
- const rows=shiftTypes.filter(x=>visibleTeams.some(t=>t.name===x.team)&&(shiftTeamChip==='Alle'||x.team===shiftTeamChip)&&(!q||x.name.toLowerCase().includes(q)||x.team.toLowerCase().includes(q))).sort((a,b)=>a.team.localeCompare(b.team)||a.start.localeCompare(b.start));
- document.getElementById('shift-count').textContent=rows.length+' Modelle';
+ const rows=shiftTypes.filter(x=>visibleTeams.some(t=>t.name===x.team)&&(!shiftTeamSel.length||shiftTeamSel.includes(x.team))&&(!q||x.name.toLowerCase().includes(q)||x.team.toLowerCase().includes(q))).sort((a,b)=>a.team.localeCompare(b.team)||a.start.localeCompare(b.start));
+ document.getElementById('shift-count').textContent=rows.length+' Modelle';document.querySelectorAll('#team-dd .team-dd-opt[data-q]').forEach(o=>{const sm=o.querySelector('small');if(sm)sm.textContent=shiftTypes.filter(x=>x.team===o.dataset.teamOpt).length});
  const usage={};assignments.forEach(a=>{if(a.kind==='Dienstplan'&&!a.isAbsence){const k=a.team+'|'+a.shift;usage[k]=(usage[k]||0)+1}});
  let last='',html='';
  rows.forEach(x=>{
   if(x.team!==last){last=x.team;const t=teamByName(x.team);html+=`<tr class="group-row"><td colspan="6"><i class="dot" style="--c:${teamColor(t)}"></i> <b>${escapeHtml(x.team)}</b> <span class="muted">· ${rows.filter(r=>r.team===x.team).length} Modelle</span></td></tr>`}
-  const canE=editable.some(t=>t.name===x.team),h=durationHours(x.start,x.end),pause=+x.pause||0,net=Math.max(0,h*60-pause),color=shiftHexColor(x.color),s=durationHoursStart(x.start),e=durationHoursStart(x.end),segs=e>s?[[s,e]]:[[s,24],[0,e]];
-  html+=`<tr class="${editingShiftId===x.id?'is-editing':''}"><td><span class="shift-color-tag" style="--shift-color:${color}"><i></i>${escapeHtml(x.name)}</span>${shiftMulti(x)?'':' <span class="pill" title="Nur einmal pro Tag und Team">1× pro Tag</span>'}</td><td>${x.start} – ${x.end}${e<=s?' <span class="pill">über Mitternacht</span>':''}</td><td>${Math.floor(net/60)} Std. ${Math.round(net%60)} Min.${pause?`<small class="muted block">inkl. ${pause} Min. Pause abgezogen</small>`:''}</td><td class="hide-sm"><div class="mini-scale">${segs.map(([a,b])=>`<i style="left:${a/24*100}%;width:${(b-a)/24*100}%;background:${color}"></i>`).join('')}</div></td><td class="hide-sm muted">${usage[x.team+'|'+x.name]||0}×</td><td class="nowrap row-actions">${canE?`<button class="icon-btn" data-edit-shift="${x.id}" title="Bearbeiten" aria-label="Bearbeiten">${icon('edit')}</button><button class="icon-btn" data-copy-shift="${x.id}" title="Duplizieren" aria-label="Duplizieren">${icon('copy')}</button><button class="icon-btn danger" data-delete-shift="${x.id}" title="Löschen" aria-label="Löschen">${icon('trash')}</button>`:'<span class="muted">—</span>'}</td></tr>`;
+  const canE=editable.some(t=>t.name===x.team),h=durationHours(x.start,x.end),pause=LUNCH_MIN,net=Math.max(0,h*60-pause),color=shiftHexColor(x.color),s=durationHoursStart(x.start),e=durationHoursStart(x.end),segs=e>s?[[s,e]]:[[s,24],[0,e]];
+  html+=`<tr class="${editingShiftId===x.id?'is-editing':''}"><td><span class="shift-color-tag" style="--shift-color:${color}"><i></i>${escapeHtml(x.name)}</span>${shiftMulti(x)?'':' <span class="pill" title="Nur einmal pro Tag und Team">1× pro Tag</span>'}</td><td>${x.start} – ${x.end}${e<=s?' <span class="pill">über Mitternacht</span>':''}</td><td>${Math.floor(net/60)} Std. ${Math.round(net%60)} Min.<small class="muted block">abzgl. ${pause} Min. Mittagspause</small></td><td class="hide-sm"><div class="mini-scale">${segs.map(([a,b])=>`<i style="left:${a/24*100}%;width:${(b-a)/24*100}%;background:${color}"></i>`).join('')}</div></td><td class="hide-sm muted">${usage[x.team+'|'+x.name]||0}×</td><td class="nowrap row-actions">${canE?`<button class="icon-btn" data-edit-shift="${x.id}" title="Bearbeiten" aria-label="Bearbeiten">${icon('edit')}</button><button class="icon-btn" data-copy-shift="${x.id}" title="Duplizieren" aria-label="Duplizieren">${icon('copy')}</button><button class="icon-btn danger" data-delete-shift="${x.id}" title="Löschen" aria-label="Löschen">${icon('trash')}</button>`:'<span class="muted">—</span>'}</td></tr>`;
  });
  body.innerHTML=html||'<tr><td colspan="6" class="empty-note">Für diese Auswahl sind noch keine Dienstzeiten angelegt.</td></tr>';
  body.querySelectorAll('[data-edit-shift]').forEach(b=>b.onclick=()=>openShift(+b.dataset.editShift,true));
- body.querySelectorAll('[data-copy-shift]').forEach(b=>b.onclick=()=>{const x=shiftTypes.find(s=>s.id===+b.dataset.copyShift);if(!x)return;const copy={...x,id:Date.now(),name:x.name+' (Kopie)'};shiftTypes.push(copy);save('dienstplanShiftTypes',shiftTypes);audit('Erstellt','Dienstzeiten',`${copy.team} · ${copy.name}`,{title:'Dienstzeit dupliziert',object:copy.team,after:`${copy.name} ${copy.start}–${copy.end}`});renderShiftRows();openShift(copy.id);toast('Dienstzeit dupliziert.')});
+ body.querySelectorAll('[data-copy-shift]').forEach(b=>b.onclick=()=>{const x=shiftTypes.find(s=>s.id===+b.dataset.copyShift);if(!x)return;const copy={...x,id:Date.now(),name:x.name+' (Kopie)'};shiftTypes.push(copy);save('dienstplanShiftTypes',shiftTypes);audit('Erstellt','Dienstzeiten',`${copy.team} · ${copy.name}`,{title:'Dienstzeit dupliziert',object:copy.team,after:`${copy.name} ${copy.start}–${copy.end}`});renderShiftRows();openShift(copy.id,true);toast('Dienstzeit dupliziert – Bezeichnung jetzt anpassen.')});
  body.querySelectorAll('[data-delete-shift]').forEach(b=>b.onclick=async()=>{const id=+b.dataset.deleteShift;const target=shiftTypes.find(x=>x.id===id);if(!target||!manageableTeams('Dienstzeiten').some(t=>t.name===target.team)){toast('Du darfst diese Dienstzeit nicht löschen.');return}if(await ask(`Dienstzeit „${target.name}“ wirklich löschen?`)){shiftTypes=shiftTypes.filter(x=>x.id!==id);save('dienstplanShiftTypes',shiftTypes);audit('Gelöscht','Dienstzeiten',`${target.team} · ${target.name} (${target.start}–${target.end})`,{title:'Dienstzeit gelöscht',object:target.team,before:`${target.name} ${target.start}–${target.end}`});if(editingShiftId===id)openShift();renderShiftRows();toast('Dienstzeit gelöscht.')}});
 }
 function openShift(id,user=false){
- const form=document.getElementById('shift-form');if(!form)return;
+ const form=document.getElementById('shift-form');if(!form)return;bindPersonPicker(form);
  const x=shiftTypes.find(s=>s.id===id);if(x&&!manageableTeams('Dienstzeiten').some(t=>t.name===x.team)){toast('Du darfst diese Dienstzeit nicht bearbeiten.');return}
  editingShiftId=x?x.id:null;
  document.getElementById('shift-modal-title').textContent=x?`${x.name} bearbeiten`:'Neue Dienstzeit';
  document.getElementById('shift-id').value=x?x.id:'';
- document.getElementById('shift-team').value=x?x.team:(shiftTeamChip!=='Alle'&&manageableTeams('Dienstzeiten').some(t=>t.name===shiftTeamChip)?shiftTeamChip:(manageableTeams('Dienstzeiten')[0]?.name||''));
+ setPersonPicker('shift-team',x?x.team:(manageableTeams('Dienstzeiten').find(t=>shiftTeamSel.includes(t.name))?.name||manageableTeams('Dienstzeiten')[0]?.name||''));
  document.getElementById('shift-name').value=x?x.name:'';
  document.getElementById('shift-start').value=x?x.start:'06:00';
  document.getElementById('shift-end').value=x?x.end:'14:12';
- document.getElementById('shift-pause').value=String(x?(+x.pause||0):30);
  const mc=document.getElementById('shift-multi');if(mc)mc.checked=x?shiftMulti(x):true;
  document.getElementById('shift-color').value=x?shiftHexColor(x.color):'#3974c6';updateShiftColorPreview();renderShiftRows();
  if(!user)return;
- if(window.matchMedia('(max-width: 1100px)').matches)document.getElementById('shift-editor')?.scrollIntoView({behavior:'smooth',block:'start'});
- if(!x&&!window.matchMedia('(max-width: 700px), (pointer: coarse)').matches)document.getElementById('shift-name').focus();
+ const m=document.getElementById('shift-editor-modal');if(m)m.hidden=false;
+ if(!window.matchMedia('(max-width: 700px), (pointer: coarse)').matches)setTimeout(()=>document.getElementById('shift-name')?.focus(),30);
 }
 function updateShiftColorPreview(){
- const input=document.getElementById('shift-color'),preview=document.getElementById('shift-color-preview');if(!input||!preview)return;
- const c=shiftHexColor(input.value);preview.style.setProperty('--shift-color',c);
+ const input=document.getElementById('shift-color');if(!input)return;
+ const c=shiftHexColor(input.value);
  document.querySelectorAll('#shift-editor .color-swatch[data-color]').forEach(b=>b.classList.toggle('active',b.dataset.color.toLowerCase()===c.toLowerCase()));
- const st=document.getElementById('shift-start').value,en=document.getElementById('shift-end').value,pause=+document.getElementById('shift-pause').value||0;
- document.getElementById('shift-preview-line').textContent=`${document.getElementById('shift-name').value||'Dienst'} · ${st}–${en}`;
+ const st=document.getElementById('shift-start').value,en=document.getElementById('shift-end').value,pause=LUNCH_MIN;const hi=document.getElementById('shift-head-ic');if(hi)hi.style.setProperty('--sc',c);
  const m=Math.max(0,Math.round(durationHours(st,en)*60)-pause),s=durationHoursStart(st),e=durationHoursStart(en);
  document.getElementById('shift-duration').textContent=`${Math.floor(m/60)} Std. ${m%60} Min.${e<=s?' · endet am Folgetag':''}`;
 }
 function bindShiftTimes(){
  renderShiftRows();
  document.getElementById('shift-search').oninput=renderShiftRows;
- content.querySelectorAll('[data-shift-team]').forEach(b=>b.onclick=()=>{shiftTeamChip=b.dataset.shiftTeam;content.querySelectorAll('[data-shift-team]').forEach(x=>x.classList.toggle('active',x===b));renderShiftRows()});
+ bindTeamDropdown(shiftTeamCtx);
  const nb=document.getElementById('new-shift');if(nb)nb.onclick=()=>openShift(undefined,true);
  const form=document.getElementById('shift-form');if(!form)return;
- ['shift-color','shift-name','shift-start','shift-end','shift-pause'].forEach(id=>document.getElementById(id).addEventListener('input',updateShiftColorPreview));
- document.getElementById('shift-pause').addEventListener('change',updateShiftColorPreview);
+ ['shift-color','shift-name','shift-start','shift-end'].forEach(id=>{const el=document.getElementById(id);el.addEventListener('input',updateShiftColorPreview);el.addEventListener('change',updateShiftColorPreview)});
  const colorInput=document.getElementById('shift-color');
  document.querySelectorAll('#shift-editor .color-swatch[data-color]').forEach(b=>b.onclick=()=>{colorInput.value=b.dataset.color;updateShiftColorPreview()});
- document.getElementById('close-shift').onclick=document.getElementById('cancel-shift').onclick=()=>openShift();
- openShift(editingShiftId&&shiftTypes.some(s=>s.id===editingShiftId)?editingShiftId:undefined);
+ const modal=document.getElementById('shift-editor-modal');
+ const closeShift=()=>{if(modal)modal.hidden=true;editingShiftId=null;form.reset();openShift()};
+ document.getElementById('close-shift').onclick=document.getElementById('cancel-shift').onclick=closeShift;
+ if(modal){modal.addEventListener('mousedown',e=>{modal.dataset.down=e.target===modal?'1':''});modal.addEventListener('click',e=>{if(e.target===modal&&modal.dataset.down==='1')closeShift()});}
+ if(!window.__shiftEscBound){window.__shiftEscBound=true;document.addEventListener('keydown',e=>{if(e.key!=='Escape')return;const m=document.getElementById('shift-editor-modal');if(!m||m.hidden||document.querySelector('.app-dialog'))return;if(m.querySelector('.pp.open'))return;e.stopPropagation();document.getElementById('cancel-shift')?.click()},true)}
+ editingShiftId=null;openShift();
  form.onsubmit=e=>{e.preventDefault();const id=+document.getElementById('shift-id').value;const chosenTeam=document.getElementById('shift-team').value;if(!manageableTeams('Dienstzeiten').some(t=>t.name===chosenTeam)){toast('Du darfst nur Dienstzeiten deiner zugeordneten Teams bearbeiten.');return}
-  const item={id:id||Date.now(),team:chosenTeam,name:document.getElementById('shift-name').value.trim(),start:document.getElementById('shift-start').value,end:document.getElementById('shift-end').value,pause:+document.getElementById('shift-pause').value||0,multi:document.getElementById('shift-multi')?.checked!==false,color:shiftHexColor(document.getElementById('shift-color').value)};
+  const item={id:id||Date.now(),team:chosenTeam,name:document.getElementById('shift-name').value.trim(),start:document.getElementById('shift-start').value,end:document.getElementById('shift-end').value,pause:LUNCH_MIN,multi:document.getElementById('shift-multi')?.checked!==false,color:shiftHexColor(document.getElementById('shift-color').value)};
   if(!item.name)return;if(item.start===item.end){toast('Beginn und Ende dürfen nicht gleich sein.');return}
   if(shiftTypes.some(x=>x.id!==item.id&&x.team===item.team&&x.name.toLowerCase()===item.name.toLowerCase())){toast('Diese Bezeichnung gibt es in diesem Team bereits.');return}
   const old=shiftTypes.find(x=>x.id===id);
   if(id)shiftTypes=shiftTypes.map(x=>x.id===id?item:x);else shiftTypes.push(item);save('dienstplanShiftTypes',shiftTypes);
   if(old&&old.name!==item.name){assignments.forEach(a=>{if(a.kind==='Dienstplan'&&a.team===old.team&&a.shift===old.name)a.shift=item.name});persistAssignments()}
   audit(id?'Geändert':'Erstellt','Dienstzeiten',`${item.team} · ${item.name} (${item.start}–${item.end})`,{title:id?'Dienstzeit geändert':'Dienstzeit erstellt',object:item.team,before:old?`${old.name} ${old.start}–${old.end}${shiftMulti(old)?'':' · 1× pro Tag'}`:'',after:`${item.name} ${item.start}–${item.end}${item.multi?'':' · 1× pro Tag'}`});
-  editingShiftId=item.id;renderShiftRows();openShift(item.id);toast('Dienstzeit gespeichert.')};
+  closeShift();toast(id?'Dienstzeit gespeichert.':'Dienstzeit erstellt.')};
 }
 
 /* ------------------------------------------------------------------
@@ -4128,6 +4328,9 @@ function bindContacts(){
 /* ------------------------------------------------------------------
    Abwesenheit, Dienst einteilen, Arbeitsort
 ------------------------------------------------------------------ */
+const ABSENCE_KINDS=[['Urlaub','travel','Ganzer Tag'],['Urlaub 1/2 Tag','travel','Halber Tag'],['Gleittag','cal','Zeitausgleich'],['Sonderurlaub','spark','z. B. Hochzeit, Umzug'],['Berufsschule','file','Schultag'],['Abwesend','alert','Ganzer Tag'],['Abwesend untertägig','clock','Mit Uhrzeit'],['Arztbesuch','plus','Mit Uhrzeit']];
+// Esc schließt Abwesenheit / Eintrag (aber zuerst eine offene Auswahlliste)
+document.addEventListener('keydown',e=>{if(e.key!=='Escape'||document.querySelector('.app-dialog'))return;for(const [m,c] of [['duty-modal','cancel-duty'],['absence-modal','cancel-absence']]){const el=document.getElementById(m);if(el&&!el.hidden){if(el.querySelector('.pp.open'))return;e.stopPropagation();document.getElementById(c)?.click();return}}},true);
 function bindAbsenceModal(){
  const modal=document.getElementById('absence-modal'),form=document.getElementById('absence-form');if(!modal||!form)return;
  const employee=document.getElementById('absence-employee'),type=document.getElementById('absence-type'),timeFields=document.getElementById('absence-time-fields');
@@ -4135,10 +4338,22 @@ function bindAbsenceModal(){
  const allowedTeams=absenceTeams();
  const eligibleStaff=staff.filter(s=>['Abteilungsleiter','Admin'].includes(currentRole)||allowedTeams.some(t=>(Array.isArray(t.memberIds)&&t.memberIds.includes(s[8]))||t.name===(s[5]||'')));
  employee.innerHTML='<option value="">Bitte Mitarbeiter wählen</option>'+eligibleStaff.map(s=>`<option value="${escapeHtml(s[0])}">${escapeHtml(s[0])} · ${escapeHtml(absenceTeamFor(s)?.name||s[5]||'Ohne Team')}</option>`).join('');
+ fancySelect(employee,{kind:'person',search:'Name oder Team suchen …',placeholder:'Mitarbeiter auswählen'});
+ fancySelect(type,{kind:'absence',placeholder:'Art der Abwesenheit wählen',meta:o=>{const k=ABSENCE_KINDS.find(x=>x[0]===o.value);return k?{label:k[0],sub:k[2],pic:'shift',icon:k[1],color:'#d69b38'}:{}}});
+ type.closest('.pp').dataset.fewMax='10';
  const ownPerson=eligibleStaff.find(s=>s[8]===currentUserId);employee.value=ownPerson?ownPerson[0]:'';
- const updateTime=()=>{const show=['Abwesend untertägig','Arztbesuch'].includes(type.value);timeFields.hidden=!show;timeFields.querySelectorAll('input').forEach(input=>{input.required=show;if(!show)input.value='';});};type.onchange=updateTime;updateTime();
- dateFrom.onchange=()=>{if(dateFrom.value&&(!dateTo.value||dateTo.value<dateFrom.value))dateTo.value=dateFrom.value;};
- const close=()=>{modal.hidden=true;form.reset();dateFrom.value=isoDate(new Date());dateTo.value='';updateTime()};document.getElementById('close-absence').onclick=close;document.getElementById('cancel-absence').onclick=close;
+ const summary=document.getElementById('absence-summary');
+ const updateSummary=()=>{const k=type.value,f=dateFrom.value,t=dateTo.value||f,name=employee.value;
+  if(!k||!f||!name){summary.classList.remove('warn');summary.innerHTML=`<span class="wp-sum-ic">${icon('travel')}</span><div><b>${!name?'Mitarbeiter auswählen':'Art der Abwesenheit wählen'}</b><small>Danach Zeitraum festlegen und speichern.</small></div>`;return}
+  const days=t>=f?Math.round((new Date(t+'T12:00:00')-new Date(f+'T12:00:00'))/864e5)+1:0;
+  const tm=['Abwesend untertägig','Arztbesuch'].includes(k)&&document.getElementById('absence-start').value&&document.getElementById('absence-end').value?` · ${document.getElementById('absence-start').value}–${document.getElementById('absence-end').value}`:'';
+  summary.classList.toggle('warn',!days);
+  summary.innerHTML=!days?`${icon('alert')}<div><b>Das Enddatum liegt vor dem Startdatum.</b></div>`:`<span class="wp-sum-ic">${icon('travel')}</span><div><b>${escapeHtml(k)} · ${days} ${days===1?'Tag':'Tage'}</b><small>${escapeHtml(name)} · ${fmtIsoDate(f)}${days>1?' – '+fmtIsoDate(t):''}${tm}</small></div>`};
+ const updateTime=()=>{const show=['Abwesend untertägig','Arztbesuch'].includes(type.value);timeFields.hidden=!show;timeFields.querySelectorAll('input').forEach(input=>{input.required=show;if(!show)input.value='';});updateSummary()};type.onchange=updateTime;
+ form.oninput=updateSummary;form.onchange=e=>{if(e.target!==type)updateSummary()};updateTime();
+ dateFrom.onchange=()=>{if(dateFrom.value&&(!dateTo.value||dateTo.value<dateFrom.value))dateTo.value=dateFrom.value;updateSummary()};
+ const close=()=>{modal.hidden=true;form.reset();dateFrom.value=isoDate(new Date());dateTo.value='';setTimeout(()=>{employee.value=ownPerson?ownPerson[0]:'';updateTime()})};document.getElementById('close-absence').onclick=close;document.getElementById('cancel-absence').onclick=close;
+ modal.onclick=e=>{if(e.target===modal)close()};
  form.onsubmit=e=>{e.preventDefault();const person=staff.find(x=>x[0]===employee.value),kind=type.value,from=dateFrom.value,to=dateTo.value||from;
   if(!person||!kind||!from){toast('Bitte Mitarbeiter, Abwesenheitsart und Startdatum auswählen.');return;}
   if(!canCreateAbsenceFor(person)){toast('Du kannst Abwesenheiten nur für Mitarbeiter deines eigenen Teams eintragen.');return;}
@@ -4172,16 +4387,34 @@ function bindDutyModal(){
   shift.innerHTML=types.length?'<option value="">Bitte auswählen</option>'+types.map(x=>`<option value="${x.id}">${escapeHtml(x.name)} (${x.start}–${x.end})</option>`).join(''):`<option value="">${currentPage==='Bereitschaft'?'Keine Bereitschaftszeiten für diese Gruppe angelegt':'Keine Dienstzeiten für dieses Team angelegt'}</option>`;
   updateTimeFields();
  }
- function updateTimeFields(){const source=currentPage==='Bereitschaft'?standbyTimes:shiftTypes;const service=source.find(x=>String(x.id)===String(shift.value));if(timeBox)timeBox.hidden=!service;if(timeHint)timeHint.hidden=!service;if(service){startTime.value=service.start;endTime.value=service.end;}}
+ function updateTimeFields(){const source=currentPage==='Bereitschaft'?standbyTimes:shiftTypes;const service=source.find(x=>String(x.id)===String(shift.value));if(timeBox)timeBox.hidden=!service;if(timeHint)timeHint.hidden=!service;if(service){startTime.value=service.start;endTime.value=service.end;}updateDutySummary()}
+ function updateDutySummary(){const sum=document.getElementById('duty-summary');if(!sum)return;const sb=currentPage==='Bereitschaft';
+  const person=staff[Number(employee.value)],service=(sb?standbyTimes:shiftTypes).find(x=>String(x.id)===String(shift.value));
+  const f=document.getElementById('duty-date-from').value,t=document.getElementById('duty-date-to').value||f;
+  if(!person||employee.value===''||!service){sum.classList.remove('warn');sum.innerHTML=`<span class="wp-sum-ic">${icon(sb?'moon':'cal')}</span><div><b>${!person||employee.value===''?'Mitarbeiter auswählen':sb?'Bereitschaftszeit auswählen':'Dienst auswählen'}</b><small>Danach Zeitraum festlegen und speichern.</small></div>`;return}
+  if(!f||t<f){sum.classList.add('warn');sum.innerHTML=`${icon('alert')}<div><b>Das Enddatum liegt vor dem Startdatum.</b></div>`;return}
+  let n=0,skip=0;const multi=t!==f;for(let c=new Date(f+'T12:00:00');isoDate(c)<=t&&n+skip<=366;c=addDays(c,1)){if(multi&&!sb&&(c.getDay()+6)%7>=dutyDays)skip++;else n++}
+  const st=startTime.value||service.start,en=endTime.value||service.end,mins=Math.round(durationHours(st,en)*60)-(sb?0:LUNCH_MIN),net=mins>0?` · ${Math.floor(mins/60)} Std.${mins%60?' '+mins%60+' Min.':''}${sb?'':' netto'}`:'';
+  sum.classList.toggle('warn',!n);
+  sum.innerHTML=!n?`${icon('alert')}<div><b>Im gewählten Zeitraum liegen keine Arbeitstage.</b></div>`:`<span class="wp-sum-ic">${icon(sb?'moon':'cal')}</span><div><b>${editingDutyId?'Eintrag ändern':`${n} ${n===1?'Eintrag':'Einträge'}`} · ${escapeHtml(service.name)}</b><small>${escapeHtml(person[0])} · ${st}–${en}${net} · ${fmtIsoDate(f)}${multi?' – '+fmtIsoDate(t):''}${skip?` · ${skip} ${skip===1?'freier Tag':'freie Tage'} ausgelassen`:''}</small></div>`}
  shift.onchange=updateTimeFields;
+ const sbPage=currentPage==='Bereitschaft';
+ fancySelect(team,{kind:'team',search:'Team suchen …',placeholder:'Team auswählen'});
+ fancySelect(employee,{kind:'person',search:'Name suchen …',placeholder:'Mitarbeiter auswählen'});
+ if(standbyGroup)fancySelect(standbyGroup,{kind:'group',placeholder:'Gruppe auswählen',meta:o=>{const n=standbyTimes.filter(x=>x.groupId===o.value).length;return{pic:'shift',icon:'users',sub:`${n} ${n===1?'Bereitschaftszeit':'Bereitschaftszeiten'}`}}});
+ fancySelect(shift,{kind:'shift',search:'Suchen …',placeholder:sbPage?'Bereitschaftszeit auswählen':'Dienst auswählen',meta:o=>{const x=(sbPage?standbyTimes:shiftTypes).find(y=>String(y.id)===o.value);if(!x)return{};const m=Math.round(durationHours(x.start,x.end)*60)-(sbPage?0:LUNCH_MIN);return{label:x.name,sub:`${x.start} – ${x.end}`+(sbPage?'':` · ${Math.floor(m/60)} Std.${m%60?' '+m%60+' Min.':''} netto`),color:sbPage?(teamByName(team.value)?.standbyColor||'#159da8'):shiftHexColor(x.color||'teal'),icon:sbPage?'moon':'clock'}}});
+ ['duty-start-time','duty-end-time','duty-date-to'].forEach(id=>document.getElementById(id)?.addEventListener('input',updateDutySummary));
+ employee.addEventListener('change',updateDutySummary);
  if(!entryTeams().length){team.innerHTML='<option value="">Kein Team zugewiesen</option>';team.disabled=true;}
  team.onchange=refresh;refresh();
- const title=modal.querySelector('.panel-head h2'),defaultTitle=title.textContent;
+ const title=document.getElementById('duty-title'),defaultTitle=title.textContent;
  const closeModal=()=>{modal.hidden=true;form.reset();editingDutyId=null;title.textContent=defaultTitle;refresh()};
  close.onclick=closeModal;cancel.onclick=closeModal;
+ modal.onclick=e=>{if(e.target===modal)closeModal()};
  // „Bis“ folgt „Von“, solange nur ein Tag gewählt ist oder „Bis“ davor läge
  const dFrom=document.getElementById('duty-date-from'),dTo=document.getElementById('duty-date-to');
- if(dFrom&&dTo){dFrom.addEventListener('focus',()=>{dFrom.dataset.prev=dFrom.value});dFrom.addEventListener('change',()=>{const v=dFrom.value;if(v&&(!dTo.value||dTo.value<v||dTo.value===dFrom.dataset.prev))dTo.value=v;dFrom.dataset.prev=v})}
+ if(dFrom&&dTo){dFrom.addEventListener('focus',()=>{dFrom.dataset.prev=dFrom.value});dFrom.addEventListener('change',()=>{const v=dFrom.value;if(v&&(!dTo.value||dTo.value<v||dTo.value===dFrom.dataset.prev))dTo.value=v;dFrom.dataset.prev=v;updateDutySummary()});dTo.addEventListener('change',updateDutySummary)}
+ window.__dutySummary=updateDutySummary;
  form.onsubmit=async e=>{
   e.preventDefault();
   const person=staff[Number(employee.value)],service=(currentPage==='Bereitschaft'?standbyTimes:shiftTypes).find(x=>String(x.id)===String(shift.value));
@@ -4236,7 +4469,7 @@ function openDutyModalFor({team,empIndex,date}){
  t.dispatchEvent(new Event('change'));
  if(empIndex!==undefined)document.getElementById('duty-employee').value=String(empIndex);
  if(date){document.getElementById('duty-date-from').value=date;document.getElementById('duty-date-to').value=date;}
- m.hidden=false;
+ window.__dutySummary?.();m.hidden=false;
 }
 function openEditDuty(id){
  const item=assignments.find(a=>String(a.id)===String(id));
@@ -4251,24 +4484,24 @@ function openEditDuty(id){
  const service=(item.kind==='Bereitschaft'?standbyTimes:shiftTypes).find(x=>(item.kind==='Bereitschaft'?x.groupId===item.groupId:x.team===item.team)&&x.name===item.shift);
  if(service){const sel=document.getElementById('duty-shift');sel.value=String(service.id);sel.dispatchEvent(new Event('change'));document.getElementById('duty-start-time').value=item.start;document.getElementById('duty-end-time').value=item.end;}
  document.getElementById('duty-date-from').value=item.date;document.getElementById('duty-date-to').value=item.date;
- modal.querySelector('.panel-head h2').textContent='Eintrag bearbeiten';
- modal.hidden=false;
+ document.getElementById('duty-title').textContent='Eintrag bearbeiten';
+ window.__dutySummary?.();modal.hidden=false;
 }
 /* ------------------------------------------------------------------
    Personenauswahl mit Suche (z. B. Arbeitsort, Diensttausch)
 ------------------------------------------------------------------ */
-function personPicker({id,name='',people,value='',placeholder='Person auswählen',empty='Keine Person gefunden',noneLabel=''}){
+function personPicker({id,name='',people,value='',placeholder='Person auswählen',empty='Keine Person gefunden',noneLabel='',search='Name oder Team suchen …'}){
  if(noneLabel)people=[{name:'',label:noneLabel,sub:'',none:true},...people];
  const cur=people.find(p=>p.name===value&&(value!==''||p.none));
- const row=p=>p.none?`<span class="pp-none">–</span><span class="pp-txt"><b class="muted">${escapeHtml(p.label)}</b></span>`:`${avatarHtml(p.name,p.color||'var(--accent-color)',30)}<span class="pp-txt"><b>${escapeHtml(p.name)}</b>${p.sub?`<small>${escapeHtml(p.sub)}</small>`:''}</span>`;
+ const row=p=>p.none?`<span class="pp-none">–</span><span class="pp-txt"><b class="muted">${escapeHtml(p.label)}</b></span>`:`${p.team?`<span class="pp-team" style="--c:${escapeHtml(p.color||'var(--accent-color)')}">${icon('users')}</span>`:avatarHtml(p.name,p.color||'var(--accent-color)',30)}<span class="pp-txt"><b>${escapeHtml(p.name)}</b>${p.sub?`<small>${escapeHtml(p.sub)}</small>`:''}</span>`;
  return `<div class="pp" data-pp="${id}"><input type="hidden" id="${id}" ${name?`name="${name}"`:''} value="${escapeHtml(cur?cur.name:'')}">
   <button type="button" class="pp-btn" aria-haspopup="listbox" aria-expanded="false">${cur?row(cur):`<span class="pp-txt"><b class="muted">${escapeHtml(placeholder)}</b></span>`}${icon('down','pp-caret')}</button>
-  <div class="pp-panel" hidden><label class="team-dd-search">${icon('search')}<input type="search" class="pp-q" placeholder="Name oder Team suchen …" autocomplete="off"></label>
+  <div class="pp-panel" hidden><label class="team-dd-search">${icon('search')}<input type="search" class="pp-q" placeholder="${escapeHtml(search)}" autocomplete="off"></label>
   <div class="pp-list" role="listbox">${people.map(p=>`<button type="button" class="pp-opt ${cur&&cur.name===p.name?'on':''}" role="option" data-pp-val="${escapeHtml(p.name)}" data-q="${escapeHtml(((p.label||p.name)+' '+(p.sub||'')).toLowerCase())}">${row(p)}${p.badge?`<em class="pp-badge">${escapeHtml(p.badge)}</em>`:''}<span class="pp-check">${icon('check')}</span></button>`).join('')}<div class="team-dd-empty" hidden>${escapeHtml(empty)}</div></div></div></div>`;
 }
 function bindPersonPicker(root){
  root.querySelectorAll('.pp').forEach(pp=>{if(pp.dataset.bound)return;pp.dataset.bound='1';
-  const btn=pp.querySelector('.pp-btn'),panel=pp.querySelector('.pp-panel'),q=pp.querySelector('.pp-q'),hidden=pp.querySelector('input[type=hidden]');
+  const btn=pp.querySelector('.pp-btn'),panel=pp.querySelector('.pp-panel'),q=pp.querySelector('.pp-q');
   const opts=()=>[...pp.querySelectorAll('.pp-opt')].filter(o=>!o.hidden);
   const filter=()=>{const v=q.value.trim().toLowerCase();let n=0;pp.querySelectorAll('.pp-opt').forEach(o=>{const hit=!v||o.dataset.q.includes(v);o.hidden=!hit;if(hit)n++});pp.querySelector('.team-dd-empty').hidden=n>0};
   const place=()=>{const r=btn.getBoundingClientRect(),vh=window.innerHeight,vw=window.innerWidth,below=vh-r.bottom-12,above=r.top-12,list=pp.querySelector('.pp-list');
@@ -4277,19 +4510,46 @@ function bindPersonPicker(root){
    panel.style.width=w+'px';panel.style.left=Math.max(8,Math.min(r.left,vw-w-8))+'px';
    panel.style.top=(below>=h||below>=above?r.bottom+6:Math.max(8,r.top-h-6))+'px'};
   const onScroll=e=>{if(panel.hidden)return;if(panel.contains(e.target))return;close()};
-  const open=()=>{panel.hidden=false;pp.classList.add('open');btn.setAttribute('aria-expanded','true');q.value='';filter();place();window.addEventListener('scroll',onScroll,true);window.addEventListener('resize',place);q.focus({preventScroll:true});const on=pp.querySelector('.pp-opt.on');if(on){const l=pp.querySelector('.pp-list');l.scrollTop=Math.max(0,on.offsetTop-l.offsetTop-80)}};
+  const open=()=>{if(btn.disabled)return;const few=pp.querySelectorAll('.pp-opt').length<=(+pp.dataset.fewMax||6);pp.classList.toggle('pp-few',few);panel.hidden=false;pp.classList.add('open');btn.setAttribute('aria-expanded','true');q.value='';filter();place();window.addEventListener('scroll',onScroll,true);window.addEventListener('resize',place);const on=pp.querySelector('.pp-opt.on');if(few)(on||opts()[0]||btn).focus({preventScroll:true});else q.focus({preventScroll:true});if(on&&!few){const l=pp.querySelector('.pp-list');l.scrollTop=Math.max(0,on.offsetTop-l.offsetTop-80)}};
   const close=()=>{panel.hidden=true;pp.classList.remove('open');btn.setAttribute('aria-expanded','false');window.removeEventListener('scroll',onScroll,true);window.removeEventListener('resize',place)};
   btn.onclick=e=>{e.preventDefault();panel.hidden?open():close()};
   q.oninput=()=>{filter();place()};
   q.onkeydown=e=>{if(e.key==='ArrowDown'){e.preventDefault();opts()[0]?.focus()}else if(e.key==='Enter'){e.preventDefault();opts()[0]?.click()}else if(e.key==='Escape'){e.stopPropagation();e.preventDefault();close();btn.focus()}};
-  panel.onkeydown=e=>{const l=opts(),i=l.indexOf(document.activeElement);if(e.key==='ArrowDown'){e.preventDefault();l[Math.min(l.length-1,i+1)]?.focus()}else if(e.key==='ArrowUp'){e.preventDefault();i<=0?q.focus():l[i-1].focus()}else if(e.key==='Escape'){e.stopPropagation();e.preventDefault();close();btn.focus()}};
-  pp.querySelectorAll('.pp-opt').forEach(o=>o.onclick=e=>{e.preventDefault();setPersonPicker(pp,o.dataset.ppVal);close();btn.focus({preventScroll:true})});
+  panel.onkeydown=e=>{const l=opts(),i=l.indexOf(document.activeElement);if(e.key==='ArrowDown'){e.preventDefault();l[Math.min(l.length-1,i+1)]?.focus()}else if(e.key==='ArrowUp'){e.preventDefault();i<=0?(pp.classList.contains('pp-few')?l[0]?.focus():q.focus()):l[i-1].focus()}else if(e.key==='Escape'){e.stopPropagation();e.preventDefault();close();btn.focus()}};
+  panel.addEventListener('click',e=>{const o=e.target.closest('.pp-opt');if(!o||o.disabled)return;e.preventDefault();setPersonPicker(pp,o.dataset.ppVal);close();btn.focus({preventScroll:true})});
   document.addEventListener('pointerdown',e=>{if(panel.hidden||pp.contains(e.target))return;close();
    // Klick auf den abgedunkelten Hintergrund schließt nur die Auswahl, nicht gleich das ganze Fenster
    if(e.target.classList&&e.target.classList.contains('modal-backdrop')){const stop=ev=>{ev.stopPropagation();ev.preventDefault()};document.addEventListener('click',stop,{capture:true,once:true});setTimeout(()=>document.removeEventListener('click',stop,true),400)}},true);
  });
 }
+/* Natives <select> als schöne Auswahl im Stil der Personenauswahl (Liste im Vordergrund, Suche).
+   Das <select> bleibt die Datenquelle: .value, neue Optionen, disabled und reset werden automatisch übernommen. */
+const SELECT_VALUE=Object.getOwnPropertyDescriptor(HTMLSelectElement.prototype,'value');
+function fancySelect(sel,{kind='plain',meta,search='Suchen …',placeholder='Bitte auswählen'}={}){
+ if(!sel||sel.dataset.fancy)return;sel.dataset.fancy='1';
+ const pp=document.createElement('div');pp.className=`pp fs fs-${kind}`;pp.dataset.pp=sel.id;
+ sel.parentNode.insertBefore(pp,sel);pp.appendChild(sel);sel.classList.add('fs-native');sel.tabIndex=-1;sel.setAttribute('aria-hidden','true');
+ pp.insertAdjacentHTML('beforeend',`<button type="button" class="pp-btn" aria-haspopup="listbox" aria-expanded="false"></button><div class="pp-panel" hidden><label class="team-dd-search">${icon('search')}<input type="search" class="pp-q" placeholder="${escapeHtml(search)}" autocomplete="off"></label><div class="pp-list" role="listbox"></div></div>`);
+ const btn=pp.querySelector('.pp-btn'),list=pp.querySelector('.pp-list');
+ const defMeta=o=>{const t=o.textContent,[a,b]=t.split(' · ');
+  if(kind==='person'){const p=staff.find(x=>x[0]===a);return{label:a,sub:b||(p?p[10]||'':''),pic:'person',color:teamColor(teamByName(p?.[5]))}}
+  if(kind==='team'){const tm=teamByName(o.value);const n=tm?.memberIds?.length||0;return{label:t,sub:tm?`${n} ${n===1?'Mitglied':'Mitglieder'}`:'',pic:'team',color:teamColor(tm)}}
+  const m=t.match(/^(.*) \((\d\d:\d\d)–(\d\d:\d\d)\)$/);return m?{label:m[1],sub:`${m[2]} – ${m[3]}`,pic:'shift',color:'var(--accent-color)'}:{label:t,sub:'',pic:''}};
+ const M=o=>Object.assign(defMeta(o),meta?meta(o)||{}:{});
+ const pic=m=>m.pic==='person'?avatarHtml(m.label,m.color||'var(--accent-color)',30):m.pic?`<span class="pp-team" style="--c:${escapeHtml(m.color||'var(--accent-color)')}">${icon(m.pic==='team'?'users':m.icon||'clock')}</span>`:'';
+ const row=m=>`${pic(m)}<span class="pp-txt"><b>${escapeHtml(m.label)}</b>${m.sub?`<small>${escapeHtml(m.sub)}</small>`:''}</span>`;
+ const sync=()=>{const opts=[...sel.options],real=opts.filter(o=>o.value!==''),ph=opts.find(o=>o.value==='');const v=SELECT_VALUE.get.call(sel);
+  list.innerHTML=real.map(o=>{const m=M(o);return `<button type="button" class="pp-opt ${o.value===v?'on':''}" role="option" data-pp-val="${escapeHtml(o.value)}" data-q="${escapeHtml((m.label+' '+(m.sub||'')).toLowerCase())}">${row(m)}<span class="pp-check">${icon('check')}</span></button>`}).join('')+`<div class="team-dd-empty" hidden>Keine Treffer</div>`;
+  const cur=real.find(o=>o.value===v);const empty=!real.length;
+  btn.disabled=sel.disabled||empty;pp.classList.toggle('fs-empty',empty);
+  btn.innerHTML=(cur?row(M(cur)):`<span class="pp-txt"><b class="muted">${escapeHtml(empty&&ph?ph.textContent:placeholder)}</b></span>`)+icon('down','pp-caret')};
+ Object.defineProperty(sel,'value',{configurable:true,get(){return SELECT_VALUE.get.call(this)},set(v){SELECT_VALUE.set.call(this,v);sync()}});
+ sel.addEventListener('change',sync);sel.form?.addEventListener('reset',()=>setTimeout(sync));
+ new MutationObserver(sync).observe(sel,{childList:true,subtree:true,attributes:true,attributeFilter:['disabled']});
+ sync();bindPersonPicker(pp.parentNode);
+}
 function setPersonPicker(pp,val){if(typeof pp==='string')pp=document.querySelector(`[data-pp="${pp}"]`);if(!pp)return;
+ if(pp.classList.contains('fs')){const sel=pp.querySelector('select');if(sel.value!==val){sel.value=val;sel.dispatchEvent(new Event('change',{bubbles:true}))}return}
  const o=[...pp.querySelectorAll('.pp-opt')].find(x=>x.dataset.ppVal===val);if(!o)return;const hidden=pp.querySelector('input[type=hidden]');
  pp.querySelectorAll('.pp-opt').forEach(x=>x.classList.toggle('on',x===o));
  const btn=pp.querySelector('.pp-btn');btn.innerHTML=o.innerHTML.replace(/<em class="pp-badge">.*?<\/em>/,'').replace(/<span class="pp-check">.*?<\/span>$/,'')+icon('down','pp-caret');
@@ -5001,7 +5261,7 @@ function render(){
  content.querySelectorAll('[data-go]').forEach(b=>b.onclick=()=>{const date=b.dataset.goDate;go(b.dataset.go);if(date){currentDate=new Date(date+'T12:00:00');selectedMobileDate=date;render();}});
  content.querySelectorAll('[data-view]').forEach(b=>b.onclick=()=>{currentView=b.dataset.view;selectedMobileDate='';render()});
  ['prev','next','today'].forEach(id=>{const b=document.getElementById(id);if(b)b.onclick=()=>{if(id==='today'){currentDate=new Date();selectedMobileDate='';}else if(currentView==='Monat'){currentDate.setDate(1);currentDate.setMonth(currentDate.getMonth()+(id==='next'?1:-1));selectedMobileDate='';}else{currentDate.setDate(currentDate.getDate()+(id==='next'?1:-1)*(currentView==='Tag'?1:7));selectedMobileDate='';}render()}});
- const absenceAdd=document.getElementById('add-absence');if(absenceAdd)absenceAdd.onclick=()=>{bindAbsenceModal();document.getElementById('absence-modal').hidden=false};
+ const absenceAdd=document.getElementById('add-absence');if(absenceAdd)absenceAdd.onclick=()=>{bindAbsenceModal();const m=document.getElementById('absence-modal');m.hidden=false;if(!window.matchMedia('(pointer: coarse)').matches)setTimeout(()=>m.querySelector('[data-pp="absence-type"] .pp-btn')?.focus({preventScroll:true}),30)};
  const dpAct=document.getElementById('dp-actions-toggle');if(dpAct)dpAct.onclick=openDutyActionsSheet;
  const swapNew=document.getElementById('swap-new-btn');if(swapNew)swapNew.onclick=()=>openSwapRequest();
  const workplaceAdd=document.getElementById('add-workplace'),workplaceModal=document.getElementById('workplace-modal'),workplaceForm=document.getElementById('workplace-form');
