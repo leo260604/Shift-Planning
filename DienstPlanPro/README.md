@@ -182,6 +182,7 @@ Alle Seiten wurden nach den freigegebenen Mockups neu aufgebaut. Keine bestehend
 ## Eigener Farbwähler (11/2026)
 - Überall, wo man eine eigene Farbe wählen kann (Dienstzeiten, Team anlegen/bearbeiten, Abteilung, Bereitschaftsfarben je Team), öffnet sich statt des System-Farbwählers ein eigener Farbwähler: Farbe in der Fläche und am Farbton-Regler ziehen (mit Maus oder Finger), alternativ Hex- oder RGB-Werte eintippen. Die Vorschau ändert sich live; übernommen wird erst mit „Speichern“, „Abbrechen“/Esc/Klick daneben stellt die vorherige Farbe wieder her. Zuletzt verwendete Farben stehen zur schnellen Auswahl bereit.
 - Abteilungen haben jetzt ebenfalls „Eigene“ Farbe.
+- Der Farbwähler des Geräts (iPhone, Android, Mac) ist gesperrt: Farbfelder öffnen immer nur den eigenen Farbwähler der App.
 
 ## Automatische Bildschirmanpassung (alle Geräte)
 Alle Seiten passen sich automatisch an jedes Gerät an – getestet mit 15 Größen von 320 px (kleines Handy) über Tablets hoch/quer (768–1180 px) und Laptops bis 2560 px, jeweils ohne seitliches Überlaufen. Auf Tablets wird die Seitenleiste automatisch auf Symbole verkleinert, die Team-Ansicht/Zeitleiste zeigt die ganze Woche, hochkant erscheint die kompakte Wochenübersicht. Tabellen werden auf dem Handy als Karten dargestellt, die Berechtigungsmatrix zeigt nur die gewählte Rolle, und nichts muss seitlich gescrollt werden.

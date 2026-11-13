@@ -284,7 +284,7 @@ body>.duty-actions-menu{position:fixed;z-index:2000}
 .modal-backdrop{position:fixed;inset:0;z-index:1000;display:grid;place-items:center;padding:16px;background:rgba(12,22,30,.5);backdrop-filter:blur(2px);overflow-y:auto}
 .modal{width:min(480px,100%);max-height:calc(100dvh - 32px);overflow-y:auto;padding:22px;border-radius:16px;background:var(--surface);color:var(--ink);box-shadow:var(--shadow-lg)}
 .modal label,.stack-form label,.team-config-form label{display:flex;flex-direction:column;gap:6px;margin:12px 0;font-size:12.5px;font-weight:650;color:var(--ink-2)}
-.modal input:not([type=checkbox]):not([type=color]),.modal select,.stack-form input,.stack-form select{width:100%}
+.modal input:not([type=checkbox]):not([type=color]):not([data-color-input]),.modal select,.stack-form input,.stack-form select{width:100%}
 .form-two{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 .form-two label{margin:8px 0}
 .absence-note-field{display:flex;flex-direction:column;gap:6px;margin-top:10px}
@@ -921,7 +921,7 @@ button.team-card{display:block;width:100%;text-align:left;cursor:pointer;font:in
 .member-row .check span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .role-set{display:inline-flex;gap:3px}.role-set button{border:1px solid var(--line);background:var(--surface);border-radius:6px;font-size:10.5px;font-weight:700;padding:2px 6px;cursor:pointer;color:var(--muted)}
 .role-set button.active,.role-set button:hover{border-color:var(--accent-color);color:var(--accent-dark);background:var(--accent-soft)}
-.color-line{display:flex;align-items:center;gap:10px}.color-line input[type=color]{width:42px;height:34px;padding:2px;border-radius:8px}
+.color-line{display:flex;align-items:center;gap:10px}.color-line input[type=color],.color-line input[data-color-input]{width:42px;height:34px;padding:2px;border-radius:8px}
 #team-editor .member-list,#team-editor .members{max-height:420px;overflow-y:auto}
 
 /* ---------- Rollen & Rechte ---------- */
@@ -1098,7 +1098,7 @@ img,svg,video{max-width:100%}
 
 /* Handy: kein automatisches Hineinzoomen beim Antippen von Eingabefeldern (iOS zoomt bei Schrift < 16 px) */
 @media(max-width:900px),(pointer:coarse){
-  input:not([type=checkbox]):not([type=radio]):not([type=color]),select,textarea{font-size:16px!important}
+  input:not([type=checkbox]):not([type=radio]):not([type=color]):not([data-color-input]),select,textarea{font-size:16px!important}
 }
 .settings-card{scroll-margin-top:76px}
 
@@ -1634,7 +1634,7 @@ body.dark-mode .wp-hint.is-office.on-light,body.dark-mode .mobile-agenda-card .w
 .te-swatch.on .ic{opacity:1}
 .te-swatch:disabled{cursor:default;opacity:.6}
 .modal label.te-custom{display:inline-flex;flex-direction:row;align-items:center;gap:6px;margin:0 0 0 4px;font-size:12.5px;font-weight:600;color:var(--ink-2);cursor:pointer}
-.te-custom input[type=color]{width:32px;height:32px;padding:0;border:1px solid var(--line);border-radius:50%;overflow:hidden;background:none;cursor:pointer}
+.te-custom input[data-color-input],.te-custom input[type=color]{width:32px;height:32px;padding:0;border:1px solid var(--line);border-radius:50%;overflow:hidden;background:none;cursor:pointer}
 .te-mhead{display:flex;align-items:center;gap:10px}
 .te-mhead .team-dd-search{flex:1}
 .te-mlist{max-height:none;min-height:200px}
@@ -2127,6 +2127,14 @@ body.dark-mode .wp-box.office .wp-ic{color:#7fb2ea}
 @media (max-width:560px){.cp-layer{background:rgba(0,0,0,.25)}}
 /* Farbfeld „Eigene“ zeigt die aktuelle Farbe als Kreis */
 .te-custom input[type=color],.color-swatch.custom input{cursor:pointer}
+
+/* Farbfelder (eigener Farbwähler statt System-Farbwähler) */
+input[data-color-input]{-webkit-appearance:none;appearance:none;width:44px;height:36px;padding:0;border:1px solid var(--line);border-radius:8px;background:var(--cv,#14a1a9)!important;color:transparent!important;caret-color:transparent;font-size:0!important;text-indent:-999px;cursor:pointer;box-shadow:inset 0 0 0 3px var(--surface);user-select:none;-webkit-user-select:none;-webkit-tap-highlight-color:transparent}
+input[data-color-input]:focus{outline:0;box-shadow:inset 0 0 0 3px var(--surface),0 0 0 3px var(--accent-ring)}
+input[data-color-input]:disabled{cursor:default;opacity:.6}
+.te-custom input[data-color-input]{border-radius:50%;box-shadow:inset 0 0 0 2px var(--surface)}
+.color-swatch.custom input[data-color-input]{opacity:0!important;width:100%;height:100%;border:0}
+.te-custom input[data-color-input]{width:32px!important;height:32px!important;min-height:0!important;flex:none;box-sizing:border-box;border-radius:50%!important}
 </style>
 </head>
 <body>
@@ -3829,7 +3837,7 @@ function standbyManagementPage(){
  </div>
  <section class="panel"><div class="panel-head"><div><h2>Gruppen und Zeiten im Überblick</h2><p class="sub">Zeitfenster auf einer 24-Stunden-Skala.</p></div><span class="pill">${groupCount} Gruppen · ${timeCount} Zeiten</span></div>
  ${groupCount?standbyGroups.map(g=>{const times=standbyTimes.filter(t=>t.groupId===g.id);const segs=times.flatMap(t=>{const s=durationHoursStart(t.start),e=durationHoursStart(t.end);const c=shiftHexColor(t.color||'#159da8');return e>s?[[s,e,c,t.name]]:[[s,24,c,t.name],[0,e,c,'']]});return `<article class="standby-group-row"><div class="standby-group-head"><div><b>${escapeHtml(g.name)}</b><small>${times.length} ${times.length===1?'Zeitfenster':'Zeitfenster'}</small></div><button class="btn danger" type="button" data-delete-standby-group="${escapeHtml(g.id)}">Gruppe löschen</button></div><div class="day-scale"><div class="day-scale-labels">${[0,3,6,9,12,15,18,21,24].map(h=>`<span>${String(h).padStart(2,'0')}</span>`).join('')}</div><div class="day-scale-bar">${segs.map(([s,e,c,name])=>`<i style="left:${s/24*100}%;width:${(e-s)/24*100}%;background:${c}">${escapeHtml(name)}</i>`).join('')}</div></div><div class="standby-time-chips">${times.map(t=>`<span class="standby-time-chip"><strong>${escapeHtml(t.name)}</strong><small>${escapeHtml(t.start)} – ${escapeHtml(t.end)} Uhr${durationHoursStart(t.end)<=durationHoursStart(t.start)?' (+1 Tag)':''}</small><button type="button" class="chip-x" data-delete-standby-time="${escapeHtml(t.id)}" title="Zeitfenster löschen" aria-label="Zeitfenster ${escapeHtml(t.name)} löschen">×</button></span>`).join('')||'<span class="muted small">Noch keine Zeiten zugeordnet.</span>'}</div></article>`}).join(''):'<div class="empty-note">Derzeit sind noch keine Gruppen angelegt. Erstelle zuerst eine Bereitschaftsgruppe.</div>'}</section>
- <section class="panel"><div class="panel-head"><div><h2>Bereitschaftsfarben je Team</h2><p class="sub">Diese Farbe wird für alle Bereitschaftseinträge des Teams verwendet.</p></div></div><div class="standby-team-color-list">${teams.map(t=>`<label class="standby-team-color-row"><input type="color" value="${/^#[0-9a-f]{6}$/i.test(t.standbyColor||'')?t.standbyColor:'#159da8'}" data-standby-team-color="${escapeHtml(t.id)}" aria-label="Bereitschaftsfarbe für ${escapeHtml(t.name)}"><span><b>${escapeHtml(t.name)}</b><small>${escapeHtml(t.standbyColor||'#159da8')}</small></span></label>`).join('')}</div></section>`;
+ <section class="panel"><div class="panel-head"><div><h2>Bereitschaftsfarben je Team</h2><p class="sub">Diese Farbe wird für alle Bereitschaftseinträge des Teams verwendet.</p></div></div><div class="standby-team-color-list">${teams.map(t=>`<label class="standby-team-color-row"><input type="text" data-color-input readonly inputmode="none" autocomplete="off" spellcheck="false" value="${/^#[0-9a-f]{6}$/i.test(t.standbyColor||'')?t.standbyColor:'#159da8'}" data-standby-team-color="${escapeHtml(t.id)}" aria-label="Bereitschaftsfarbe für ${escapeHtml(t.name)}"><span><b>${escapeHtml(t.name)}</b><small>${escapeHtml(t.standbyColor||'#159da8')}</small></span></label>`).join('')}</div></section>`;
 }
 function durationHoursStart(hhmm){const [h,m]=String(hhmm||'0:0').split(':').map(Number);return h+(m||0)/60}
 
@@ -4342,7 +4350,7 @@ function shiftTimes(){
     <div class="wp-field"><span class="wp-label">Arbeitszeit</span><div class="wp-range"><label><small>Beginn</small><input type="time" id="shift-start" value="06:00" required></label><span class="wp-range-arrow" aria-hidden="true">→</span><label><small>Ende</small><input type="time" id="shift-end" value="14:12" required></label></div></div>
     <div class="wp-summary shift-net"><span class="wp-sum-ic">${icon('clock')}</span><div><b id="shift-duration"></b><small>Netto-Arbeitszeit · abzüglich ${LUNCH_MIN} Min. fixer Mittagspause</small></div></div>
     <label class="check shift-multi wp-check"><input type="checkbox" id="shift-multi" checked><span><b>Mehrfach am Tag besetzbar</b><small class="muted block">Aus: Dieser Dienst wird pro Tag und Team nur einer Person zugeteilt. Bei „Rotation automatisch planen“ wird jeder Dienst mindestens einmal besetzt.</small></span></label>
-    <div class="wp-field shift-color-field"><span class="wp-label">Farbe</span><div class="shift-color-presets">${SHIFT_SWATCHES.map(c=>`<button type="button" class="color-swatch" data-color="${c}" style="--swatch:${c}" aria-label="Farbe ${c}" title="${c}"></button>`).join('')}<label class="color-swatch custom" title="Eigene Farbe wählen"><input type="color" id="shift-color" value="#3974c6" aria-label="Eigene Farbe wählen"></label></div></div>
+    <div class="wp-field shift-color-field"><span class="wp-label">Farbe</span><div class="shift-color-presets">${SHIFT_SWATCHES.map(c=>`<button type="button" class="color-swatch" data-color="${c}" style="--swatch:${c}" aria-label="Farbe ${c}" title="${c}"></button>`).join('')}<label class="color-swatch custom" title="Eigene Farbe wählen"><input type="text" data-color-input readonly inputmode="none" autocomplete="off" spellcheck="false" id="shift-color" value="#3974c6" aria-label="Eigene Farbe wählen"></label></div></div>
     <div class="btn-row modal-actions wp-actions"><span></span><span class="wp-actions-right"><button type="button" class="btn" id="cancel-shift">Abbrechen</button><button type="submit" class="btn primary">${icon('check')}Speichern</button></span></div>
    </form>
   </div></div>`:''}
@@ -4785,7 +4793,7 @@ function fancySelect(sel,{kind='plain',meta,search='Suchen …',placeholder='Bit
  sync();bindPersonPicker(pp.parentNode);
 }
 /* ------------------------------------------------------------------
-   Eigener Farbwähler für alle <input type="color">: Farbe in der Fläche und am Farbton-Regler
+   Eigener Farbwähler für alle <input type="text" data-color-input readonly inputmode="none" autocomplete="off" spellcheck="false">: Farbe in der Fläche und am Farbton-Regler
    ziehen, Hex/RGB eintippen, dann „Speichern“. Während des Ziehens wird die Vorschau live
    aktualisiert (input-Event); gespeichert wird erst mit „Speichern“ (change-Event). */
 (function(){
@@ -4840,8 +4848,18 @@ function fancySelect(sel,{kind='plain',meta,search='Suchen …',placeholder='Bit
   if(!window.matchMedia('(pointer: coarse)').matches)setTimeout(()=>sv.focus({preventScroll:true}),20);
  }
  window.openColorPicker=openPicker;
- document.addEventListener('click',e=>{const inp=e.target.closest&&e.target.closest('input[type=color]');if(!inp||inp.disabled||inp.readOnly)return;e.preventDefault();e.stopPropagation();openPicker(inp)},true);
- document.addEventListener('keydown',e=>{if((e.key==='Enter'||e.key===' ')&&e.target.matches&&e.target.matches('input[type=color]')&&!e.target.disabled){e.preventDefault();openPicker(e.target)}},true);
+ const CP_SEL='input[data-color-input],input[type=color]';
+ // Farbfelder sind Textfelder (readonly): so öffnet kein Gerät (iPhone, Android, Mac) seinen eigenen Farbwähler
+ const VAL=Object.getOwnPropertyDescriptor(HTMLInputElement.prototype,'value');
+ const init=inp=>{if(inp.dataset.cpInit)return;inp.dataset.cpInit='1';if(inp.type==='color')inp.type='text';inp.readOnly=true;inp.setAttribute('inputmode','none');inp.setAttribute('role','button');if(!inp.getAttribute('aria-label'))inp.setAttribute('aria-label','Farbe wählen');
+  const sync=()=>inp.style.setProperty('--cv',VAL.get.call(inp));Object.defineProperty(inp,'value',{configurable:true,get(){return VAL.get.call(this)},set(v){VAL.set.call(this,v);sync()}});inp.addEventListener('input',sync);sync()};
+ const scan=()=>document.querySelectorAll(CP_SEL).forEach(init);
+ new MutationObserver(scan).observe(document.documentElement,{childList:true,subtree:true});scan();
+ document.addEventListener('reset',()=>setTimeout(()=>document.querySelectorAll('[data-cp-init]').forEach(i=>i.style.setProperty('--cv',VAL.get.call(i)))),true);
+ const hit=e=>e.target.closest&&e.target.closest(CP_SEL);
+ document.addEventListener('pointerdown',e=>{const inp=hit(e);if(inp&&!inp.disabled)e.preventDefault()},true);
+ document.addEventListener('click',e=>{const inp=hit(e);if(!inp||inp.disabled)return;e.preventDefault();e.stopPropagation();openPicker(inp)},true);
+ document.addEventListener('keydown',e=>{if((e.key==='Enter'||e.key===' ')&&e.target.matches&&e.target.matches(CP_SEL)&&!e.target.disabled){e.preventDefault();openPicker(e.target)}},true);
 })();
 function setPersonPicker(pp,val){if(typeof pp==='string')pp=document.querySelector(`[data-pp="${pp}"]`);if(!pp)return;
  if(pp.classList.contains('fs')){const sel=pp.querySelector('select');if(sel.value!==val){sel.value=val;sel.dispatchEvent(new Event('change',{bubbles:true}))}return}
@@ -5221,7 +5239,7 @@ async function openCreateTeam(){
   <div class="wp-field"><label class="wp-label" for="nt-name">Teamname</label>
    <div class="nt-input"><span class="nt-input-ic">${icon('users')}</span><input id="nt-name" name="name" maxlength="60" autocomplete="off" placeholder="z. B. Team Ost" required><span class="nt-count" id="nt-count">0/60</span></div>
    <small class="wp-note nt-msg" id="nt-msg">Der Name erscheint im Dienstplan, in der Bereitschaft und in den Filtern.</small></div>
-  <div class="wp-field"><span class="wp-label">Teamfarbe</span><div class="te-colors">${TEAM_COLORS.map(c=>`<button type="button" class="te-swatch ${c===color0?'on':''}" style="--c:${c}" data-color="${c}" aria-label="Farbe ${c}">${icon('check')}</button>`).join('')}<label class="te-custom" title="Eigene Farbe"><input type="color" id="nt-color-pick" value="${color0}"><span>Eigene</span></label></div><input type="hidden" name="color" id="nt-color" value="${color0}"></div>
+  <div class="wp-field"><span class="wp-label">Teamfarbe</span><div class="te-colors">${TEAM_COLORS.map(c=>`<button type="button" class="te-swatch ${c===color0?'on':''}" style="--c:${c}" data-color="${c}" aria-label="Farbe ${c}">${icon('check')}</button>`).join('')}<label class="te-custom" title="Eigene Farbe"><input type="text" data-color-input readonly inputmode="none" autocomplete="off" spellcheck="false" id="nt-color-pick" value="${color0}"><span>Eigene</span></label></div><input type="hidden" name="color" id="nt-color" value="${color0}"></div>
   ${depts.length?`<div class="wp-field"><span class="wp-label">Abteilung <span class="muted">(optional)</span></span><select id="nt-dept" name="dept"><option value="">Keine Abteilung</option>${depts.map(d=>`<option value="${escapeHtml(d.id)}">${escapeHtml(d.name)}</option>`).join('')}</select></div>`:''}
   <div class="wp-summary nt-preview" id="nt-preview"></div>`,'Team anlegen','Danach legst du Mitglieder, Teamleitung und Deputy fest.',{icon:'users',cls:'nt-modal'});
  const layer=[...document.querySelectorAll('.app-dialog')].pop(),$=id=>layer.querySelector('#'+id);
@@ -5259,7 +5277,7 @@ function openDeptEditor(id){
   <div class="te-head"><span class="ta-mark">${icon('build')}</span><div><h2 id="dp-title">${ex?escapeHtml(d.name||'Abteilung'):'Abteilung anlegen'}</h2><p class="small muted">${d.teamIds.length} ${d.teamIds.length===1?'Team':'Teams'} · Leitung: ${escapeHtml(nameOf(d.headId)||'—')}</p></div><button class="icon-btn" type="button" data-dp-close aria-label="Schließen">×</button></div>
   <div class="te-body"><div class="te-sec">
    <label class="wp-field"><span class="wp-label">Name der Abteilung</span><input id="dp-name" value="${escapeHtml(d.name)}" maxlength="60" placeholder="z. B. Technik"></label>
-   <div class="wp-field"><span class="wp-label">Farbe</span><div class="te-colors">${TEAM_COLORS.map(c=>`<button type="button" class="te-swatch ${c.toLowerCase()===d.color.toLowerCase()?'on':''}" style="--c:${c}" data-color="${c}" aria-label="Farbe ${c}">${icon('check')}</button>`).join('')}<label class="te-custom" title="Eigene Farbe"><input type="color" id="dp-color" value="${/^#[0-9a-f]{6}$/i.test(d.color)?d.color:'#0068a8'}"><span>Eigene</span></label></div></div>
+   <div class="wp-field"><span class="wp-label">Farbe</span><div class="te-colors">${TEAM_COLORS.map(c=>`<button type="button" class="te-swatch ${c.toLowerCase()===d.color.toLowerCase()?'on':''}" style="--c:${c}" data-color="${c}" aria-label="Farbe ${c}">${icon('check')}</button>`).join('')}<label class="te-custom" title="Eigene Farbe"><input type="text" data-color-input readonly inputmode="none" autocomplete="off" spellcheck="false" id="dp-color" value="${/^#[0-9a-f]{6}$/i.test(d.color)?d.color:'#0068a8'}"><span>Eigene</span></label></div></div>
    <div class="wp-field"><span class="wp-label">Abteilungsleitung</span>${personPicker({id:'dp-head',people,value:nameOf(d.headId),noneLabel:'Nicht besetzt',placeholder:'Nicht besetzt',empty:'Keine Abteilungsleiter gefunden'})}
     ${people.length?`<small class="muted">Zur Auswahl stehen alle Personen mit der Rolle „Abteilungsleiter“.</small>`:`<small class="dept-note">${icon('alert')}Es gibt noch keine Person mit der Rolle „Abteilungsleiter“. Die Rolle vergibst du unter „Kontakte“.</small>`}</div>
    <div class="wp-field"><span class="wp-label">Teams dieser Abteilung <span class="pill teal" id="dp-count">${d.teamIds.length} ausgewählt</span></span>
@@ -5310,7 +5328,7 @@ function openTeamEditor(id,startTab){
  const mem=()=>staff.filter(p=>d.memberIds.includes(p[8])).sort((a,b)=>a[0].localeCompare(b[0],'de'));
  const nameOf=id=>staff.find(p=>p[8]===id)?.[0]||'';
  const general=()=>`<div class="te-sec"><label class="wp-field"><span class="wp-label">Teamname</span><input id="te-name" value="${escapeHtml(d.name)}" maxlength="60" ${ro(caps.structure)}></label>
-   <div class="wp-field"><span class="wp-label">Teamfarbe</span><div class="te-colors">${TEAM_COLORS.map(c=>`<button type="button" class="te-swatch ${c.toLowerCase()===d.color.toLowerCase()?'on':''}" style="--c:${c}" data-color="${c}" aria-label="Farbe ${c}" ${ro(caps.color)}>${icon('check')}</button>`).join('')}<label class="te-custom" title="Eigene Farbe"><input type="color" id="te-color" value="${/^#[0-9a-f]{6}$/i.test(d.color)?d.color:'#14a1a9'}" ${ro(caps.color)}><span>Eigene</span></label></div></div>
+   <div class="wp-field"><span class="wp-label">Teamfarbe</span><div class="te-colors">${TEAM_COLORS.map(c=>`<button type="button" class="te-swatch ${c.toLowerCase()===d.color.toLowerCase()?'on':''}" style="--c:${c}" data-color="${c}" aria-label="Farbe ${c}" ${ro(caps.color)}>${icon('check')}</button>`).join('')}<label class="te-custom" title="Eigene Farbe"><input type="text" data-color-input readonly inputmode="none" autocomplete="off" spellcheck="false" id="te-color" value="${/^#[0-9a-f]{6}$/i.test(d.color)?d.color:'#14a1a9'}" ${ro(caps.color)}><span>Eigene</span></label></div></div>
    <div class="te-two"><div class="wp-field"><span class="wp-label">Teamleitung</span>${caps.structure?personPicker({id:'te-lead',people:mem().map(p=>({name:p[0],sub:visibleRole(p[10])})),value:nameOf(d.leaderId),noneLabel:'Nicht besetzt',placeholder:'Nicht besetzt'}):`<div class="wp-me">${d.leaderId?avatarHtml(nameOf(d.leaderId),'var(--accent-color)',30):''}<div><b>${escapeHtml(nameOf(d.leaderId)||'Nicht besetzt')}</b></div></div>`}</div>
    <div class="wp-field"><span class="wp-label">Deputy</span>${caps.structure?personPicker({id:'te-dep',people:mem().map(p=>({name:p[0],sub:visibleRole(p[10])})),value:nameOf(d.deputyId),noneLabel:'Nicht besetzt',placeholder:'Nicht besetzt'}):`<div class="wp-me">${d.deputyId?avatarHtml(nameOf(d.deputyId),'var(--accent-color)',30):''}<div><b>${escapeHtml(nameOf(d.deputyId)||'Nicht besetzt')}</b></div></div>`}</div></div>
    ${caps.structure?'<small class="muted">Teamleitung und Deputy werden aus den Mitgliedern gewählt. Ein Deputy kann nur einem Team zugeordnet sein.</small>':'<small class="muted">Name, Verantwortliche und Mitglieder ändert die Administration.</small>'}</div>`;
