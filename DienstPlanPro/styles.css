@@ -1798,3 +1798,30 @@ body.dark-mode .pp-panel{box-shadow:0 18px 40px -12px rgba(0,0,0,.7),0 2px 6px r
 .swap-right .swap-dates{max-height:262px}
 /* gefüllte Symbole (z. B. Abwesenheit/Reise) – gleiche Farbe wie der Text, optisch gleich groß wie die Linien-Symbole */
 .ic.ic-fill{fill:currentColor;stroke:none;width:18px;height:18px}
+
+/* Kachel „Büro & Homeoffice“ – aufgeräumtes Layout */
+.stat-card.wp-card{display:flex;flex-direction:column;align-items:stretch;gap:14px;padding:18px 20px}
+.wp-head{display:flex;align-items:center;justify-content:space-between;gap:10px;min-width:0}
+.wp-head .stat-label{margin:0}
+.wp-month{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:650;color:var(--muted);background:var(--surface-2);border:1px solid var(--line);border-radius:20px;padding:4px 10px;white-space:nowrap}
+.wp-month .ic{width:13px;height:13px}
+.wp-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.wp-box{display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:12px;background:var(--surface-2);border:1px solid var(--line-2);min-width:0}
+.wp-ic{width:38px;height:38px;flex:none;border-radius:11px;display:grid;place-items:center}
+.wp-ic .ic{width:18px;height:18px}
+.wp-box.office .wp-ic{background:color-mix(in srgb,#3979bd 14%,transparent);color:#3979bd}
+.wp-box.home .wp-ic{background:var(--accent-soft);color:var(--accent-color)}
+.wp-num{display:flex;flex-direction:column;min-width:0;line-height:1.1}
+.wp-num b{font-size:26px;font-weight:750;letter-spacing:-.6px;color:var(--ink)}
+.wp-num small{font-size:12px;font-weight:600;color:var(--muted);margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.wp-bar{height:8px;border-radius:8px;background:var(--accent-color);overflow:hidden;display:flex}
+.wp-bar i{display:block;height:100%;background:#3979bd;border-right:2px solid var(--surface)}
+.wp-legend{display:flex;justify-content:space-between;gap:10px;font-size:12px;font-weight:600;color:var(--muted);margin-top:-6px}
+.wp-legend span{display:inline-flex;align-items:center;gap:6px}
+.wp-legend i{width:8px;height:8px;border-radius:50%}.wp-legend i.o{background:#3979bd}.wp-legend i.h{background:var(--accent-color)}
+.wp-empty{font-size:12px;color:var(--muted);padding:2px 2px 0}
+body.dark-mode .wp-box.office .wp-ic{color:#7fb2ea}
+@media(max-width:420px){.stat-card.wp-card{padding:14px}.wp-grid{gap:8px}.wp-box{padding:10px;gap:9px}.wp-ic{width:32px;height:32px;border-radius:9px}.wp-num b{font-size:22px}.wp-num small{font-size:11px;white-space:normal}}
+@media(max-width:340px){.wp-grid{grid-template-columns:1fr}}
+.stat-card.wp-card>.wp-head{background:none!important;border:0!important;padding:0!important;margin:0!important;box-shadow:none!important;border-radius:0!important}
+@media(max-width:360px){.wp-month .ic{display:none}.wp-month{padding:3px 8px}}
