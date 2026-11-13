@@ -1886,14 +1886,22 @@ function bindPersonPicker(root){
   const btn=pp.querySelector('.pp-btn'),panel=pp.querySelector('.pp-panel'),q=pp.querySelector('.pp-q'),hidden=pp.querySelector('input[type=hidden]');
   const opts=()=>[...pp.querySelectorAll('.pp-opt')].filter(o=>!o.hidden);
   const filter=()=>{const v=q.value.trim().toLowerCase();let n=0;pp.querySelectorAll('.pp-opt').forEach(o=>{const hit=!v||o.dataset.q.includes(v);o.hidden=!hit;if(hit)n++});pp.querySelector('.team-dd-empty').hidden=n>0};
-  const open=()=>{panel.hidden=false;pp.classList.add('open');btn.setAttribute('aria-expanded','true');q.value='';filter();q.focus({preventScroll:true});const on=pp.querySelector('.pp-opt.on');if(on){const l=pp.querySelector('.pp-list');l.scrollTop=Math.max(0,on.offsetTop-l.offsetTop-80)}};
-  const close=()=>{panel.hidden=true;pp.classList.remove('open');btn.setAttribute('aria-expanded','false')};
+  const place=()=>{const r=btn.getBoundingClientRect(),vh=window.innerHeight,vw=window.innerWidth,below=vh-r.bottom-12,above=r.top-12,list=pp.querySelector('.pp-list');
+   const want=Math.min(330,Math.max(below,above));list.style.maxHeight=Math.max(120,want-60)+'px';
+   const h=panel.offsetHeight,w=Math.min(Math.max(r.width,260),vw-16);
+   panel.style.width=w+'px';panel.style.left=Math.max(8,Math.min(r.left,vw-w-8))+'px';
+   panel.style.top=(below>=h||below>=above?r.bottom+6:Math.max(8,r.top-h-6))+'px'};
+  const onScroll=e=>{if(panel.hidden)return;if(panel.contains(e.target))return;close()};
+  const open=()=>{panel.hidden=false;pp.classList.add('open');btn.setAttribute('aria-expanded','true');q.value='';filter();place();window.addEventListener('scroll',onScroll,true);window.addEventListener('resize',place);q.focus({preventScroll:true});const on=pp.querySelector('.pp-opt.on');if(on){const l=pp.querySelector('.pp-list');l.scrollTop=Math.max(0,on.offsetTop-l.offsetTop-80)}};
+  const close=()=>{panel.hidden=true;pp.classList.remove('open');btn.setAttribute('aria-expanded','false');window.removeEventListener('scroll',onScroll,true);window.removeEventListener('resize',place)};
   btn.onclick=e=>{e.preventDefault();panel.hidden?open():close()};
-  q.oninput=filter;
+  q.oninput=()=>{filter();place()};
   q.onkeydown=e=>{if(e.key==='ArrowDown'){e.preventDefault();opts()[0]?.focus()}else if(e.key==='Enter'){e.preventDefault();opts()[0]?.click()}else if(e.key==='Escape'){e.stopPropagation();e.preventDefault();close();btn.focus()}};
   panel.onkeydown=e=>{const l=opts(),i=l.indexOf(document.activeElement);if(e.key==='ArrowDown'){e.preventDefault();l[Math.min(l.length-1,i+1)]?.focus()}else if(e.key==='ArrowUp'){e.preventDefault();i<=0?q.focus():l[i-1].focus()}else if(e.key==='Escape'){e.stopPropagation();e.preventDefault();close();btn.focus()}};
   pp.querySelectorAll('.pp-opt').forEach(o=>o.onclick=e=>{e.preventDefault();setPersonPicker(pp,o.dataset.ppVal);close();btn.focus({preventScroll:true})});
-  document.addEventListener('pointerdown',e=>{if(!panel.hidden&&!pp.contains(e.target))close()},true);
+  document.addEventListener('pointerdown',e=>{if(panel.hidden||pp.contains(e.target))return;close();
+   // Klick auf den abgedunkelten Hintergrund schließt nur die Auswahl, nicht gleich das ganze Fenster
+   if(e.target.classList&&e.target.classList.contains('modal-backdrop')){const stop=ev=>{ev.stopPropagation();ev.preventDefault()};document.addEventListener('click',stop,{capture:true,once:true});setTimeout(()=>document.removeEventListener('click',stop,true),400)}},true);
  });
 }
 function setPersonPicker(pp,val){if(typeof pp==='string')pp=document.querySelector(`[data-pp="${pp}"]`);if(!pp)return;
@@ -1963,9 +1971,10 @@ async function openSwapRequest(preId){
  const people=cols.map(p=>({name:p[0],sub:swapTeamsOf(p[0]).filter(t=>myTeams.includes(t)).join(', '),color:teamColor(teamByName(p[5]))}));
  const inner=`<div class="swap-req">
   <div class="wp-field"><span class="wp-label">Mit wem möchtest du tauschen?</span>${personPicker({id:'swap-to',name:'to',people,value:first[0]})}</div>
-  <div class="wp-field"><span class="wp-label">Datum</span><div class="swap-dates" id="swap-dates"></div><button type="button" class="link-btn swap-add-day" id="swap-add-day">${icon('plus')}Weiteren Tag hinzufügen</button></div>
-  <div class="wp-summary" id="swap-sum" aria-live="polite"></div>
-  <label class="wp-field"><span class="wp-label">Nachricht <small class="muted">(optional)</small></span><textarea name="note" rows="2" maxlength="200" placeholder="z. B. Grund für den Tausch"></textarea></label>
+  <div class="swap-cols"><div class="wp-field"><span class="wp-label">Datum <small class="muted">– Tage antippen</small></span><div class="scal" id="swap-cal"></div></div>
+  <div class="wp-field swap-right"><span class="wp-label">Auswahl</span><div class="swap-dates" id="swap-dates"></div></div></div>
+  <div class="wp-summary swap-sum-wide" id="swap-sum" aria-live="polite"></div>
+  <label class="wp-field"><span class="wp-label">Nachricht <small class="muted">(optional)</small></span><input name="note" maxlength="200" placeholder="z. B. Grund für den Tausch" autocomplete="off"></label>
   <p class="small muted swap-hint">${icon('alert')}Getauscht wird erst, wenn deine Kollegin bzw. dein Kollege die Anfrage bestätigt.</p></div>`;
  const pendIn=swapsIncoming().length;
  const dlg=formDialog('Diensttausch anfragen',inner,'Anfrage senden',`Wähle die Person und den Tag – deine Dienste an diesem Tag werden getauscht. <button type="button" class="link-btn" id="swap-open-center">${pendIn?`${pendIn} ${pendIn===1?'Anfrage wartet':'Anfragen warten'} auf dich`:'Anfragen &amp; Verlauf ansehen'}</button>`);
@@ -1974,16 +1983,34 @@ async function openSwapRequest(preId){
  $('#swap-open-center')?.addEventListener('click',()=>{layer.querySelector('[data-dlg="cancel"]').click();openSwapCenter()});
  let dates=[startDate],give=[],take=[];
  const dutyTxt=x=>`<b>${escapeHtml(x.shift)}</b><small>${escapeHtml(x.start)}–${escapeHtml(x.end)}</small>`;
+ let calMonth=(()=>{const d=new Date(startDate+'T12:00:00');return new Date(d.getFullYear(),d.getMonth(),1,12)})();
+ const maxDay=isoDate(addDays(new Date(),180));
+ const drawCal=()=>{const to=$('#swap-to').value,y=calMonth.getFullYear(),m=calMonth.getMonth(),first=new Date(y,m,1,12),lead=(first.getDay()+6)%7,days=new Date(y,m+1,0).getDate();
+  const minM=new Date(new Date().getFullYear(),new Date().getMonth(),1,12),canPrev=calMonth>minM,canNext=isoDate(new Date(y,m+1,1,12))<=maxDay;
+  const myDays=new Map();assignments.forEach(x=>{if(x.kind==='Dienstplan'&&!x.isAbsence&&x.employee===me&&myTeams.includes(x.team)&&x.date.startsWith(`${y}-${String(m+1).padStart(2,'0')}`)){if(!myDays.has(x.date))myDays.set(x.date,x)}});
+  const theirDays=new Set(assignments.filter(x=>x.kind==='Dienstplan'&&!x.isAbsence&&x.employee===to&&x.date.startsWith(`${y}-${String(m+1).padStart(2,'0')}`)).map(x=>x.date));
+  let cells='';const tIso=today,skipTo=(()=>{if(!(y===new Date().getFullYear()&&m===new Date().getMonth()))return 1;const t=new Date();const wd=(t.getDay()+6)%7;return Math.max(1,t.getDate()-wd)})();
+  const lead2=skipTo>1?0:lead;for(let i=0;i<lead2;i++)cells+='<span class="scal-blank"></span>';
+  for(let d=skipTo;d<=days;d++){const iso=`${y}-${String(m+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`,mine=myDays.get(iso),sel=dates.includes(iso),past=iso<today,busy=mine&&swapOpenFor(mine.id),ok=mine&&!past&&!busy&&iso<=maxDay;
+   const label=`${fmtWithWeekday(new Date(iso+'T12:00:00'))}${mine?` · ${mine.shift} ${mine.start}–${mine.end}`:' · kein Dienst'}${busy?' · bereits angefragt':''}`;
+   cells+=`<button type="button" class="scal-day ${sel?'on':''} ${ok?'has':''} ${iso===today?'today':''} ${busy?'busy':''}" data-scal="${iso}" ${ok||sel?'':'disabled'} aria-pressed="${sel}" title="${escapeHtml(label)}" aria-label="${escapeHtml(label)}"><span class="scal-n">${d}</span>${mine?`<span class="scal-shift" style="--c:${shiftHexColor(assignmentColor(mine))}">${escapeHtml(mine.shift.slice(0,1))}</span>`:''}${theirDays.has(iso)&&ok?'<i class="scal-them" aria-hidden="true"></i>':''}</button>`}
+  $('#swap-cal').innerHTML=`<div class="scal-head"><button type="button" class="icon-btn" data-scal-nav="-1" ${canPrev?'':'disabled'} aria-label="Voriger Monat">${icon('chev')}</button><b>${escapeHtml(monthName(calMonth))}</b><button type="button" class="icon-btn scal-next" data-scal-nav="1" ${canNext?'':'disabled'} aria-label="Nächster Monat">${icon('chev')}</button></div>
+   <div class="scal-grid">${['Mo','Di','Mi','Do','Fr','Sa','So'].map(w=>`<span class="scal-wd">${w}</span>`).join('')}${cells}</div>
+   <div class="scal-legend"><span><i class="scal-shift lg">D</i>Dein Dienst</span><span><i class="scal-them lg"></i>${escapeHtml(to.split(' ')[0])} hat Dienst</span><span><i class="scal-sel lg"></i>Ausgewählt</span></div>`;
+  $('#swap-cal').querySelectorAll('[data-scal-nav]').forEach(b=>b.onclick=()=>{calMonth=new Date(calMonth.getFullYear(),calMonth.getMonth()+ +b.dataset.scalNav,1,12);drawCal()});
+  $('#swap-cal').querySelectorAll('[data-scal]').forEach(b=>b.onclick=()=>{const iso=b.dataset.scal;if(dates.includes(iso))dates=dates.filter(x=>x!==iso);else{if(dates.length>=14){toast('Höchstens 14 Tage pro Anfrage.');return}dates=[...dates,iso].sort()}draw()})};
  const draw=()=>{const to=$('#swap-to').value;give=[];take=[];
-  $('#swap-dates').innerHTML=dates.map((d,i)=>{const m=d&&d>=today?mineOn(d,to):[],t=d&&d>=today?theirsOn(d,to):[];give.push(...m);take.push(...t);
+  drawCal();
+  $('#swap-dates').innerHTML=dates.length?dates.map(d=>{const m=d>=today?mineOn(d,to):[],t=d>=today?theirsOn(d,to):[];give.push(...m);take.push(...t);
    const busy=[...m,...t].some(x=>swapOpenFor(x.id));
-   return `<div class="swap-day"><div class="swap-day-top"><input type="date" value="${d}" min="${today}" data-swap-date="${i}" aria-label="Datum">${dates.length>1?`<button type="button" class="icon-btn" data-swap-del="${i}" aria-label="Tag entfernen">×</button>`:''}</div>
-    <div class="swap-day-pair"><div class="swap-mini"><span>Du gibst ab</span>${m.length?m.map(dutyTxt).join(''):'<em>Kein Dienst</em>'}</div><span class="swap-arrow">${icon('refresh')}</span><div class="swap-mini"><span>Du übernimmst</span>${t.length?t.map(dutyTxt).join(''):`<em>${escapeHtml(to.split(' ')[0])} hat frei</em>`}</div></div>${busy?'<small class="swap-opt-why">'+icon('alert')+'Für diesen Tag läuft bereits eine Tauschanfrage.</small>':''}</div>`}).join('');
-  $('#swap-dates').querySelectorAll('[data-swap-date]').forEach(inp=>inp.onchange=()=>{dates[+inp.dataset.swapDate]=inp.value;draw()});
-  $('#swap-dates').querySelectorAll('[data-swap-del]').forEach(b=>b.onclick=()=>{dates.splice(+b.dataset.swapDel,1);draw()});
+   const one=l=>l.map(x=>`<b>${escapeHtml(x.shift)}</b> <small>${escapeHtml(x.start)}–${escapeHtml(x.end)}</small>`).join('<br>');
+   return `<div class="swap-day ${busy?'is-busy':''}"><div class="swap-day-top"><span class="swap-day-date"><b>${escapeHtml(fmtShortWd(new Date(d+'T12:00:00')))}</b></span><button type="button" class="swap-x" data-swap-del="${d}" aria-label="Tag entfernen">×</button></div>
+    <div class="swap-day-line"><span class="swap-give">${m.length?one(m):'<em>Kein Dienst</em>'}</span><span class="swap-arrow sm">${icon('refresh')}</span><span class="swap-take">${t.length?one(t):`<em>${escapeHtml(to.split(' ')[0])} hat frei</em>`}</span></div>${busy?'<small class="swap-opt-why">'+icon('alert')+'Bereits angefragt</small>':''}</div>`}).join(''):'<div class="swap-empty">Tippe links im Kalender auf einen Tag mit deinem Dienst.</div>';
+  $('#swap-dates').querySelectorAll('[data-swap-del]').forEach(b=>b.onclick=()=>{dates=dates.filter(x=>x!==b.dataset.swapDel);draw()});
   summary()};
  const summary=()=>{const to=$('#swap-to').value,box=$('#swap-sum');
   let pr=[];
+  if(!dates.length)pr.push('Bitte im Kalender mindestens einen Tag auswählen.');
   if(dates.some(d=>!d||d<today))pr.push('Bitte nur heutige oder zukünftige Tage wählen.');
   if(new Set(dates).size!==dates.length)pr.push('Ein Tag ist doppelt ausgewählt.');
   if(dates.some(d=>d&&d>=today&&!mineOn(d,to).length))pr.push(`Du hast am ${dates.filter(d=>d&&d>=today&&!mineOn(d,to).length).map(swapDate).join(', ')} keinen Dienst, den du tauschen kannst.`);
@@ -1993,7 +2020,6 @@ async function openSwapRequest(preId){
   box.className='wp-summary'+(pr.length?' warn':'');
   box.innerHTML=pr.length?`${icon('alert')}<div>${pr.slice(0,4).map(x=>`<span class="block">${escapeHtml(x)}</span>`).join('')}</div>`:`<span class="wp-sum-ic">${icon('refresh')}</span><div><b>${take.length?`Tausch mit ${escapeHtml(to)}`:`${escapeHtml(to)} übernimmt deinen Dienst`}</b><small>Du gibst ${give.length} ${give.length===1?'Dienst':'Dienste'} ab${take.length?` und übernimmst ${take.length}`:''} · ${escapeHtml(to)} muss bestätigen.</small></div>`};
  $('#swap-to').addEventListener('change',draw);
- $('#swap-add-day').onclick=()=>{if(dates.length>=14){toast('Höchstens 14 Tage pro Anfrage.');return}const last=dates.filter(Boolean).sort().pop()||today;let n=addDays(new Date(last+'T12:00:00'),1);const nx=assignments.filter(x=>x.kind==='Dienstplan'&&!x.isAbsence&&x.employee===me&&x.date>isoDate(n)&&!dates.includes(x.date)&&myTeams.includes(x.team)).map(x=>x.date).sort()[0];dates.push(mineOn(isoDate(n),$('#swap-to').value).length?isoDate(n):(nx||isoDate(n)));draw()};
  draw();
  const res=await dlg;if(!res)return;
  const to=$('#swap-to').value,G=give.map(swapSnap),T=take.map(swapSnap);

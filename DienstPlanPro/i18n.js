@@ -378,3 +378,6 @@ EN_RX.push(
 );
 Object.assign(EN,{'Zur Auswahl stehen alle Personen mit der Rolle „Abteilungsleiter“.':'All people with the role “Department head” are available.','Es gibt noch keine Person mit der Rolle „Abteilungsleiter“. Die Rolle vergibst du unter „Kontakte“.':'There is no person with the role “Department head” yet. Assign the role under “Contacts”.','Keine Abteilungsleiter gefunden':'No department heads found','Als Abteilungsleitung sind nur Personen mit der Rolle „Abteilungsleiter“ möglich.':'Only people with the role “Department head” can lead a department.'});
 Object.assign(EN,{'Anfragen & Verlauf ansehen':'View requests & history'});
+Object.assign(EN,{'– einen oder mehrere Tage antippen':'– tap one or more days','Dein Dienst':'Your duty','Ausgewählt':'Selected','Voriger Monat':'Previous month','Nächster Monat':'Next month','Tippe oben im Kalender auf einen Tag mit deinem Dienst.':'Tap a day with your duty in the calendar above.','Bitte im Kalender mindestens einen Tag auswählen.':'Please select at least one day in the calendar.'});
+EN_RX.push([/^(.+) hat Dienst$/,'$1 is on duty']);
+Object.assign(EN,{'– Tage antippen':'– tap days','Auswahl':'Selection','Bereits angefragt':'Already requested','Tippe links im Kalender auf einen Tag mit deinem Dienst.':'Tap a day with your duty in the calendar on the left.'});
