@@ -2148,6 +2148,59 @@ input[data-color-input]:disabled{cursor:default;opacity:.6}
 .report-kind-chips{display:contents}
 @media (max-width:700px){.report-kind-chips{display:none}.report-filters .kind-dd{display:inline-flex}}
 
+/* ================= Berichte: Einträge (PC-Tabelle & Handy-Liste) ================= */
+.rt-count{display:inline-grid;place-items:center;min-width:26px;height:22px;padding:0 8px;border-radius:999px;background:var(--surface-3);color:var(--ink-2);font-size:12px;font-weight:700}
+.rt-selall{display:none;align-items:center;gap:7px;font-size:13px;font-weight:600;color:var(--ink-2);cursor:pointer}
+.report-table{width:100%;border-collapse:separate;border-spacing:0}
+.report-table thead th{position:sticky;top:0;z-index:1;background:var(--surface-2);font-size:11px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);padding:10px 14px;border-bottom:1px solid var(--line)}
+.report-table tbody td{padding:10px 14px;border-bottom:1px solid var(--line-2);vertical-align:middle}
+.report-table tbody tr{transition:background .12s}
+.report-table tbody tr:hover{background:var(--surface-2)}
+.report-table tbody tr.is-selected{background:var(--accent-soft)}
+.report-table tbody tr.is-selected td:first-child{box-shadow:inset 3px 0 0 var(--accent-color)}
+.report-table .cb-col{width:44px}
+.rt-date{white-space:nowrap}
+.rt-date .rt-day{display:block;font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;line-height:1.2}
+.rt-date b{font-size:13.5px}
+.rt-person .person{display:flex;align-items:center;gap:10px;min-width:0}
+.rt-name{display:flex;flex-direction:column;min-width:0;line-height:1.25}
+.rt-name b{font-size:13.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rt-name small,.rt-shift small{display:flex;align-items:center;gap:5px;color:var(--muted);font-size:12px;white-space:nowrap}
+.rt-name .dot{width:7px;height:7px;border-radius:50%;background:var(--c);flex:none;display:inline-block}
+.rt-shift b{display:block;font-size:13.5px;font-weight:600;line-height:1.25}
+.rt-shift small .ic{width:12px;height:12px}
+.rt-hours{white-space:nowrap}
+.rt-hours b{font-size:14px;font-variant-numeric:tabular-nums}
+.rt-hours small{margin-left:3px;color:var(--muted);font-size:11px}
+@media (max-width:700px){
+  .report-table-wrap{overflow:visible}
+  .report-table thead{display:none}
+  .report-table,.report-table tbody{display:block}
+  .report-table tbody tr{display:grid;grid-template-columns:30px minmax(0,1fr) auto;grid-template-areas:"cb person hours" "cb shift kind";column-gap:10px;row-gap:6px;padding:12px 14px;border-bottom:1px solid var(--line-2);cursor:pointer}
+  .report-table tbody tr.is-selected td:first-child{box-shadow:none}
+  .report-table tbody tr.is-selected{box-shadow:inset 3px 0 0 var(--accent-color)}
+  .report-table tbody td{display:block;padding:0;border:0;min-width:0}
+  .report-table td.rt-cb{grid-area:cb;align-self:center;width:auto}
+  .report-table td.rt-person{grid-area:person}
+  .report-table td.rt-hours{grid-area:hours;text-align:right;align-self:center}
+  .report-table td.rt-kind{grid-area:kind;justify-self:end;align-self:center}
+  .report-table td.rt-shift{grid-area:shift;display:flex;align-items:center;gap:8px;flex-wrap:wrap;min-width:0}
+  .report-table td.rt-date{display:none}
+  .rt-shift b{display:inline;font-size:13px}
+  .rt-shift small{font-size:12px}
+  .rt-shift::before{content:attr(data-date);font-size:12px;font-weight:700;color:var(--ink-2)}
+  .report-table td.empty-note{grid-column:1/-1;text-align:center;padding:20px 0}
+  .report-table tbody tr:has(.empty-note){display:block}
+  .rt-hint{display:none}
+  .rt-selall{display:inline-flex;margin-left:auto}
+}
+@media (max-width:700px){
+  .report-table-wrap .report-table td.rt-kind,.report-table-wrap .report-table td.rt-hours{display:block!important}
+  .report-table-wrap .report-table td.rt-shift{display:flex!important}
+  .report-table-wrap .report-table td.rt-date{display:none!important}
+  .report-table-wrap .report-table tbody td{background:transparent!important}
+}
+
 </style>
 </head>
 <body>
@@ -2818,8 +2871,8 @@ function makePdf(title,subtitle,headers,rows,widths){
 }
 function safeFileName(name){return (name||'report').toLowerCase().replace(/[^a-z0-9äöüß]+/gi,'-').replace(/^-|-$/g,'')}
 function downloadTableRow(table,row,reportName){
- const headers=[...table.querySelectorAll('thead th')].map(x=>x.textContent.trim()).filter(h=>h&&!/^aktion/i.test(h));
- const values=[...row.children].map(x=>x.innerText.trim().replace(/\s+/g,' ')).slice(0,headers.length);
+ const headers=[...table.querySelectorAll('thead th')].filter(x=>!x.classList.contains('cb-col')).map(x=>x.textContent.trim()).filter(h=>h&&!/^aktion/i.test(h));
+ const values=[...row.children].filter(x=>!x.classList.contains('cb-col')).map(x=>x.innerText.trim().replace(/\s+/g,' ')).slice(0,headers.length);
  downloadCsv([headers,values],safeFileName(reportName)+'.csv');
  logExport(reportName+' (Einzelzeile)','CSV',1,'Erfolgreich');
  toast('Report wurde heruntergeladen.');
@@ -3759,7 +3812,7 @@ async function dutyRotation(){
 /* Handy: Tabellen werden zu Karten – jede Zelle bekommt ihre Spaltenüberschrift als Label */
 function labelTables(){
  content.querySelectorAll('.table-wrap table').forEach(t=>{
-  if(t.closest('.perm-table,.employee-directory-table-wrap'))return;
+  if(t.closest('.perm-table,.employee-directory-table-wrap,.report-table-wrap'))return;
   t.classList.add('cardify');
   const hs=[...t.querySelectorAll('thead th')].map(th=>th.classList.contains('cb-col')?'':th.textContent.trim());
   t.querySelectorAll('tbody tr').forEach(tr=>{let i=0;[...tr.children].forEach(td=>{const span=+td.getAttribute('colspan')||1;if(span===1&&hs[i]&&!td.dataset.label)td.dataset.label=hs[i];i+=span})});
@@ -5468,8 +5521,8 @@ function reportExportPage(){
   <div class="stat-card"><div><div class="stat-label">Abwesenheitstage</div><div class="stat-value">${abs.length}</div><div class="stat-note">${vac} Urlaub · ${abs.length-vac} Sonstige</div></div></div>
  </div>
  <div class="split-layout narrow-side">
-  <section class="panel flush"><div class="panel-toolbar">${reportSel.size?`<b>${reportSel.size} ausgewählt</b><button class="btn small push-right" id="export-selection">${icon('download')}Auswahl exportieren</button><button class="btn small ghost" id="clear-selection">Auswahl aufheben</button>`:`<b>Einträge</b><span class="muted small push-right">${filtered.length} gefunden · Zeilen anhaken für einen Teil-Export</span>`}</div>
-   <div class="table-wrap borderless"><table><thead><tr><th class="cb-col"><input type="checkbox" id="select-page" ${allChecked?'checked':''} aria-label="Alle auf dieser Seite auswählen"></th><th>Datum</th><th>Mitarbeiter</th><th>Team</th><th>Art</th><th>Dienst</th><th>Uhrzeit</th><th class="num">Std.</th></tr></thead><tbody>${shown.map(a=>`<tr class="${reportSel.has(a.id)?'is-selected':''}"><td class="cb-col"><input type="checkbox" data-sel="${a.id}" ${reportSel.has(a.id)?'checked':''} aria-label="Auswählen"></td><td><b>${escapeHtml(fmtIsoDate(a.date))}</b></td><td><span class="person">${avatarHtml(a.employee,teamColor(teamByName(a.team)),26)}${escapeHtml(a.employee)}</span></td><td>${escapeHtml(a.team)}</td><td><span class="pill kind-${kindLabel(a).toLowerCase()}">${kindLabel(a)}</span></td><td>${escapeHtml(a.shift||'—')}</td><td>${a.start?escapeHtml(a.start+'–'+a.end):'ganztägig'}</td><td class="num">${a.start&&a.end&&!a.isAbsence?nf(netHours(a)):'—'}</td></tr>`).join('')||'<tr><td colspan="8" class="empty-note">Keine Einträge für diese Filter gefunden.</td></tr>'}</tbody></table></div>
+  <section class="panel flush"><div class="panel-toolbar">${reportSel.size?`<b>${reportSel.size} ausgewählt</b><button class="btn small push-right" id="export-selection">${icon('download')}Auswahl exportieren</button><button class="btn small ghost" id="clear-selection">Auswahl aufheben</button>`:`<b>Einträge</b><span class="rt-count">${filtered.length.toLocaleString(LOC())}</span><span class="muted small push-right rt-hint">Zeilen anhaken für einen Teil-Export</span>`}<label class="rt-selall"><input type="checkbox" id="select-page-m" ${allChecked?'checked':''}>Seite auswählen</label></div>
+   <div class="table-wrap borderless report-table-wrap"><table class="report-table"><thead><tr><th class="cb-col"><input type="checkbox" id="select-page" ${allChecked?'checked':''} aria-label="Alle auf dieser Seite auswählen"></th><th>Datum</th><th>Mitarbeiter</th><th>Art</th><th>Dienst</th><th class="num">Std.</th></tr></thead><tbody>${shown.map(a=>{const dd=new Date(a.date+'T12:00:00'),k=kindLabel(a),t=teamByName(a.team),c=teamColor(t),h=a.start&&a.end&&!a.isAbsence?nf(netHours(a)):'';return `<tr class="${reportSel.has(a.id)?'is-selected':''}"><td class="cb-col rt-cb"><input type="checkbox" data-sel="${a.id}" ${reportSel.has(a.id)?'checked':''} aria-label="Auswählen"></td><td class="rt-date"><span class="rt-day">${escapeHtml(weekdayName(dd,'short'))}</span><b>${escapeHtml(fmtIsoDate(a.date))}</b></td><td class="rt-person"><span class="person">${avatarHtml(a.employee,c,30)}<span class="rt-name"><b>${escapeHtml(a.employee)}</b><small><i class="dot" style="--c:${c}"></i>${escapeHtml(a.team)}</small></span></span></td><td class="rt-kind"><span class="pill kind-${k.toLowerCase()}">${k}</span></td><td class="rt-shift" data-date="${escapeHtml(weekdayName(dd,'short')+' '+fmtShort(dd))}"><b>${escapeHtml(a.shift||k)}</b><small>${icon('clock')}${a.start?escapeHtml(a.start+'–'+a.end):'ganztägig'}</small></td><td class="num rt-hours">${h?`<b>${h}</b><small>Std.</small>`:'<span class="muted">—</span>'}</td></tr>`}).join('')||'<tr><td colspan="6" class="empty-note">Keine Einträge für diese Filter gefunden.</td></tr>'}</tbody></table></div>
    <div class="pager"><span class="muted small">${filtered.length?`${reportPage*REPORT_PAGE+1}–${Math.min(filtered.length,(reportPage+1)*REPORT_PAGE)} von ${filtered.length.toLocaleString(LOC())}`:'0 Einträge'}</span><span class="btn-row"><button class="btn small" id="page-prev" ${reportPage?'':'disabled'} aria-label="Vorherige Seite">‹</button><button class="btn small" id="page-next" ${reportPage<pages-1?'':'disabled'} aria-label="Nächste Seite">›</button></span></div>
   </section>
   <aside class="side-stack"><div class="side-label">BERICHTSVORLAGEN</div>${REPORT_TEMPLATES.map(t=>`<button type="button" class="panel template-card" data-template="${t.id}"><span class="stat-icon">${icon(t.icon)}</span><span><b>${t.title}</b><small>${t.sub}</small></span><span class="icon-btn">${icon('download')}</span></button>`).join('')}<p class="muted small">Vorlagen verwenden den oben gewählten Zeitraum und Filter.</p></aside>
@@ -5489,6 +5542,7 @@ function bindReports(){
   kdd.addEventListener('pointerdown',e=>e.stopPropagation());kdd.onkeydown=e=>{if(e.key==='Escape'){kClose();kb.focus()}};
   if(!window.__kindDdBound){window.__kindDdBound=true;document.addEventListener('pointerdown',()=>{const d=document.getElementById('kind-dd');if(!d)return;const p=d.querySelector('#kind-dd-panel');if(p&&!p.hidden){d.classList.remove('open');p.hidden=true;d.querySelector('#kind-dd-btn').setAttribute('aria-expanded','false')}})}}
  content.querySelectorAll('[data-sel]').forEach(cb=>cb.onchange=()=>{if(cb.checked)reportSel.add(cb.dataset.sel);else reportSel.delete(cb.dataset.sel);render()});
+ const spm=document.getElementById('select-page-m');if(spm)spm.onchange=()=>{const shown=reportRows().slice(reportPage*REPORT_PAGE,(reportPage+1)*REPORT_PAGE);shown.forEach(a=>spm.checked?reportSel.add(a.id):reportSel.delete(a.id));render()};
  const sp=document.getElementById('select-page');if(sp)sp.onchange=()=>{const shown=reportRows().slice(reportPage*REPORT_PAGE,(reportPage+1)*REPORT_PAGE);shown.forEach(a=>sp.checked?reportSel.add(a.id):reportSel.delete(a.id));render()};
  const pp=document.getElementById('page-prev');if(pp)pp.onclick=()=>{reportPage--;render()};const pn=document.getElementById('page-next');if(pn)pn.onclick=()=>{reportPage++;render()};
  const cs=document.getElementById('clear-selection');if(cs)cs.onclick=()=>{reportSel.clear();render()};
