@@ -3414,7 +3414,7 @@ function bindTeamDropdown(){
   dd.querySelectorAll('.team-dd-opt[data-q]').forEach(o=>{const hit=!v||o.dataset.q.includes(v);o.hidden=!hit;if(hit)n++});
   dd.querySelector('.team-dd-opt.all').hidden=!!v;dd.querySelector('.team-dd-empty').hidden=n>0};
  const place=()=>{panel.style.left='';panel.style.right='';const r=panel.getBoundingClientRect();if(r.right>window.innerWidth-8){panel.style.left='auto';panel.style.right='0'}if(panel.getBoundingClientRect().left<8){panel.style.right='auto';panel.style.left=(8-dd.getBoundingClientRect().left)+'px'}};
- const open=(focus=true)=>{teamDd.open=true;dd.classList.add('open');panel.hidden=false;btn.setAttribute('aria-expanded','true');filter();place();if(focus)q.focus({preventScroll:true})};
+ const open=(focus=true)=>{teamDd.open=true;dd.classList.add('open');panel.hidden=false;btn.setAttribute('aria-expanded','true');filter();place();if(focus&&!isTouchDevice())q.focus({preventScroll:true})};
  const close=()=>{teamDd.open=false;teamDd.q='';dd.classList.remove('open');panel.hidden=true;btn.setAttribute('aria-expanded','false')};
  btn.onclick=e=>{e.stopPropagation();teamDd.open?close():open()};
  q.oninput=filter;
@@ -3435,10 +3435,12 @@ function bindTeamDropdown(){
   document.addEventListener('pointerdown',e=>{if(!teamDd.open)return;const d=document.getElementById('team-dd');if(d&&d.contains(e.target))return;teamDd.open=false;teamDd.q='';if(d){d.classList.remove('open');d.querySelector('#team-dd-panel').hidden=true;d.querySelector('#team-dd-btn').setAttribute('aria-expanded','false')}});
   document.addEventListener('keydown',e=>{if(e.key==='Escape'&&teamDd.open){const d=document.getElementById('team-dd');teamDd.open=false;teamDd.q='';if(d){d.classList.remove('open');d.querySelector('#team-dd-panel').hidden=true}}})}
 }
+// Touch-Geräte (Handy/Tablet): Suchfeld nicht automatisch fokussieren, sonst öffnet sich die Bildschirmtastatur
+const isTouchDevice=()=>window.matchMedia('(pointer: coarse)').matches||('ontouchstart' in window&&window.matchMedia('(max-width: 1024px)').matches);
 function bindTeamDropdownOpen(nd,listScroll,focusName){
  const q=nd.querySelector('#team-dd-q');q.value=teamDd.q;q.dispatchEvent(new Event('input'));
  const l=nd.querySelector('.team-dd-list');l.scrollTop=listScroll;
- const o=[...nd.querySelectorAll('[data-team-opt]')].find(x=>x.dataset.teamOpt===focusName&&x.classList.contains('team-dd-opt'));(o||q).focus({preventScroll:true});
+ const o=[...nd.querySelectorAll('[data-team-opt]')].find(x=>x.dataset.teamOpt===focusName&&x.classList.contains('team-dd-opt'));const wasTyping=document.activeElement===q;if(isTouchDevice()&&!wasTyping){o&&o.focus({preventScroll:true})}else (o||q).focus({preventScroll:true});
 }
 function bindCalendarExtras(){
  bindTeamDropdown();
