@@ -1694,3 +1694,18 @@ body.dark-mode .wp-hint.is-office.on-light,body.dark-mode .mobile-agenda-card .w
 .dept-modal .ta-mark .ic{width:20px;height:20px}
 .dept-modal .wp-label .pill{margin-left:6px;font-weight:650}
 @media (max-width:560px){.dept-lead{order:3;width:100%;border-radius:10px}.dept-head .btn{order:2}.dept-hint{flex-wrap:wrap}}
+
+/* Link-Kachel „Mein Porsche Cockpit“ & Admin-Übersicht „Links & Weiterleitungen“ */
+.stat-icon.cockpit{background:var(--accent-soft);color:var(--accent-color)}
+.dash-w[data-widget="kHours"]{cursor:pointer}
+.link-admin{}
+.link-admin h2{display:flex;align-items:center;gap:8px}.link-admin h2 .ic{width:18px;height:18px;color:var(--accent-color)}
+.link-row{display:flex;align-items:center;gap:14px;flex-wrap:wrap;padding:14px;border:1px solid var(--line);border-radius:12px;background:var(--surface);margin-top:12px}
+.link-ic{width:40px;height:40px;flex:none;border-radius:11px;display:grid;place-items:center;background:var(--accent-soft);color:var(--accent-color)}
+.link-ic .ic{width:18px;height:18px}
+.link-txt{flex:1 1 260px;min-width:0;display:flex;flex-direction:column;gap:3px}
+.link-txt b{font-size:14px}.link-txt small{font-size:12px;color:var(--muted)}
+.link-url{font-size:13px;font-weight:600;color:var(--accent-dark);word-break:break-all;text-decoration:none}.link-url:hover{text-decoration:underline}
+.link-txt .pill{align-self:flex-start}
+.link-row .btn-row{flex:none;display:flex;gap:8px}
+@media(max-width:700px){.link-row .btn-row{width:100%}.link-row .btn-row .btn{flex:1;justify-content:center}}

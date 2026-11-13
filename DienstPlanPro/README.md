@@ -170,3 +170,9 @@ Alle Daten liegen im `localStorage` des Browsers (Schlüssel beginnen mit `diens
 
 ## Wichtiger Hinweis zur Anmeldung
 Die Anmeldung ist eine lokale Demo-Benutzerumschaltung ohne Passwort. Die Rollenprüfung läuft nur im Browser und ist nicht für den produktiven Mehrbenutzerbetrieb mit vertraulichen Daten geeignet. Dafür müssen Anmeldung und Rechteprüfung auf einem Server umgesetzt werden.
+
+## Link-Kachel „Mein Porsche Cockpit“ (11/2026)
+- Die Kachel „Mein Porsche Cockpit“ (Ich@Porsche · Übersicht: Homeoffice- & Bürotage) ist für **alle** – auch den Admin – nur ein Button: Ein Klick öffnet den hinterlegten Link in einem neuen Tab. Ist noch kein Link hinterlegt, erscheint ein Hinweis.
+- **Nur Admins** legen den Link fest und ändern ihn jederzeit unter **Einstellungen → Links** („Link festlegen“ / „Ändern“, „Öffnen“ zum Testen). Andere Rollen sehen diesen Bereich nicht.
+- Adressen ohne `https://` werden ergänzt; nur http/https-Adressen werden angenommen. Jede Änderung steht im Audit Log (vorher/nachher).
+- Hinweis: Wie alle Daten liegt der Link im Browser (localStorage) und ist in „Daten & Sicherung“ enthalten.
