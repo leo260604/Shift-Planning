@@ -2531,7 +2531,7 @@ function applyRoleNavigation(){
  const workspaceLabel=document.querySelector('#main-nav').previousElementSibling;
  if(workspaceLabel)workspaceLabel.hidden=!allowed.some(p=>['Dashboard','Dienstplan','Bereitschaft','Dienstzeiten','Kontakte','Berichte / Export'].includes(p));
  // Zähler in der Navigation
- const counts={'Kontakte':staff.length,'Administration':adminTeams().length};
+ const counts={};// keine Zahlen neben den Menüpunkten – nur Symbol und Text
  document.querySelectorAll('#main-nav .nav-item').forEach(b=>{let c=b.querySelector('.nav-count');const v=counts[b.dataset.page];if(v===undefined){if(c)c.remove();return}if(!c){c=document.createElement('span');c.className='nav-count';b.appendChild(c)}c.textContent=v});
 }
 let defaults=load('dienstplanDefaults',{Dienstplan:'Woche',Bereitschaft:'Monat'});
