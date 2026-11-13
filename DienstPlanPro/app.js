@@ -1718,7 +1718,7 @@ function contactTile(s,i,favs){
   <div class="contact-tile-links">${tel}${mail}${teamsBtns}</div>
   ${canEdit('Kontakte')?`<div class="contact-tile-actions"><button class="btn small" data-edit-employee="${i}">Bearbeiten</button><button class="btn small danger" data-remove-employee="${i}">Löschen</button></div>`:''}</article>`;
 }
-const contactCompact=()=>window.matchMedia('(max-width: 1180px)').matches;
+const contactCompact=()=>window.matchMedia('(max-width: 1360px)').matches;
 let contactDetailIndex=null;
 function closeContactDetail(){const m=document.getElementById('contact-detail-modal');if(m)m.hidden=true;contactDetailIndex=null}
 function openContactDetail(i){
@@ -1736,20 +1736,42 @@ function bindContactTiles(root){
  root.querySelectorAll('[data-edit-employee]').forEach(b=>b.onclick=()=>{closeContactDetail();openEmployee(+b.dataset.editEmployee)});
  root.querySelectorAll('[data-remove-employee]').forEach(b=>b.onclick=async()=>{closeContactDetail();const i=+b.dataset.removeEmployee;const removed=staff[i];if(!removed)return;if(removed[8]===currentUserId){toast('Du kannst dich nicht selbst löschen.');return}if(await ask(`Mitarbeiter „${removed[0]}“ wirklich löschen?`)){staff.splice(i,1);teams.forEach(t=>{t.memberIds=t.memberIds.filter(id=>id!==removed[8]);if(t.leaderId===removed[8])t.leaderId='';if(t.deputyId===removed[8])t.deputyId='';});persistStaff();persistTeams();audit('Gelöscht','Kontakte',removed[0]);renderEmployees();toast('Mitarbeiter gelöscht.')}});
 }
+let contactFavPage=0,contactFavLayoutKey='';
+function contactFavLayout(){const w=q=>window.matchMedia(q).matches;if(w('(max-width: 520px)'))return{cols:1,rows:2};if(w('(max-width: 860px)'))return{cols:2,rows:2};if(w('(max-width: 1360px)'))return{cols:3,rows:2};return{cols:4,rows:1}}
+function renderContactFavorites(favs=contactFavorites()){
+ const fb=document.getElementById('contact-favorites');if(!fb)return;
+ const list=favs.map(id=>staff.findIndex(s=>s[8]===id)).filter(i=>i>=0);
+ if(!list.length){fb.innerHTML=`<div class="contact-empty">${icon('star')}<span>Noch keine Favoriten. Tippe bei einem Kontakt auf den Stern, um ihn hier anzuzeigen.</span></div>`;return}
+ const {cols,rows}=contactFavLayout(),per=cols*rows,pages=Math.max(1,Math.ceil(list.length/per));
+ contactFavLayoutKey=cols+'x'+rows;contactFavPage=Math.min(Math.max(0,contactFavPage),pages-1);
+ const slice=list.slice(contactFavPage*per,contactFavPage*per+per);
+ const nav=pages>1;
+ fb.innerHTML=`<div class="fav-carousel${nav?' has-nav':''}">
+  ${nav?`<button type="button" class="fav-arrow prev" id="fav-prev" aria-label="Vorherige Favoriten" ${contactFavPage===0?'disabled':''}>${icon('chev')}</button>`:''}
+  <div class="contact-grid contact-fav-grid" style="grid-template-columns:repeat(${cols},minmax(0,1fr));grid-template-rows:repeat(${rows},auto)">${slice.map(i=>contactTile(staff[i],i,favs)).join('')}</div>
+  ${nav?`<button type="button" class="fav-arrow next" id="fav-next" aria-label="Weitere Favoriten" ${contactFavPage>=pages-1?'disabled':''}>${icon('chev')}</button>`:''}
+ </div>${nav?`<div class="fav-dots" aria-label="Seite ${contactFavPage+1} von ${pages}">${Array.from({length:pages},(_,k)=>`<button type="button" class="fav-dot${k===contactFavPage?' on':''}" data-fav-page="${k}" aria-label="Seite ${k+1}"></button>`).join('')}</div>`:''}`;
+ const goPage=k=>{contactFavPage=k;renderContactFavorites()};
+ const pv=document.getElementById('fav-prev'),nx=document.getElementById('fav-next');
+ if(pv)pv.onclick=()=>goPage(contactFavPage-1);if(nx)nx.onclick=()=>goPage(contactFavPage+1);
+ fb.querySelectorAll('[data-fav-page]').forEach(b=>b.onclick=()=>goPage(+b.dataset.favPage));
+ if(nav){const g=fb.querySelector('.fav-carousel');let x0=null;g.ontouchstart=e=>{x0=e.touches[0].clientX};g.ontouchend=e=>{if(x0===null)return;const dx=e.changedTouches[0].clientX-x0;x0=null;if(Math.abs(dx)>50){if(dx<0&&contactFavPage<pages-1)goPage(contactFavPage+1);else if(dx>0&&contactFavPage>0)goPage(contactFavPage-1)}}}
+ bindContactTiles(fb);
+}
+window.addEventListener('resize',()=>{if(currentPage!=='Kontakte')return;const l=contactFavLayout();if(l.cols+'x'+l.rows!==contactFavLayoutKey)renderContactFavorites()});
 function renderEmployees(){
  const body=document.getElementById('employee-rows');if(!body)return;
  const q=(document.getElementById('employee-search').value||'').trim().toLowerCase();
  const favs=contactFavorites();
  const panel=document.getElementById('contact-results-panel'),cnt=document.getElementById('contact-count');
+ const favPanel=document.querySelector('.contact-fav-panel');if(favPanel)favPanel.hidden=!!(q||contactRoleFilter!=='Alle');
  if(!q&&contactRoleFilter==='Alle'){body.innerHTML='';if(panel)panel.hidden=true}
  else{
   const rows=staff.map((s,i)=>({s,i,teamsText:teams.filter(t=>t.memberIds.includes(s[8])).map(t=>t.name).join(', ')||s[5]||''})).filter(x=>(contactRoleFilter==='Alle'||visibleRole(x.s[10])===contactRoleFilter)&&[x.s[0],x.teamsText,x.s[6],x.s[7],x.s[11]].join(' ').toLowerCase().includes(q));
   if(panel)panel.hidden=false;if(cnt)cnt.textContent=`${rows.length} Treffer`;
   body.innerHTML=rows.length?`<div class="contact-grid">${rows.map(({s,i})=>contactTile(s,i,favs)).join('')}</div>`:'<div class="contact-empty">Keine Mitarbeiter gefunden.</div>';
  }
- const fb=document.getElementById('contact-favorites');
- if(fb){const list=favs.map(id=>{const i=staff.findIndex(s=>s[8]===id);return i<0?'':contactTile(staff[i],i,favs)}).join('');
-  fb.innerHTML=list?`<div class="contact-grid">${list}</div>`:`<div class="contact-empty">${icon('star')}<span>Noch keine Favoriten. Tippe bei einem Kontakt auf den Stern, um ihn hier anzuzeigen.</span></div>`;bindContactTiles(fb)}
+ renderContactFavorites(favs);
  bindContactTiles(body);
  const dm=document.getElementById('contact-detail-modal');if(dm&&!dm.hidden&&contactDetailIndex!==null&&staff[contactDetailIndex])openContactDetail(contactDetailIndex);
 }

@@ -1890,11 +1890,11 @@ body.dark-mode .wp-box.office .wp-ic{color:#7fb2ea}
 .contact-fav.on .ic{fill:#f5b301;stroke:#f5b301}
 .contact-empty{display:flex;align-items:center;justify-content:center;gap:10px;padding:28px 16px;color:var(--muted);font-size:14px;text-align:center;border:1px dashed var(--line);border-radius:12px}
 .contact-empty .ic{width:18px;height:18px;flex:none}
-@media (max-width:1180px){.contact-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media (max-width:1360px){.contact-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
 @media (max-width:860px){.contact-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media (max-width:520px){.contact-grid{grid-template-columns:1fr}}
 /* Kontakte: unter 4 Kacheln pro Reihe nur Name, Rolle & Team – Details im Pop-up */
-@media (max-width:1180px){
+@media (max-width:1360px){
   .contact-grid{align-items:start}
   .contact-grid .contact-tile{cursor:pointer;gap:10px}
   .contact-grid .contact-tile .contact-tile-links,.contact-grid .contact-tile .contact-tile-actions{display:none}
@@ -1925,6 +1925,31 @@ body.dark-mode .wp-box.office .wp-ic{color:#7fb2ea}
 .contact-results-panel[hidden]{display:none!important}
 .contact-hint{font-style:normal;color:var(--muted);font-size:12px}
 .contact-teams .teams-btn.is-off{opacity:.45;cursor:not-allowed;pointer-events:none}
+/* Kontakte: Favoriten-Blättern (PC 1 Reihe à 4, sonst 2 Reihen) */
+.contact-fav-grid{grid-auto-flow:row;align-items:stretch!important}
+@media (max-width:1360px){.contact-fav-grid{align-items:start!important}}
+.fav-carousel{position:relative}
+.fav-carousel.has-nav{padding:0 26px}
+.fav-arrow{position:absolute;top:50%;transform:translateY(-50%);z-index:2;width:36px;height:36px;border-radius:50%;border:1px solid var(--line);background:var(--surface);color:var(--ink);display:grid;place-items:center;cursor:pointer;box-shadow:0 4px 12px rgba(16,24,40,.12)}
+.fav-arrow.prev{left:-6px}.fav-arrow.next{right:-6px}
+.fav-arrow.next .ic{transform:rotate(180deg)}
+.fav-arrow .ic{width:18px;height:18px}
+.fav-arrow:hover:not(:disabled){border-color:var(--accent-color);color:var(--accent-color)}
+.fav-arrow:disabled{opacity:.35;cursor:default;box-shadow:none}
+.fav-dots{display:flex;justify-content:center;gap:6px;margin-top:12px}
+.fav-dot{width:8px;height:8px;border-radius:50%;border:0;padding:0;background:var(--line);cursor:pointer}
+.fav-dot.on{background:var(--accent-color);width:20px;border-radius:4px}
+.contact-teams{gap:6px!important}
+.contact-teams .teams-btn{padding-left:6px!important;padding-right:6px!important;gap:5px!important;font-size:12.5px}
+.contact-teams .teams-btn .ic{width:13px;height:13px}
+.contact-fav-panel[hidden]{display:none!important}
+.fav-carousel.has-nav{padding:0 50px}
+.fav-arrow.prev{left:0}.fav-arrow.next{right:0}
+@media (max-width:520px){.fav-carousel.has-nav{padding:0 44px}}
+.contact-tile{container-type:inline-size}
+@container (max-width:250px){.contact-teams .teams-btn .ic{display:none}.contact-teams .teams-btn{font-size:12px}}
+@container (max-width:215px){.contact-tile-links .contact-teams{grid-template-columns:1fr}.contact-teams .teams-btn .ic{display:inline-block}}
+.contact-tile-name b{white-space:normal;overflow-wrap:break-word}
 
 </style>
 </head>
@@ -2095,7 +2120,7 @@ const EN={
  // Dienstzeiten
  'Schichtmodelle pro Team – stehen beim Einteilen als Auswahl zur Verfügung.':'Shift templates per team – available when scheduling.','＋ Dienstzeit erstellen':'＋ Create shift time','Dienstzeit erstellen':'Create shift time','Dienstzeit bearbeiten':'Edit shift time','Dienstzeit suchen …':'Search shift time …','z. B. 1A Dienst':'e.g. Shift 1A','Farbe auswählen':'Choose colour','Eigene Farbe wählen':'Pick custom colour','Farbvorschläge':'Colour suggestions','Vorschau der Dienstfarbe':'Shift colour preview','Vorschau':'Preview','Für diese Auswahl sind noch keine Dienstzeiten angelegt.':'No shift times for this selection yet.','Für dich sind keine Teams zur Bearbeitung zugeordnet.':'No teams are assigned to you for editing.','Bitte wende dich an die Administration.':'Please contact your administrator.',
  // Kontakte
- 'Mitarbeiter & Kontakte':'Employees & contacts','Meine Favoriten':'My favourites','Suchergebnisse':'Search results','Teams-Chat':'Teams chat','Teams-Telefonnummer':'Teams phone number','(Teams Anruf)':'(Teams call)','Keine E-Mail hinterlegt':'No email on file','Keine Bereitschaftsnummer hinterlegt':'No on-call number on file','Bereitschaftsnummer':'On-call number','Chat in Microsoft Teams starten':'Start chat in Microsoft Teams','Anruf in Microsoft Teams starten':'Start call in Microsoft Teams','Anruf':'Call','Chat':'Chat','Teams':'Teams','Kontakt':'Contact','Teams-Anruf':'Teams call','Aus Favoriten entfernen':'Remove from favourites','Zu Favoriten hinzufügen':'Add to favourites','Suche nach Name, Team, Telefon oder E-Mail, um Kontakte anzuzeigen.':'Search by name, team, phone or email to show contacts.','Noch keine Favoriten. Tippe bei einem Kontakt auf den Stern, um ihn hier anzuzeigen.':'No favourites yet. Tap the star on a contact to show it here.','Treffer':'results','CSV exportieren':'Export CSV','＋ Mitarbeiter hinzufügen':'＋ Add employee','Name, Team, Telefon oder E-Mail …':'Name, team, phone or email …','Teams':'Teams','Keine Mitarbeiter gefunden.':'No employees found.','Mitarbeiter hinzufügen':'Add employee','Mitarbeiter bearbeiten':'Edit employee','Vor- und Nachname':'First and last name','Benutzerrolle':'User role','Profilbild wählen':'Choose profile photo','Teams zuordnen':'Assign teams',
+ 'Mitarbeiter & Kontakte':'Employees & contacts','Meine Favoriten':'My favourites','Vorherige Favoriten':'Previous favourites','Weitere Favoriten':'More favourites','Suchergebnisse':'Search results','Teams-Chat':'Teams chat','Teams-Telefonnummer':'Teams phone number','(Teams Anruf)':'(Teams call)','Keine E-Mail hinterlegt':'No email on file','Keine Bereitschaftsnummer hinterlegt':'No on-call number on file','Bereitschaftsnummer':'On-call number','Chat in Microsoft Teams starten':'Start chat in Microsoft Teams','Anruf in Microsoft Teams starten':'Start call in Microsoft Teams','Anruf':'Call','Chat':'Chat','Teams':'Teams','Kontakt':'Contact','Teams-Anruf':'Teams call','Aus Favoriten entfernen':'Remove from favourites','Zu Favoriten hinzufügen':'Add to favourites','Suche nach Name, Team, Telefon oder E-Mail, um Kontakte anzuzeigen.':'Search by name, team, phone or email to show contacts.','Noch keine Favoriten. Tippe bei einem Kontakt auf den Stern, um ihn hier anzuzeigen.':'No favourites yet. Tap the star on a contact to show it here.','Treffer':'results','CSV exportieren':'Export CSV','＋ Mitarbeiter hinzufügen':'＋ Add employee','Name, Team, Telefon oder E-Mail …':'Name, team, phone or email …','Teams':'Teams','Keine Mitarbeiter gefunden.':'No employees found.','Mitarbeiter hinzufügen':'Add employee','Mitarbeiter bearbeiten':'Edit employee','Vor- und Nachname':'First and last name','Benutzerrolle':'User role','Profilbild wählen':'Choose profile photo','Teams zuordnen':'Assign teams',
  // Teamverwaltung
  'Teamverwaltung':'Team management','Teams, Mitglieder und Verantwortlichkeiten zentral verwalten.':'Manage teams, members and responsibilities in one place.','Teams gesamt':'Teams in total','Zugeordnete Mitarbeiter':'Assigned employees','Teamleiter bestimmt':'Team leads assigned','Deputy bestimmt':'Deputies assigned','Neues Team erstellen':'Create new team','Anschließend Mitglieder und Verantwortliche in der Teamkarte zuordnen.':'Then assign members and leads in the team card.','Teamname, z. B. Team Ost':'Team name, e.g. Team East','Teamname':'Team name','＋ Team erstellen':'＋ Create team','Team oder Mitarbeiter suchen …':'Search team or employee …','Vollständig eingerichtet':'Fully set up','Vollständig':'Complete','Deputy fehlt':'Deputy missing','Teamleiter fehlt':'Team lead missing','TEAMLEITER':'TEAM LEAD','DEPUTY':'DEPUTY','Noch keine Mitarbeiter zugeordnet':'No employees assigned yet','Team bearbeiten':'Edit team','Mitglieder & Zuständigkeiten':'Members & responsibilities','Mitarbeiter suchen …':'Search employee …','Deputy / Stellvertretung':'Deputy','Team löschen':'Delete team','Änderungen speichern':'Save changes','Die Teamverwaltung ist nur für Administratoren freigegeben.':'Team management is available to administrators only.','Bitte über das Profilmenü als Admin anmelden.':'Please sign in as admin via the profile menu.','Noch keine Teams vorhanden. Lege oben dein erstes Team an.':'No teams yet. Create your first team above.',
  // Berichte
@@ -4168,7 +4193,7 @@ function contactTile(s,i,favs){
   <div class="contact-tile-links">${tel}${mail}${teamsBtns}</div>
   ${canEdit('Kontakte')?`<div class="contact-tile-actions"><button class="btn small" data-edit-employee="${i}">Bearbeiten</button><button class="btn small danger" data-remove-employee="${i}">Löschen</button></div>`:''}</article>`;
 }
-const contactCompact=()=>window.matchMedia('(max-width: 1180px)').matches;
+const contactCompact=()=>window.matchMedia('(max-width: 1360px)').matches;
 let contactDetailIndex=null;
 function closeContactDetail(){const m=document.getElementById('contact-detail-modal');if(m)m.hidden=true;contactDetailIndex=null}
 function openContactDetail(i){
@@ -4186,20 +4211,42 @@ function bindContactTiles(root){
  root.querySelectorAll('[data-edit-employee]').forEach(b=>b.onclick=()=>{closeContactDetail();openEmployee(+b.dataset.editEmployee)});
  root.querySelectorAll('[data-remove-employee]').forEach(b=>b.onclick=async()=>{closeContactDetail();const i=+b.dataset.removeEmployee;const removed=staff[i];if(!removed)return;if(removed[8]===currentUserId){toast('Du kannst dich nicht selbst löschen.');return}if(await ask(`Mitarbeiter „${removed[0]}“ wirklich löschen?`)){staff.splice(i,1);teams.forEach(t=>{t.memberIds=t.memberIds.filter(id=>id!==removed[8]);if(t.leaderId===removed[8])t.leaderId='';if(t.deputyId===removed[8])t.deputyId='';});persistStaff();persistTeams();audit('Gelöscht','Kontakte',removed[0]);renderEmployees();toast('Mitarbeiter gelöscht.')}});
 }
+let contactFavPage=0,contactFavLayoutKey='';
+function contactFavLayout(){const w=q=>window.matchMedia(q).matches;if(w('(max-width: 520px)'))return{cols:1,rows:2};if(w('(max-width: 860px)'))return{cols:2,rows:2};if(w('(max-width: 1360px)'))return{cols:3,rows:2};return{cols:4,rows:1}}
+function renderContactFavorites(favs=contactFavorites()){
+ const fb=document.getElementById('contact-favorites');if(!fb)return;
+ const list=favs.map(id=>staff.findIndex(s=>s[8]===id)).filter(i=>i>=0);
+ if(!list.length){fb.innerHTML=`<div class="contact-empty">${icon('star')}<span>Noch keine Favoriten. Tippe bei einem Kontakt auf den Stern, um ihn hier anzuzeigen.</span></div>`;return}
+ const {cols,rows}=contactFavLayout(),per=cols*rows,pages=Math.max(1,Math.ceil(list.length/per));
+ contactFavLayoutKey=cols+'x'+rows;contactFavPage=Math.min(Math.max(0,contactFavPage),pages-1);
+ const slice=list.slice(contactFavPage*per,contactFavPage*per+per);
+ const nav=pages>1;
+ fb.innerHTML=`<div class="fav-carousel${nav?' has-nav':''}">
+  ${nav?`<button type="button" class="fav-arrow prev" id="fav-prev" aria-label="Vorherige Favoriten" ${contactFavPage===0?'disabled':''}>${icon('chev')}</button>`:''}
+  <div class="contact-grid contact-fav-grid" style="grid-template-columns:repeat(${cols},minmax(0,1fr));grid-template-rows:repeat(${rows},auto)">${slice.map(i=>contactTile(staff[i],i,favs)).join('')}</div>
+  ${nav?`<button type="button" class="fav-arrow next" id="fav-next" aria-label="Weitere Favoriten" ${contactFavPage>=pages-1?'disabled':''}>${icon('chev')}</button>`:''}
+ </div>${nav?`<div class="fav-dots" aria-label="Seite ${contactFavPage+1} von ${pages}">${Array.from({length:pages},(_,k)=>`<button type="button" class="fav-dot${k===contactFavPage?' on':''}" data-fav-page="${k}" aria-label="Seite ${k+1}"></button>`).join('')}</div>`:''}`;
+ const goPage=k=>{contactFavPage=k;renderContactFavorites()};
+ const pv=document.getElementById('fav-prev'),nx=document.getElementById('fav-next');
+ if(pv)pv.onclick=()=>goPage(contactFavPage-1);if(nx)nx.onclick=()=>goPage(contactFavPage+1);
+ fb.querySelectorAll('[data-fav-page]').forEach(b=>b.onclick=()=>goPage(+b.dataset.favPage));
+ if(nav){const g=fb.querySelector('.fav-carousel');let x0=null;g.ontouchstart=e=>{x0=e.touches[0].clientX};g.ontouchend=e=>{if(x0===null)return;const dx=e.changedTouches[0].clientX-x0;x0=null;if(Math.abs(dx)>50){if(dx<0&&contactFavPage<pages-1)goPage(contactFavPage+1);else if(dx>0&&contactFavPage>0)goPage(contactFavPage-1)}}}
+ bindContactTiles(fb);
+}
+window.addEventListener('resize',()=>{if(currentPage!=='Kontakte')return;const l=contactFavLayout();if(l.cols+'x'+l.rows!==contactFavLayoutKey)renderContactFavorites()});
 function renderEmployees(){
  const body=document.getElementById('employee-rows');if(!body)return;
  const q=(document.getElementById('employee-search').value||'').trim().toLowerCase();
  const favs=contactFavorites();
  const panel=document.getElementById('contact-results-panel'),cnt=document.getElementById('contact-count');
+ const favPanel=document.querySelector('.contact-fav-panel');if(favPanel)favPanel.hidden=!!(q||contactRoleFilter!=='Alle');
  if(!q&&contactRoleFilter==='Alle'){body.innerHTML='';if(panel)panel.hidden=true}
  else{
   const rows=staff.map((s,i)=>({s,i,teamsText:teams.filter(t=>t.memberIds.includes(s[8])).map(t=>t.name).join(', ')||s[5]||''})).filter(x=>(contactRoleFilter==='Alle'||visibleRole(x.s[10])===contactRoleFilter)&&[x.s[0],x.teamsText,x.s[6],x.s[7],x.s[11]].join(' ').toLowerCase().includes(q));
   if(panel)panel.hidden=false;if(cnt)cnt.textContent=`${rows.length} Treffer`;
   body.innerHTML=rows.length?`<div class="contact-grid">${rows.map(({s,i})=>contactTile(s,i,favs)).join('')}</div>`:'<div class="contact-empty">Keine Mitarbeiter gefunden.</div>';
  }
- const fb=document.getElementById('contact-favorites');
- if(fb){const list=favs.map(id=>{const i=staff.findIndex(s=>s[8]===id);return i<0?'':contactTile(staff[i],i,favs)}).join('');
-  fb.innerHTML=list?`<div class="contact-grid">${list}</div>`:`<div class="contact-empty">${icon('star')}<span>Noch keine Favoriten. Tippe bei einem Kontakt auf den Stern, um ihn hier anzuzeigen.</span></div>`;bindContactTiles(fb)}
+ renderContactFavorites(favs);
  bindContactTiles(body);
  const dm=document.getElementById('contact-detail-modal');if(dm&&!dm.hidden&&contactDetailIndex!==null&&staff[contactDetailIndex])openContactDetail(contactDetailIndex);
 }
